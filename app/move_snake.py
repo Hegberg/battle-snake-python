@@ -21,7 +21,7 @@ def get_move(data):
         for j in range(len(data['board']['snakes'][i]['body'])):
             walls.append((data['board']['snakes'][i]['body'][j]['x'], data['board']['snakes'][i]['body'][j]['y']))
 
-    print("Obstacles in board: " + str(walls))
+    #print("Obstacles in board: " + str(walls))
 
     #init astar with new board, set end goal as temp value
     x = data['you']['body'][0]['x']
