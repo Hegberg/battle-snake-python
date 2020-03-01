@@ -12,14 +12,14 @@ def get_move(data):
     walls = []
 
     for i in range(1, len(data['you']['body'])):
-        wall.append((date['you']['body'][i]['x'], date['you']['body'][i]['y']))
+        walls.append((date['you']['body'][i]['x'], date['you']['body'][i]['y']))
 
     for i in range(len(data['board']['snakes'])):
         if (data['board']['snakes'][i]['id'] == data['you']['id']):
             continue #skip self
 
             for j in range(len(data['board']['snakes'][i]['body'])):
-                wall.append((data['board']['snakes'][i]['body'][j]['x'], data['board']['snakes'][i]['body'][j]['y']))
+                walls.append((data['board']['snakes'][i]['body'][j]['x'], data['board']['snakes'][i]['body'][j]['y']))
 
     #init astar with new board, set end goal as temp value
     x = data['you']['body'][0]['x']
