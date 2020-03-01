@@ -38,7 +38,7 @@ def locate_food(x,y,data,directions, aStar):
             shortest_path = path
 
     if (shortest_path != None):
-        print("Path Chosen: " + shortest_path)
+        print("Path Chosen: " + str(shortest_path))
         return directions
 
     return None
