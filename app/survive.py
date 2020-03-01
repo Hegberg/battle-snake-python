@@ -51,7 +51,7 @@ def check_snake_collisions(directions, data):
         if (data['board']['snakes'][j]['id'] == data['you']['id']):
             continue
 
-        for i in range(0, len(data['board']['snakes'][j])):
+        for i in range(len(data['board']['snakes'][j])):
             collision = check_beside_self(x,y,data['board']['snakes'][j]['body'][i]['x'],data['board']['snakes'][j]['body'][i]['y'])
             if (collision != 0 and collision in directions):
                 directions.remove(collision)
