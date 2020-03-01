@@ -28,7 +28,7 @@ def locate_food(x,y,data,directions, aStar):
     #for each food, get path, use shortest path
     for i in range(len(food)):
         #set goal to food
-        aStar.reset_goal(food[i][0], food[i][1])
+        aStar.reset_grid((food[i][0], food[i][1]))
         
         #find path, returns list of x,y tuple, starting at head, returns None if no path
         path = aStar.solve()
