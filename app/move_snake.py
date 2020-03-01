@@ -14,15 +14,16 @@ def get_move(data):
 
     if (food_directions != None):
         #if direction of food not in viable direction, remove option
+        revised_food_directions = food_directions
         for direction in food_directions:
             if (direction not in directions):
-                food_directions.remove(direction)
+                revised_food_directions.remove(direction)
         
-        print("Food move after direction clear: ", food_directions)
+        print("Food move after direction clear: ", revised_food_directions)
 
         #if there are resulting options, replace direction list with smaller one
-        if (len(food_directions) > 0):
-            directions = food_directions
+        if (len(revised_food_directions) > 0):
+            directions = revised_food_directions
     print("Directions after food merge: ", directions)
 
     #no path availabe that won't kill us, so just return any response
