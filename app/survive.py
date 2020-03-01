@@ -13,13 +13,13 @@ def survival_choices(data):
 
 def check_bounds(data):
     directions = ["up", "down", "left", "right"]
-    #check if space above us is on board
+    #check if space below us is on board
     if (data['board']['height'] - data['you']['body'][0]['y'] <= 1):
-        directions.remove("up")
-
-    #check if not on bottom row
-    if (data['you']['body'][0]['y'] <= 0):
         directions.remove("down")
+
+    #check if not on upper row
+    if (data['you']['body'][0]['y'] <= 0):
+        directions.remove("up")
 
     #check if not on right wall
     if (data['board']['width'] - data['you']['body'][0]['x'] <= 1):
@@ -67,13 +67,13 @@ def check_beside_self(x,y,x2,y2):
     if (x - x2 == -1 and y - y2 == 0):
         return 'right'
 
-    #to the direct bottom
-    if (x - x2 == 0 and y - y2 == 1):
-        return 'down'
-
     #to the direct top
-    if (x - x2 == 0 and y - y2 == -1):
+    if (x - x2 == 0 and y - y2 == 1):
         return 'up'
+
+    #to the direct bottom
+    if (x - x2 == 0 and y - y2 == -1):
+        return 'down'
 
     #nothing directly beside
     return 0
