@@ -24,6 +24,7 @@ def locate_food(x,y,data,directions, aStar):
 
     shortest_path = None
     directions = []
+    shortest_walls = []
 
     #for each food, get path, use shortest path
     for k in range(len(food)):
@@ -57,9 +58,11 @@ def locate_food(x,y,data,directions, aStar):
         if ((path != None) and ((shortest_path == None) or (len(path) < len(shortest_path)))):
             directions = get_direction(x,y, path[1][0], path[1][1])
             shortest_path = path
+            shortest_walls = walls
 
     if (shortest_path != None):
         print("Path Chosen: " + str(shortest_path))
+        print("Wall in chosen path: " + str(shortest_walls))
         return directions
 
     return None
