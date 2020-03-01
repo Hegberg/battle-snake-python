@@ -46,13 +46,14 @@ def check_snake_collisions(directions, data):
     x = data['you']['body'][0]['x']
     y = data['you']['body'][0]['y']
 
+    print("Amount of opponents: ", len(data['board']['snakes'][j]))
+    
     for j in range(len(data['board']['snakes'])):
         #if snake is self, ignore
         if (data['board']['snakes'][j]['id'] == data['you']['id']):
             continue
 
-        print("Amount of opponents: ", len(data['board']['snakes'][j]))
-        for i in range(len(data['board']['snakes'][j])):
+        for i in range(len(data['board']['snakes'][j]['body'])):
             collision = check_beside_self(x,y,data['board']['snakes'][j]['body'][i]['x'],data['board']['snakes'][j]['body'][i]['y'])
             if (collision != 0 and collision in directions):
                 directions.remove(collision)
