@@ -58,6 +58,7 @@ def move():
     shout = "I am a python snake!"
 
     response = {"move": move, "shout": shout}
+    print("MOVE RESPONSE:", response)
     return HTTPResponse(
         status=200,
         headers={"Content-Type": "application/json"},
