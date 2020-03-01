@@ -15,7 +15,7 @@ def get_move(data):
     if (food_directions != None):
         #if direction of food not in viable direction, remove option
         #need to double check because still grab a food at index of 0 regardless of if in good direction
-        revised_food_directions = food_directions
+        revised_food_directions = []
         for direction in food_directions:
             if (direction in directions):
                 revised_food_directions.append(direction)
