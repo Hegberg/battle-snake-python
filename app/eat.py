@@ -26,7 +26,7 @@ def locate_food(x,y,data,directions, aStar):
     directions = []
 
     #for each food, get path, use shortest path
-    for i in range(len(food)):
+    for k in range(len(food)):
         aStar = AStar()
         
         walls = []
@@ -45,7 +45,7 @@ def locate_food(x,y,data,directions, aStar):
         x = data['you']['body'][0]['x']
         y = data['you']['body'][0]['y']
         current_position = (x, y)
-        goal = (food[i][0], food[i][1])
+        goal = (food[k][0], food[k][1])
         aStar.init_grid(data['board']['width'], data['board']['height'], walls, current_position, goal)  
         
         #set goal to food
