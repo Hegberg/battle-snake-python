@@ -6,6 +6,7 @@ def consumption_choices(data, directions):
 
     if (nearest_food != None):
         #return directions of nearest food
+        print("Direction of closest food: ", nearest_food)
         return nearest_food[0]
 
     return None
