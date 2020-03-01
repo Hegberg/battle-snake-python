@@ -55,7 +55,7 @@ def check_snake_collisions(directions, data):
 
     return directions
 
-def check_beside_self(x,y,x2,x2):
+def check_beside_self(x,y,x2,y2):
     #to the direct left
     if (x - x2 == 1 and y - y2 == 0):
         return 'left'
