@@ -2,6 +2,7 @@
 *.pyc
 *.py~
 *.un~
+*.swp
 .cmd
 .idea
 .vscode
