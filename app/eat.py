@@ -33,11 +33,11 @@ def locate_food(x,y,data,directions, astar):
         #find path, returns list of x,y tuple, starting at head, returns None if no path
         path = aStar.solve()
 
-        if ((path not None) and ((shortest_path is None) or (len(path) < len(shortest_path)))):
+        if ((path != None) and ((shortest_path == None) or (len(path) < len(shortest_path)))):
             directions = get_direction(x,y, path[1][0], path[1][1])
             shortest_path = path
 
-    if (shortest_path not None):
+    if (shortest_path != None):
         return directions
 
     return None
