@@ -12,7 +12,7 @@ def get_move(data):
     walls = []
 
     for i in range(1, len(data['you']['body'])):
-        walls.append((date['you']['body'][i]['x'], date['you']['body'][i]['y']))
+        walls.append((data['you']['body'][i]['x'], data['you']['body'][i]['y']))
 
     for i in range(len(data['board']['snakes'])):
         if (data['board']['snakes'][i]['id'] == data['you']['id']):
