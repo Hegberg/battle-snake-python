@@ -12,7 +12,7 @@ def consumption_choices(data, directions, aStar):
 
     return None
 
-def locate_food(x,y,data,directions, astar):
+def locate_food(x,y,data,directions, aStar):
 
     food = []
     
