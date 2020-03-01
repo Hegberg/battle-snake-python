@@ -10,8 +10,12 @@ def get_move(data):
     
     attack_percentages = attack_choices(data, directions)
 
-    directions = consumption_choices(data, directions)
+    food_directions = consumption_choices(data, directions)
 
+    if (food_directions != None):
+        directions = food_directions
+
+    #no path availabe that won't kill us, so just return any response
     if (len(directions) <= 0):
         directions = ["up", "down", "left", "right"]
 
