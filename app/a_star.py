@@ -20,6 +20,19 @@ class Cell(object):
         self.h = 0
         self.f = 0
 
+    def __lt__(self, other):
+        if (self.f < other.f):
+            return True
+
+        return False
+
+    def __le__(self, other):
+        if (self.f <= other.f):
+            return True
+
+        return False
+
+
 
 class AStar(object):
     def __init__(self):
