@@ -22,7 +22,9 @@ def get_move(data):
                 wall.append((data['board']['snakes'][i]['body'][j]['x'], data['board']['snakes'][i]['body'][j]['y'])
 
     #init astar with new board, set end goal as temp value
-    aStar.init_grid(data['board']['width'], data['board']['height'], walls, (data['you']['body'][0]['x'], data['you']['body'][0]['y']), (0,0))  
+    current_position = (data['you']['body'][0]['x'], data['you']['body'][0]['y'])
+    goal = (0,0)
+    aStar.init_grid(data['board']['width'], data['board']['height'], walls, current_position, goal)  
 
     #directions = ["up", "down", "left", "right"]
     directions = survival_choices(data) #get bad options, remove them from contention
