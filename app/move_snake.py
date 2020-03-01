@@ -1,6 +1,6 @@
 import random
 
-from survive import survival_choices
+from app.survive import survival_choices
 
 def get_move(data):
     #directions = ["up", "down", "left", "right"]
