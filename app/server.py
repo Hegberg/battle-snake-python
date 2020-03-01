@@ -5,7 +5,7 @@ import random
 import bottle
 from bottle import HTTPResponse
 
-from move import get_move
+from move_snake import get_move
 
 
 @bottle.route("/")
