@@ -11,17 +11,17 @@ def survival_choices(data):
 def check_bounds(data):
     directions = ["up", "down", "left", "right"]
     #check if space above us is on board
-    if (data['board']['height'] - data['you']['y'] <= 1):
+    if (data['board']['height'] - data['you']['body'][0]['y'] <= 1):
         directions.remove("up")
 
     #check if not on bottom row
-    if (data['you']['y'] <= 0):
+    if (data['you']['body'][0]['y'] <= 0):
         directions.remove("down")
 
-    if (data['board']['width'] - data['you']['x'] <= 1):
+    if (data['board']['width'] - data['you']['body'][0]['x'] <= 1):
         directions.remove("right")
     
-    if (data['you']['x'] <= 0):
+    if (data['you']['body'][0]['x'] <= 0):
         directions.remove("left")
 
     return directions
