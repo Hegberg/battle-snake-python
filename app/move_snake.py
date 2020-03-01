@@ -22,7 +22,9 @@ def get_move(data):
                 wall.append((data['board']['snakes'][i]['body'][j]['x'], data['board']['snakes'][i]['body'][j]['y'])
 
     #init astar with new board, set end goal as temp value
-    current_position = (data['you']['body'][0]['x'], data['you']['body'][0]['y'])
+    x = data['you']['body'][0]['x']
+    y = data['you']['body'][0]['y']
+    current_position = (x, y)
     goal = (0,0)
     aStar.init_grid(data['board']['width'], data['board']['height'], walls, current_position, goal)  
 
