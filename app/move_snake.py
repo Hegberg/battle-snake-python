@@ -13,10 +13,14 @@ def get_move(data):
     food_directions = consumption_choices(data, directions)
 
     if (food_directions != None):
+        #if direction of food not in viable direction, remove option
         for direction in food_directions:
             if (direction not in directions):
                 food_directions.remove(direction)
-        directions = food_directions
+
+        #if there are resulting options, replace direction list with smaller one
+        if (len(food_directions) > 0):
+            directions = food_directions
 
     #no path availabe that won't kill us, so just return any response
     if (len(directions) <= 0):
