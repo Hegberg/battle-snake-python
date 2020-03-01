@@ -3,14 +3,33 @@ import random
 from app.survive import survival_choices
 from app.attack import attack_choices
 from app.eat import consumption_choices
+from app.a_star import AStar
 
 def get_move(data):
+ 
+    aStar = AStar()
+    
+    walls = []
+
+    for i in range(1, len(data['you']['body'])):
+        wall.append((date['you']['body'][i]['x'], date['you']['body'][i]['y'])
+
+    for i in range(len(data['board']['snakes'])):
+        if (data['board']['snakes'][i]['id'] == data['you']['id']):
+            continue #skip self
+
+            for j in range(len(data['board']['snakes'][i]['body'])):
+                wall.append((data['board']['snakes'][i]['body'][j]['x'], data['board']['snakes'][i]['body'][j]['y'])
+
+    #init astar with new board, set end goal as temp value
+    AStar.init_grid(data['board']['width'], data['board']['height'], walls, (data['you']['body'][0]['x'], data['you']['body'][0]['y']), (0,0))    
+
     #directions = ["up", "down", "left", "right"]
     directions = survival_choices(data) #get bad options, remove them from contention
     
     attack_percentages = attack_choices(data, directions)
 
-    food_directions = consumption_choices(data, directions)
+    food_directions = consumption_choices(data, directions, aStar)
 
     if (food_directions != None):
         #if direction of food not in viable direction, remove option
