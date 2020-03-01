@@ -17,7 +17,7 @@ def locate_food(x,y,data,directions, astar):
     food = []
     
     for i in range(len(data['board']['food'])):
-        food.append(data['board']['food'][i]['x'], data['board']['food'][i]['y'])
+        food.append((data['board']['food'][i]['x'], data['board']['food'][i]['y']))
 
     if (len(food) == 0):
         return None
