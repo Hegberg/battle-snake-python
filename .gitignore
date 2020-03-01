@@ -1,5 +1,7 @@
 *.DS_Store
 *.pyc
+*.py~
+*.un~
 .cmd
 .idea
 .vscode
