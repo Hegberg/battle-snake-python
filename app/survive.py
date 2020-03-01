@@ -3,8 +3,11 @@
 def survival_choices(data):
     directions = check_bounds(data)
 
+    print("Check Bounds After: ", directions)
     directions = check_self_collisions(directions, data)
+    print("Check Self After: ", directions)
     directions = check_snake_collisions(directions, data)
+    print("Check Snakes After: ", directions)
 
     return directions
 
@@ -25,7 +28,7 @@ def check_bounds(data):
     #check if not on left wall
     if (data['you']['body'][0]['x'] <= 0):
         directions.remove("left")
-
+    
     return directions
 
 def check_self_collisions(directions, data):
