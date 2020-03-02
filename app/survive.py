@@ -13,12 +13,12 @@ def survival_choices(data, walls, aStar):
     flood_directions = flood_fill(data, walls, directions)
 
     revised_flood_directions = []
-    if (len(flood_directions) > 0):
-        for direction in flood_directions:
-            if (direction in directions):
-                revised_flood_directions.append(direction)
-
-    return revised_flood_directions
+    for direction in flood_directions:
+        if (direction in directions):
+            revised_flood_directions.append(direction)
+    
+    if (len(revised_flood_directions) > 0):
+        return revised_flood_directions
 
     #check if can follow tail
     tail_direction = tail_path(aStar, data)
