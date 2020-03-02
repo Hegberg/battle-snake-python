@@ -112,22 +112,22 @@ def flood_fill(data, walls, available_directions):
 
     for i in range(len(available_directions)):
         if (available_directions[i] == 'up'):
-            flood_size = flood_fill_recursive(matrix, x, y-1)
+            flood_size = flood_fill_recursive(matrix, x, y-1, 0)
             if (flood_size > len(data['you']['body'])):
                 flood_directions.append('up')
 
         elif (available_directions[i] == 'down'):
-            flood_size = flood_fill_recursive(matrix, x, y+1)
+            flood_size = flood_fill_recursive(matrix, x, y+1, 0)
             if (flood_size > len(data['you']['body'])):
                 flood_directions.append('down')
         
         elif (available_directions[i] == 'left'):
-            flood_size = flood_fill_recursive(matrix, x-1, y)
+            flood_size = flood_fill_recursive(matrix, x-1, y, 0)
             if (flood_size > len(data['you']['body'])):
                 flood_directions.append('left')
 
         elif (available_directions[i] == 'right'):
-            flood_size = flood_fill_recursive(matrix, x+1, y)
+            flood_size = flood_fill_recursive(matrix, x+1, y, 0)
             if (flood_size > len(data['you']['body'])):
                 flood_directions.append('right')
 
@@ -138,15 +138,17 @@ def flood_fill_recursive(matrix, x, y, count):
         matrix[x][y] = 1
 
         if (x > 0):
-            count += flood_fill_recursive(matrix, x-1, y)
+            count += flood_fill_recursive(matrix, x-1, y, count)
         if (x < len(matrix[y])):
-            count += flood_fill_recursive(matrix, x+1, y)
+            count += flood_fill_recursive(matrix, x+1, y, count)
         if (y > 0):
-            count += flood_fill_recursive(matrix, x, y-1)
+            count += flood_fill_recursive(matrix, x, y-1, count)
         if (x < len(matrix)):
-            count += flood_fill_recursive(matrix, x, y+1)
+            count += flood_fill_recursive(matrix, x, y+1, count)
 
-    return count
+        return count
+
+    return 1
 
 def tail_path(aStar, data):
     pass
