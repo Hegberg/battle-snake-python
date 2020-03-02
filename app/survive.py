@@ -106,7 +106,7 @@ def flood_fill(data, walls, available_directions):
     walls.append((x,y))
 
     for i in range(len(walls)):
-        matrix[walls[i][0], walls[i][1]] = 1
+        matrix[walls[i][0]][walls[i][1]] = 1
     
     flood_directions = []
 
