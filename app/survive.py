@@ -155,6 +155,7 @@ def flood_fill(data, walls, available_directions):
 
 def flood_fill_recursive(matrix, x, y, count):
     if (matrix[x][y] == 0):
+        count += 1
         matrix[x][y] = 1
 
         if (x > 0):
@@ -168,7 +169,7 @@ def flood_fill_recursive(matrix, x, y, count):
 
         return count
 
-    return 1
+    return 0
 
 def tail_path(aStar, data):
     pass
