@@ -100,7 +100,7 @@ def flood_fill(data, walls, available_directions):
     matrix = [ [0] * data['board']['height'] ] * data['board']['width']
     
     x = data['you']['body'][0]['x']
-    y = data['you']['body'][0]['y']))
+    y = data['you']['body'][0]['y']
 
     #add head as wall
     walls.append(x,y)
