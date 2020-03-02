@@ -128,28 +128,24 @@ def flood_fill(data, walls, available_directions):
         clean_matrix = matrix
         flood_size = 0
         if (available_directions[i] == 'up'):
-            clean_matrix = matrix
             flood_size = flood_fill_recursive(clean_matrix, x, y-1, flood_size)
             print("Up flood size: ", flood_size)
             if (flood_size > len(data['you']['body'])):
                 flood_directions.append('up')
 
         elif (available_directions[i] == 'down'):
-            clean_matrix = matrix
             flood_size = flood_fill_recursive(clean_matrix, x, y+1, flood_size)
             print("Down flood size: ", flood_size)
             if (flood_size > len(data['you']['body'])):
                 flood_directions.append('down')
         
         elif (available_directions[i] == 'left'):
-            clean_matrix = matrix
             flood_size = flood_fill_recursive(clean_matrix, x-1, y, flood_size)
             print("Left flood size: ", flood_size)
             if (flood_size > len(data['you']['body'])):
                 flood_directions.append('left')
 
         elif (available_directions[i] == 'right'):
-            clean_matrix = matrix
             flood_size = flood_fill_recursive(clean_matrix, x+1, y, flood_size)
             print("Right flood size: ", flood_size)
             if (flood_size > len(data['you']['body'])):
@@ -172,7 +168,7 @@ def flood_fill_recursive(matrix, x, y, count):
             total += flood_fill_recursive(matrix, x, y+1, count)
 
         return total
-
+    return 0
 
 def tail_path(aStar, data):
     pass
