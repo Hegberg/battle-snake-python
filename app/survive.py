@@ -186,9 +186,6 @@ def flood_fill_recursive(matrix, x, y):
         if (y < len(matrix) - 1):
             flood_fill_recursive(matrix, x, y+1)
 
-        return count
-
-    return 0
 
 def tail_path(aStar, data):
     pass
