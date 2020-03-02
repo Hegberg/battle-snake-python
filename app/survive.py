@@ -161,7 +161,7 @@ def flood_fill(data, walls, available_directions):
 
     return flood_directions
 
-def flood_fill_recursive(matrix, x, y):
+def flood_fill_recursive(matrix, x, y, count):
     if (matrix[x][y] == 0):
         count += 1
         matrix[x][y] = 1
