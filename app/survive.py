@@ -100,9 +100,9 @@ def check_beside_self(x,y,x2,y2):
 def flood_fill(data, walls, available_directions):
    
     matrix = []
-    for i in xrange(data['board']['height']):
+    for i in range(data['board']['height']):
         row = []
-        for j in xrange(data['board']['width']):
+        for j in range(data['board']['width']):
             row.append(0)
         matrix.append(row)
 
