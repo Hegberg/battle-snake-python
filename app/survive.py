@@ -16,7 +16,8 @@ def survival_choices(data, walls, aStar):
     for direction in flood_directions:
         if (direction in directions):
             revised_flood_directions.append(direction)
-    
+
+    print("revised flood directions: " + revised_flood_directions)
     if (len(revised_flood_directions) > 0):
         return revised_flood_directions
 
@@ -139,11 +140,11 @@ def flood_fill_recursive(matrix, x, y, count):
 
         if (x > 0):
             count += flood_fill_recursive(matrix, x-1, y, count)
-        if (x < len(matrix[y])):
+        if (x < len(matrix[y]) - 1):
             count += flood_fill_recursive(matrix, x+1, y, count)
         if (y > 0):
             count += flood_fill_recursive(matrix, x, y-1, count)
-        if (x < len(matrix)):
+        if (x < len(matrix) - 1):
             count += flood_fill_recursive(matrix, x, y+1, count)
 
         return count
