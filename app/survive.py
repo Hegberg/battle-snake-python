@@ -1,6 +1,6 @@
 
 
-def survival_choices(data):
+def survival_choices(data, walls, aStar):
     directions = check_bounds(data)
 
     print("Check Bounds After: ", directions)
@@ -8,6 +8,22 @@ def survival_choices(data):
     print("Check Self After: ", directions)
     directions = check_snake_collisions(directions, data)
     print("Check Snakes After: ", directions)
+
+    #check flood fill to see if space
+    flood_directions = flood_fill(data, walls, directions)
+
+    revised_flood_directions = []
+    if (len(flood_directions) > 0):
+        for direction in flood_directions:
+            if (direction in directions):
+                revised_flood_directions.append(direction)
+
+    return revised_flood_directions
+
+    #check if can follow tail
+    tail_direction = tail_path(aStar, data)
+
+    #avoid being cut off
 
     return directions
 
@@ -79,3 +95,58 @@ def check_beside_self(x,y,x2,y2):
 
     #nothing directly beside
     return 0
+
+def flood_fill(data, walls, available_directions):
+    matrix = [ [0] * data['board']['height'] ] * data['board']['width']
+    
+    x = data['you']['body'][0]['x']
+    y = data['you']['body'][0]['y']))
+
+    #add head as wall
+    walls.append(x,y)
+
+    for i in range(len(walls)):
+        matrix[walls[i][0], walls[i][1]] = 1
+    
+    flood_directions = []
+
+    for i in range(len(directions)):
+        if (directions[i] == 'up'):
+            flood_size = flood_fill_recursive(matrix, x, y-1)
+            if (flood_size > len(data['you']['body'])):
+                flood_directions.append('up')
+
+        elif (directions[i] == 'down'):
+            flood_size = flood_fill_recursive(matrix, x, y+1)
+            if (flood_size > len(data['you']['body'])):
+                flood_directions.append('down')
+        
+        elif (directions[i] == 'left'):
+            flood_size = flood_fill_recursive(matrix, x-1, y)
+            if (flood_size > len(data['you']['body'])):
+                flood_directions.append('left')
+
+        elif (directions[i] == 'right'):
+            flood_size = flood_fill_recursive(matrix, x+1, y)
+            if (flood_size > len(data['you']['body'])):
+                flood_directions.append('right')
+
+    return flood_directions
+
+def flood_fill_recursive(matrix, x, y, count):
+    if (matrix[x][y] == 0):
+        matrix[x][y] = 1
+
+        if (x > 0):
+            count += flood_fill_recursive(matrix, x-1, y)
+        if (x < len(matrix[y])):
+            count += flood_fill_recursive(matrix, x+1, y)
+        if (y > 0):
+            count += flood_fill_recursive(matrix, x, y-1)
+        if (x < len(matrix)):
+            count += flood_fill_recursive(matrix, x, y+1)
+
+    return count
+
+def tail_path(aStar, data):
+    pass

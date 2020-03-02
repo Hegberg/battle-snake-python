@@ -3,6 +3,7 @@ import random
 from app.survive import survival_choices
 from app.attack import attack_choices
 from app.eat import consumption_choices
+from app.eat import get_direction
 from app.a_star import AStar
 
 def get_move(data):
@@ -19,6 +20,11 @@ def get_move(data):
             continue #skip self
 
         for j in range(len(data['board']['snakes'][i]['body'])):
+            #if tail, don't count as wall
+            #need to check if eating, will do later
+            if (j == len(data['board']['snakes'][i]['body']) - 1):
+                continue
+
             walls.append((data['board']['snakes'][i]['body'][j]['x'], data['board']['snakes'][i]['body'][j]['y']))
 
     #print("Obstacles in board: " + str(walls))
@@ -31,7 +37,7 @@ def get_move(data):
     aStar.init_grid(data['board']['width'], data['board']['height'], walls, current_position, goal)  
 
     #directions = ["up", "down", "left", "right"]
-    directions = survival_choices(data) #get bad options, remove them from contention
+    directions = survival_choices(data, walls, aStar) #get bad options, remove them from contention
     
     attack_percentages = attack_choices(data, directions)
 
@@ -58,3 +64,13 @@ def get_move(data):
 
     direction = random.choice(directions)
     return direction
+
+#need to finish later
+def check_if_growing(data, snake_id):
+    food = [] 
+    for i in range(len(data['board']['food'])):
+        food.append((data['board']['food'][i]['x'], data['board']['food'][i]['y']))
+    return        
+
+
+    
