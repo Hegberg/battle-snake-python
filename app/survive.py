@@ -112,7 +112,7 @@ def flood_fill(data, walls, available_directions):
     flood_directions = []
 
     for i in range(len(matrix)):
-        print("Flood Matrix " + i + ": " + str(matrix[i]))
+        print("Flood Matrix " + str(i) + ": " + str(matrix[i]))
     
 
     for i in range(len(available_directions)):
