@@ -71,6 +71,12 @@ def check_snake_collisions(directions, data):
             continue
 
         for i in range(len(data['board']['snakes'][j]['body'])):
+            
+            #if tail, don't count as bad space
+            #need to check if eating, will do later
+            if (i == len(data['board']['snakes'][j]['body']) - 1):
+                continue
+
             collision = check_beside_self(x,y,data['board']['snakes'][j]['body'][i]['x'],data['board']['snakes'][j]['body'][i]['y'])
             if (collision != 0 and collision in directions):
                 directions.remove(collision)
@@ -99,31 +105,8 @@ def check_beside_self(x,y,x2,y2):
 
 def flood_fill(data, walls, available_directions):
    
-    matrix = []
-    for i in range(data['board']['width']):
-        row = []
-        for j in range(data['board']['height']):
-            row.append(0)
-        matrix.append(row)
-
-    x = data['you']['body'][0]['x']
-    y = data['you']['body'][0]['y']
-
-    #add head as wall
-    walls.append((x,y))
-
-    print("Walls: " + str(walls))
-
-    for i in range(len(walls)):
-        #access by column, row
-        matrix[walls[i][0]][walls[i][1]] = 1
-
     flood_directions = []
 
-    for i in range(len(matrix)):
-        print("Flood Matrix " + str(i) + ": " + str(matrix[i]))
-    
-    
     for i in range(len(available_directions)):
         matrix = []
         for j in range(data['board']['width']):
