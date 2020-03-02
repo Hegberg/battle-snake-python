@@ -53,6 +53,10 @@ def check_self_collisions(directions, data):
     y = data['you']['body'][0]['y']
 
     for i in range(1, len(data['you']['body'])):
+        #if own tail, ignore
+        if (i == len(data['you']['body']) - 1):
+            continue
+
         collision = check_beside_self(x,y,data['you']['body'][i]['x'],data['you']['body'][i]['y'])
         if (collision != 0 and collision in directions):
             directions.remove(collision)
