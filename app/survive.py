@@ -154,9 +154,9 @@ def flood_fill(data, walls, available_directions):
     return flood_directions
 
 def flood_fill_recursive(matrix, x, y, count):
-    if (matrix[x][y] == 0):
+    if (matrix[y][x] == 0):
         count += 1
-        matrix[x][y] = 1
+        matrix[y][x] = 1
 
         if (x > 0):
             count += flood_fill_recursive(matrix, x-1, y, count)
