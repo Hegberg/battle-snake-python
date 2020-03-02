@@ -103,7 +103,7 @@ def flood_fill(data, walls, available_directions):
     y = data['you']['body'][0]['y']
 
     #add head as wall
-    walls.append(x,y)
+    walls.append((x,y))
 
     for i in range(len(walls)):
         matrix[walls[i][0], walls[i][1]] = 1
