@@ -17,7 +17,7 @@ def survival_choices(data, walls, aStar):
         if (direction in directions):
             revised_flood_directions.append(direction)
 
-    print("revised flood directions: " + revised_flood_directions)
+    print("revised flood directions: " + str(revised_flood_directions))
     if (len(revised_flood_directions) > 0):
         return revised_flood_directions
 
