@@ -144,7 +144,7 @@ def flood_fill_recursive(matrix, x, y, count):
             count += flood_fill_recursive(matrix, x+1, y, count)
         if (y > 0):
             count += flood_fill_recursive(matrix, x, y-1, count)
-        if (x < len(matrix) - 1):
+        if (y < len(matrix) - 1):
             count += flood_fill_recursive(matrix, x, y+1, count)
 
         return count
