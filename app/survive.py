@@ -115,7 +115,8 @@ def flood_fill(data, walls, available_directions):
     print("Walls: " + str(walls))
 
     for i in range(len(walls)):
-        matrix[walls[i][0]][walls[i][1]] = 1
+        #access by column, row
+        matrix[walls[i][1]][walls[i][0]] = 1
 
     flood_directions = []
 
