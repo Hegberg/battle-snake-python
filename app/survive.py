@@ -129,21 +129,21 @@ def flood_fill(data, walls, available_directions):
         flood_size = 0
         if (available_directions[i] == 'up'):
             clean_matrix = matrix
-            fflood_size = lood_fill_recursive(clean_matrix, x, y-1, flood_size)
+            flood_size = flood_fill_recursive(clean_matrix, x, y-1, flood_size)
             print("Up flood size: ", flood_size)
             if (flood_size > len(data['you']['body'])):
                 flood_directions.append('up')
 
         elif (available_directions[i] == 'down'):
             clean_matrix = matrix
-            fflood_size = lood_fill_recursive(clean_matrix, x, y+1, flood_size)
+            flood_size = flood_fill_recursive(clean_matrix, x, y+1, flood_size)
             print("Down flood size: ", flood_size)
             if (flood_size > len(data['you']['body'])):
                 flood_directions.append('down')
         
         elif (available_directions[i] == 'left'):
             clean_matrix = matrix
-            fflood_size = lood_fill_recursive(clean_matrix, x-1, y, flood_size)
+            flood_size = flood_fill_recursive(clean_matrix, x-1, y, flood_size)
             print("Left flood size: ", flood_size)
             if (flood_size > len(data['you']['body'])):
                 flood_directions.append('left')
