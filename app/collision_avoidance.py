@@ -74,7 +74,7 @@ def avoid_death_collisions(data, walls, survival_directions):
     print("Collision directions after removing collisions: " + str(directions))
 
     #if no directions without collision, choose collision with least number
-    if (len(directions) == 0):
+    if (len(directions) == 0 and len(collision_spots) > 0):
         min_value = min(collision_spots.keys(), key=(lambda k: collision_spots[k]))
         directions.append(min_value)
         print("Collision directions after adding min collision: " + str(directions))
