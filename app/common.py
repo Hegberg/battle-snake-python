@@ -34,6 +34,18 @@ def get_direction(x,y,x2,y2):
 
     return directions
 
+def get_location_from_direction(direction, x, y):
+    if (direction == 'up'):
+        return (x,y-1)
+    if (direction == 'down'):
+        return (x,y+1)
+    if (direction == 'left'):
+        return (x-1,y)
+    if (direction == 'right'):
+        return (x+1,y)
+
+    return None
+
 def add_to_dict(x, y, dict):
     if (not (x,y) in dict):
         dict[(x,y)] = 1
@@ -73,4 +85,14 @@ def check_if_path_in_between_walls(data, path, walls):
             #path in between 2 opposing walls
             return True
 
+    return False
+
+def determine_if__snake_growing(data, snake_index):
+    if (len(data['board']['snakes'][index]) > 2):
+        t1_x = data['board']['snakes'][index][len(data['board']['snakes'][index]) - 1]['x']
+        t1_y = data['board']['snakes'][index][len(data['board']['snakes'][index]) - 1]['y']
+        t2_x = data['board']['snakes'][index][len(data['board']['snakes'][index]) - 2]['x']
+        t2_y = data['board']['snakes'][index][len(data['board']['snakes'][index]) - 2]['y']
+        if (t1_x == t2_x and t1_y == t2_y):
+            return True
     return False

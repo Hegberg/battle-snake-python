@@ -2,9 +2,11 @@ import random
 
 from app.survive import survival_choices
 from app.survive import flood_fill
-from app.survive import find_tail_path
+from app.survive import find_own_tail_path
+from app.survive import find_other_snake_tail_path
 
-from app.attack import attack_choices
+from app.attack import attack_chase
+from app.attack import attack_cutoff
 
 from app.eat import consumption_choices
 from app.eat import get_direction
@@ -33,8 +35,8 @@ def get_move(data):
     consumption_directions = directions1_in_directions2(food_directions, survival_directions) 
     print("Food move after survival direction clear: ", consumption_directions)
 
-    #meme unitl do something with it, just returns 0
-    attack_percentages = attack_choices(data, survival_directions)
+    #check to see if can attack snake
+    attack_directions = get_attack_directions(data, aStar, walls, survival_directions)
 
     #if viable path to tail, and a viable path to food, see if viable path from head -> food -> tail
     food_tail_directions = None
@@ -42,7 +44,7 @@ def get_move(data):
         food_tail_directions = head_to_food_to_tail_direction(data, aStar, nearest_food, survival_directions)
     
 
-    """priority, survive, avoid_collisions, space, food
+    """priority, survive, avoid_collisions, space, attack, food
     all directions already filtered thorugh survival directions
     need to check if food fits in space,
     than space fits in avoid collisions
@@ -54,8 +56,16 @@ def get_move(data):
     #temp until add collision avoidance
     no_head_collisions_directions = avoid_death_collisions(data, walls, survival_directions)
 
-    final_directions = get_directions_through_food_space_collision(consumption_directions, 
+    #if can attack, set as preffered actions
+    if (len(attack_directions) > 0):
+        preferred_directions = attack_directions
+
+    #if no viable attack, try to eat
+    else:
+        preferred_directions = get_directions_through_food_space_collision(consumption_directions, 
                                     spacing_directions, no_head_collisions_directions, survival_directions, food_tail_directions)
+
+    final_directions = get_directions_with_space_and_collision_merge(preferred_directions, spacing_directions, no_head_collisions_directions, survival_directions)
 
     #no path availabe that won't kill us, so just return any response
     if (len(final_directions) <= 0 and len(survival_directions) > 0):
@@ -63,8 +73,49 @@ def get_move(data):
     elif(len(final_directions) <= 0):
         final_directions = ["up", "down", "left", "right"]
 
+    print("Final Directions: " + str(final_directions))
+
     direction = random.choice(final_directions)
     return direction
+
+def get_attack_directions(data, aStar, walls, survival_directions):
+    attack_directions = []
+
+    #if can cutoff opposing snake
+    attack_cutoff_directions = attack_cutoff(data, aStar, walls, survival_directions)
+
+    #add cutoof directions
+    for direction in attack_cutoff_directions:
+        if (direction in survival_directions):
+            attack_directions.append(direction)
+
+    #if can cutoff opposing snake, do it
+    if (len(attack_directions) > 0):
+        return attack_directions
+
+    #if largest snake by 2, and hunger > 50 (0-100)
+    required_size_difference = 1
+
+    snake_size_larger = True
+    #for all snakes, if smaller than any, eat instead
+    for i in range(len(data['board']['snakes'])):
+        if (data['board']['snakes'][i]['id'] == data['you']['id']):
+            continue #skip self
+
+        if (len(data['you']['body']) < len(data['board']['snakes'][i]['body']) + required_size_difference):
+            snake_size_larger = False
+
+    attack_chase_directions = []
+    if (snake_size_larger and data['you']['health'] >= 50):
+        #if can close distance to opponent head
+        attack_chase_directions = attack_chase(data, aStar, survival_directions)
+
+    #add chase directions
+    for direction in attack_chase_directions:
+        if (direction in survival_directions):
+            attack_directions.append(direction)
+
+    return attack_directions
 
 def determine_if_growing(data):
     if (len(data['you']['body']) > 2):
@@ -79,12 +130,20 @@ def determine_if_growing(data):
 def get_spacing_directions(data, aStar, walls, survival_directions, growing):
     flood_directions, can_follow_flood = flood_fill(data, walls, survival_directions)
 
-    tail_directions = find_tail_path(aStar, data, growing)
+    tail_directions = find_own_tail_path(aStar, data, growing)
+
+    other_snake_tail_directions = find_other_snake_tail_path(data, aStar, walls)
 
     can_follow_tail = False
+    can_follow_other_snake_tail = False
+
     #viable path to tail found
     if (tail_directions != None):
         can_follow_tail = True
+
+    #viable path to other snake tail found
+    if (tail_directions != None):
+        can_follow_other_snake_tail = True
 
     spacing_directions = []
     #large enough area to go into, add direction to spacing directions
@@ -100,9 +159,16 @@ def get_spacing_directions(data, aStar, walls, survival_directions, growing):
             if (direction in survival_directions and not(direction in spacing_directions)):
                 spacing_directions.append(direction)
         print("Head->Food->Tail and Flood after survival direction clear: ", spacing_directions)
+    
+    #if can follow opponent tail, add direction to spacing directions
+    if (can_follow_other_snake_tail):
+        for direction in other_snake_tail_directions:
+            if (direction in survival_directions and not(direction in spacing_directions)):
+                spacing_directions.append(direction)
+        print("Other snake tail follow and spacing after survival direction clear: ", spacing_directions)
 
-    #if can't follow tail, and no area large enough, go with largest area
-    if (not can_follow_flood and not can_follow_tail):
+    #if can't follow tail, and no area large enough, and can't follow opponent tail, go with largest area
+    if (not can_follow_flood and not can_follow_tail and not can_follow_other_snake_tail):
         for direction in flood_directions:
             if (direction in survival_directions):
                 spacing_directions.append(direction)
@@ -124,10 +190,14 @@ def get_directions_through_food_space_collision(consumption_directions, spacing_
 
     print("Directions after space and food merge: " + str(spacing_and_consumption_directions))
 
+    return spacing_and_consumption_directions
+
+def get_directions_with_space_and_collision_merge(preferred_directions, spacing_directions, no_head_collisions_directions, survival_directions)
+
     no_head_collision_and_spacing_directions = []
     #spacing directions viable after taking into account collisions
-    if (len(spacing_and_consumption_directions) > 0):
-        no_head_collision_and_spacing_directions = directions1_in_directions2(spacing_and_consumption_directions, no_head_collisions_directions)
+    if (len(preferred_directions) > 0):
+        no_head_collision_and_spacing_directions = directions1_in_directions2(preferred_directions, no_head_collisions_directions)
         print("Directions after collision and space merge 1 : " + str(no_head_collision_and_spacing_directions))
     
     #if no viable spaces that give good space and avoid head on collisions, avoid head collisions first

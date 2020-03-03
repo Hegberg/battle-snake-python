@@ -1,4 +1,5 @@
 from app.common import get_direction
+from app.common import determine_if__snake_growing
 from app.a_star import init_astar
 
 def survival_choices(data, walls, aStar):
@@ -192,7 +193,7 @@ def flood_fill_recursive(matrix, x, y):
         return matrix
     return matrix
 
-def find_tail_path(aStar, data, growing):
+def find_own_tail_path(aStar, data, growing):
     #reset grid to have tail space as goal
     tail_x = data['you']['body'][len(data['you']['body']) - 1]['x']
     tail_y = data['you']['body'][len(data['you']['body']) - 1]['y']
@@ -222,5 +223,50 @@ def find_tail_path(aStar, data, growing):
         return directions
 
     print("No path to tail")
+
+    return None
+
+def find_other_snake_tail_path(data, aStar, walls):
+    shortest_path = None
+    snake_following_name = ''
+    #reset grid to have tail space as goal
+    for i in range(len(data['board']['snakes'])):
+        if (data['board']['snakes'][i]['id'] == data['you']['id']):
+            continue #skip self
+
+        tail_x = data['board']['snakes'][i]['body'][len(data['board']['snakes'][i]['body']) - 1]['x']
+        tail_y = data['board']['snakes'][i]['body'][len(data['board']['snakes'][i]['body']) - 1]['y']
+
+        #if head and tail are the same space, ie starting turn
+        if ((tail_x == data['board']['snakes'][i]['body'][0]['x']) and (tail_y == data['board']['snakes'][i]['body'][0]['y'])):
+            directions = []
+            print("Tail and head of snake " + str(data['board']['snakes'][i]['name']) + " are on the same tile: " + str(tail_x) + " " + str(tail_y))
+            return directions
+
+        growing = determine_if__snake_growing(data, i)
+
+        #if growing, need to find path to space before tail and solid tail
+        if (growing):
+            new_aStar, walls = init_astar(data, False, False, i)
+            new_aStar.set_ending_for_init_grid((tail_x, tail_y))
+            path = new_aStar.solve()
+        else:
+            aStar.reset_grid((tail_x, tail_y))
+            path = aStar.solve()
+
+        if (path != None and (shortest_path == None or len(path) < len(shortest_path))):
+            shortest_path = path
+            snake_following_name = str(data['board']['snakes'][i]['name'])
+
+
+    if (shortest_path != None):
+        directions = get_direction(data['you']['body'][0]['x'],data['you']['body'][0]['y'], 
+                                    path[1][0], path[1][1])
+
+        print("Path to snake " + snake_following_name + " tail direction = " + str(directions))
+
+        return directions
+
+    print("No path to snake opposing snakes tails")
 
     return None

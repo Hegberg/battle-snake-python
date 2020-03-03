@@ -177,7 +177,7 @@ class AStar(object):
                         heapq.heappush(self.opened, (adj_cell.f, adj_cell))
 
 
-def init_astar(data, with_own_head_blocking = False, growing = False):
+def init_astar(data, with_own_head_blocking = False, growing = False, snake_growing_index = -1):
     aStar = AStar()
     
     walls = []
@@ -204,6 +204,10 @@ def init_astar(data, with_own_head_blocking = False, growing = False):
         for j in range(len(data['board']['snakes'][i]['body'])):
             #if tail, don't count as wall
             if (j == len(data['board']['snakes'][i]['body']) - 1):
+                continue
+
+            #ignore snake grown tail
+            if ((snake_growing_index == i) and j == len(data['you']['body']) - 2):
                 continue
 
             walls.append((data['board']['snakes'][i]['body'][j]['x'], data['board']['snakes'][i]['body'][j]['y']))
