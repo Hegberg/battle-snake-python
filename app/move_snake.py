@@ -192,7 +192,7 @@ def get_directions_through_food_space_collision(consumption_directions, spacing_
 
     return spacing_and_consumption_directions
 
-def get_directions_with_space_and_collision_merge(preferred_directions, spacing_directions, no_head_collisions_directions, survival_directions)
+def get_directions_with_space_and_collision_merge(preferred_directions, spacing_directions, no_head_collisions_directions, survival_directions):
 
     no_head_collision_and_spacing_directions = []
     #spacing directions viable after taking into account collisions
