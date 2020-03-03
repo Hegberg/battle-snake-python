@@ -94,11 +94,11 @@ def get_directions_through_food_space_collision(consumption_directions, spacing_
     #just need to use blank state of directions, try to fill in with useful ones
     spacing_and_consumption_directions = []
     #if space and consumptions possibilities, try to mix
-    if (len(spacing_directions) > 0 and len(consumption_directions) > 0):
+    if (spacing_directions != None and len(spacing_directions) > 0 and consumption_directions != None and len(consumption_directions) > 0):
         #get spacing and food mix, if not possible just returns space directions
         spacing_and_consumption_directions = get_spacing_and_consumption_directions(consumption_directions, spacing_directions, food_tail_directions)
     #else check if spacing options exist, and just use those
-    elif(len(spacing_directions) > 0):
+    elif(spacing_directions != None and len(spacing_directions) > 0):
         spacing_and_consumption_directions = spacing_directions
 
     print("Directions after space and food merge: " + str(spacing_and_consumption_directions))
