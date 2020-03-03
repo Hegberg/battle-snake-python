@@ -84,7 +84,7 @@ def get_spacing_directions(data, aStar, walls, survival_directions):
     #can follow tail, add direction to spacing directions
     if (can_follow_tail):
         for direction in tail_directions:
-            if (direction in survival_directions):
+            if (direction in survival_directions and not direction in spacing_directions):
                 spacing_directions.append(direction)
     print("Head->Food->Tail and Flood after survival direction clear: ", spacing_directions)
 
@@ -152,9 +152,11 @@ def head_to_food_to_tail_direction(data, aStar, nearest_food, survival_direction
         tail_x = data['you']['body'][len(data['you']['body']) - 1]['x']
         tail_y = data['you']['body'][len(data['you']['body']) - 1]['y']
 
-        aStar.reset_grid_and_start((nearest_food[0], nearest_food[1]), (tail_x, tail_y))
+        head_blocking_aStar = init_astar(data, True)
 
-        to_tail_path = aStar.solve()
+        head_blocking_aStar.reset_grid_and_start((nearest_food[0], nearest_food[1]), (tail_x, tail_y))
+
+        to_tail_path = head_blocking_aStar.solve()
 
         if (to_tail_path != None):
             path_directions = get_direction(you_x, you_y, to_food_path[1][0], to_food_path[1][1])
@@ -171,12 +173,16 @@ def head_to_food_to_tail_direction(data, aStar, nearest_food, survival_direction
 
     return None
 
-def init_astar(data):
+def init_astar(data, with_own_head_blocking = False):
     aStar = AStar()
     
     walls = []
 
-    for i in range(1, len(data['you']['body'])):
+    start_point = 1
+    if (with_own_head_blocking):
+        start_point = 0
+
+    for i in range(start_point, len(data['you']['body'])):
         #ignore own tail
         if (i == len(data['you']['body']) - 1):
             continue
