@@ -1,5 +1,6 @@
 from app.common import get_location_from_direction
 from app.common import get_direction
+from app.common import check_if_path_in_between_walls
 
 def attack_chase(data, aStar, walls, survival_directions):
     chase_directions = []
