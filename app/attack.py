@@ -62,7 +62,7 @@ def get_collide_directions(data, walls, survival_directions):
     #get locations you can move to
     you_locations = []
     for i in range(len(survival_directions)):
-        you_locations.append(get_location_from_direction(survival_directions[i]))
+        you_locations.append(get_location_from_direction(survival_directions[i], data['you']['body'][0]['x'], data['you']['body'][0]['y']))
 
     collide_directions =[]
 
