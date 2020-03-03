@@ -152,7 +152,7 @@ def head_to_food_to_tail_direction(data, aStar, nearest_food, survival_direction
         tail_x = data['you']['body'][len(data['you']['body']) - 1]['x']
         tail_y = data['you']['body'][len(data['you']['body']) - 1]['y']
 
-        head_blocking_aStar = init_astar(data, True)
+        head_blocking_aStar, new_walls = init_astar(data, True)
 
         head_blocking_aStar.reset_grid_and_start((nearest_food[0], nearest_food[1]), (tail_x, tail_y))
 
