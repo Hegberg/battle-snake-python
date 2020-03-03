@@ -28,7 +28,7 @@ def get_move(data):
     #check spacing
     spacing_directions, can_follow_tail = get_spacing_directions(data, aStar, walls, survival_directions, growing)
 
-    food_directions, nearest_food = consumption_choices(data, survival_directions, aStar)
+    food_directions, nearest_food = consumption_choices(data, survival_directions, aStar, walls)
 
     consumption_directions = directions1_in_directions2(food_directions, survival_directions) 
     print("Food move after survival direction clear: ", consumption_directions)

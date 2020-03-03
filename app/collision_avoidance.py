@@ -1,4 +1,4 @@
-
+from app.common import add_to_dict
 
 def avoid_death_collisions(data, walls, survival_directions):
     #get list of heads of other snakes that are equal or larger to me in size
@@ -87,9 +87,3 @@ def avoid_death_collisions(data, walls, survival_directions):
         print("Collision directions after adding min collision: " + str(directions))
 
     return directions
-
-def add_to_dict(x, y, dict):
-    if (not (x,y) in dict):
-        dict[(x,y)] = 1
-    else:
-        dict[(x,y)] += 1
