@@ -1,6 +1,6 @@
 # Python Battle Snake
 
-A Custom battle snake using python using a starter python snake as the base snake.
+A Custom battle snake built with python using a starter python snake as the base snake.
 
 ## Base Snake Readme Below
 
