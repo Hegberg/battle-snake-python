@@ -44,8 +44,10 @@ def add_to_dict(x, y, dict):
 def check_if_path_in_between_walls(data, path, walls):
     additional_walls = walls[:]
 
-    #remove head from single lane wall check
-    additional_walls.remove((data['you']['body'][0]['x'], data['you']['body'][0]['y']))
+    for i in range(len(data['you']['body'])):
+        #remove own body from single lane wall check
+        additional_walls.remove((data['you']['body'][i]['x'], data['you']['body'][i]['y']))
+
     #add border to walls
     for i in range(data['board']['width']):
         additional_walls.append((i, -1))
@@ -55,8 +57,7 @@ def check_if_path_in_between_walls(data, path, walls):
         additional_walls.append((-1, i))
         additional_walls.append((data['board']['width'], i))
 
-
-    for i in range(0, len(path)):
+    for i in range(1, len(path)):
         adjacent_x_axis_walls = 0
         adjacent_y_axis_walls = 0
         if ((path[i][0] + 1, path[i][1]) in additional_walls):
