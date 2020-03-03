@@ -206,12 +206,12 @@ def find_tail_path(aStar, data, growing):
     #if growing, need to find path to space before tail and solid tail
     if (growing):
         new_aStar, walls = init_astar(data, False, True)
-        set_ending_for_init_grid((tail_x, tail_y))
+        new_aStar.set_ending_for_init_grid((tail_x, tail_y))
         path = new_aStar.solve()
     else:
         aStar.reset_grid((tail_x, tail_y))
         path = aStar.solve()
-    
+
 
     if (path != None):
         directions = get_direction(data['you']['body'][0]['x'],data['you']['body'][0]['y'], 
