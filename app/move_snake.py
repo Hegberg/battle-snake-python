@@ -23,7 +23,7 @@ def get_move(data):
     survival_directions = survival_choices(data, walls, aStar) #get bad options, remove them from contention
 
     #check spacing
-    spacing_directions = get_spacing_directions(data, aStar, walls, survival_directions)
+    spacing_directions, can_follow_tail = get_spacing_directions(data, aStar, walls, survival_directions)
 
     food_directions, nearest_food = consumption_choices(data, survival_directions, aStar)
 
@@ -88,7 +88,7 @@ def get_spacing_directions(data, aStar, walls, survival_directions):
                 spacing_directions.append(direction)
     print("Head->Food->Tail and Flood after survival direction clear: ", spacing_directions)
 
-    return spacing_directions
+    return spacing_directions, can_follow_tail
 
 def get_directions_through_food_space_collision(consumption_directions, spacing_directions, no_head_collisions_directions):
     #just need to use blank state of directions, try to fill in with useful ones
