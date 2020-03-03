@@ -38,10 +38,11 @@ def locate_food(x,y,data,directions, aStar, walls):
         path = aStar.solve()
 
         #check if path goes through single lane, if so mark as bad and None
-        single_lane = check_if_path_in_between_walls(data, path, walls)
-        if (single_lane):
-            print("Path is between walls, ignore it: " + str(path))
-            path = None
+        if (path != None):
+            single_lane = check_if_path_in_between_walls(data, path, walls)
+            if (single_lane):
+                print("Path is between walls, ignore it: " + str(path))
+                path = None
 
         #if path is good and is horter than other food paths, choose
         if ((path != None) and ((shortest_path == None) or (len(path) < len(shortest_path)))):

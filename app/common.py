@@ -42,17 +42,27 @@ def add_to_dict(x, y, dict):
 
 #return true if path stuck between 2 walls
 def check_if_path_in_between_walls(data, path, walls):
+    additional_walls = walls[:]
+    #add border to walls
+    for i in range(data['board']['width']):
+        additional_walls.append((i, -1))
+        additional_walls.append((i, data['board']['height']))
+    
+    for i in range(data['board']['height']):
+        additional_walls.append((-1, i))
+        additional_walls.append((data['board']['width'], i))
+
 
     for i in range(0, len(path)):
         adjacent_x_axis_walls = 0
         adjacent_y_axis_walls = 0
-        if ((path[i][0] + 1, path[i][1]) in walls):
+        if ((path[i][0] + 1, path[i][1]) in additional_walls):
             adjacent_x_axis_walls += 1
-        if ((path[i][0] - 1, path[i][1]) in walls):
+        if ((path[i][0] - 1, path[i][1]) in additional_walls):
             adjacent_x_axis_walls += 1
-        if ((path[i][0], path[i][1] + 1) in walls):
+        if ((path[i][0], path[i][1] + 1) in additional_walls):
             adjacent_y_axis_walls += 1
-        if ((path[i][0], path[i][1] - 1) in walls):
+        if ((path[i][0], path[i][1] - 1) in additional_walls):
             adjacent_y_axis_walls += 1
 
         if (adjacent_x_axis_walls >= 2 or adjacent_y_axis_walls >= 2):
