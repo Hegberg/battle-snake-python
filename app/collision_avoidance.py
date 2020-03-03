@@ -67,9 +67,11 @@ def avoid_death_collisions(data, walls, survival_directions):
     #leave directions with no collision
     #if all collision, choose area with best chance of getting out
     directions = survival_directions
-    for i in range(len(survival_directions)):
-        if survival_directions[i] in collision_spots:
-            directions.remove(survival_directions[i])
+    for i in range(len(directions)):
+        for j in range(len(survival_directions)):
+            if survival_directions[j] in collision_spots:
+                directions.remove(survival_directions[j])
+                break
 
     print("Collision directions after removing collisions: " + str(directions))
 
