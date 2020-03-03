@@ -83,7 +83,7 @@ class AStar(object):
 
     def reset_grid_and_start(self, start, end):
         """Reset grid cells and set new goal and start location"""
-        reset_grid(end)
+        self.reset_grid(end)
         self.start = self.get_cell(*start)
 
     def get_heuristic(self, cell):
