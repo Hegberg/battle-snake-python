@@ -88,11 +88,11 @@ def check_if_path_in_between_walls(data, path, walls):
     return False
 
 def determine_if__snake_growing(data, snake_index):
-    if (len(data['board']['snakes'][index]) > 2):
-        t1_x = data['board']['snakes'][index][len(data['board']['snakes'][index]) - 1]['x']
-        t1_y = data['board']['snakes'][index][len(data['board']['snakes'][index]) - 1]['y']
-        t2_x = data['board']['snakes'][index][len(data['board']['snakes'][index]) - 2]['x']
-        t2_y = data['board']['snakes'][index][len(data['board']['snakes'][index]) - 2]['y']
+    if (len(data['board']['snakes'][snake_index]) > 2):
+        t1_x = data['board']['snakes'][snake_index][len(data['board']['snakes'][snake_index]) - 1]['x']
+        t1_y = data['board']['snakes'][snake_index][len(data['board']['snakes'][snake_index]) - 1]['y']
+        t2_x = data['board']['snakes'][snake_index][len(data['board']['snakes'][snake_index]) - 2]['x']
+        t2_y = data['board']['snakes'][snake_index][len(data['board']['snakes'][snake_index]) - 2]['y']
         if (t1_x == t2_x and t1_y == t2_y):
             return True
     return False
