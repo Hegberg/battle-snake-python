@@ -46,13 +46,13 @@ def check_if_path_in_between_walls(data, path, walls):
     for i in range(0, len(path)):
         adjacent_x_axis_walls = 0
         adjacent_y_axis_walls = 0
-        if ((path[0] + 1, path[1]) in walls):
+        if ((path[i][0] + 1, path[i][1]) in walls):
             adjacent_x_axis_walls += 1
-        if ((path[0] - 1, path[1]) in walls):
+        if ((path[i][0] - 1, path[i][1]) in walls):
             adjacent_x_axis_walls += 1
-        if ((path[0], path[1] + 1) in walls):
+        if ((path[i][0], path[i][1] + 1) in walls):
             adjacent_y_axis_walls += 1
-        if ((path[0], path[1] - 1) in walls):
+        if ((path[i][0], path[i][1] - 1) in walls):
             adjacent_y_axis_walls += 1
 
         if (adjacent_x_axis_walls >= 2 or adjacent_y_axis_walls >= 2):
