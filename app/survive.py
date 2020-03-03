@@ -194,6 +194,12 @@ def find_tail_path(aStar, data):
     #reset grid to have tail space as goal
     tail_x = data['you']['body'][len(data['you']['body']) - 1]['x']
     tail_y = data['you']['body'][len(data['you']['body']) - 1]['y']
+
+    #if head and tail are the same space, ie starting turn
+    if (tail_x == data['you']['body'][0]['x'] and tail_y == data['you']['body'][0]['y']):
+        directions = []
+        return directions
+
     aStar.reset_grid((tail_x, tail_y))
 
     path = aStar.solve()
