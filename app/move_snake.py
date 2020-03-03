@@ -35,7 +35,7 @@ def get_move(data):
 
     #if viable path to tail, and a viable path to food, see if viable path from head -> food -> tail
     food_tail_directions = None
-    if (can_follow_tail and len(consumption_directions) > 0):
+    if (can_follow_tail and consumption_directions != None and len(consumption_directions) > 0):
         food_tail_directions = head_to_food_to_tail_direction(data, aStar, nearest_food, survival_directions)
     
 
