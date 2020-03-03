@@ -79,14 +79,22 @@ def get_spacing_directions(data, aStar, walls, survival_directions):
         for direction in flood_directions:
             if (direction in survival_directions):
                 spacing_directions.append(direction)
-    print("Area Flood after survival direction clear: ", spacing_directions)
+        print("Area Flood after survival direction clear: ", spacing_directions)
 
     #can follow tail, add direction to spacing directions
     if (can_follow_tail):
         for direction in tail_directions:
-            if (direction in survival_directions and not direction in spacing_directions):
+            if (direction in survival_directions and not(direction in spacing_directions)):
                 spacing_directions.append(direction)
-    print("Head->Food->Tail and Flood after survival direction clear: ", spacing_directions)
+        print("Head->Food->Tail and Flood after survival direction clear: ", spacing_directions)
+
+    #if can't follow tail, and no area large enough, go with largest area
+    if (not can_follow_flood and not can_follow_tail):
+        for direction in flood_directions:
+            if (direction in survival_directions):
+                spacing_directions.append(direction)
+        print("Area Flood after normal flood and tail follow fail: ", spacing_directions)
+
 
     return spacing_directions, can_follow_tail
 

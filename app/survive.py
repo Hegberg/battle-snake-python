@@ -43,7 +43,7 @@ def check_self_collisions(directions, data):
         collision = check_beside_self(x,y,data['you']['body'][i]['x'],data['you']['body'][i]['y'])
         if (collision != 0 and collision in directions):
             directions.remove(collision)
-            print("Head x y: " + str(x) + " " + str(y) + " body x y: " + str(data['you']['body'][i]['x']) + " " + str(data['you']['body'][i]['y']))
+            #print("Head x y: " + str(x) + " " + str(y) + " body x y: " + str(data['you']['body'][i]['x']) + " " + str(data['you']['body'][i]['y']))
 
     return directions
 
@@ -197,8 +197,9 @@ def find_tail_path(aStar, data):
     tail_y = data['you']['body'][len(data['you']['body']) - 1]['y']
 
     #if head and tail are the same space, ie starting turn
-    if (tail_x == data['you']['body'][0]['x'] and tail_y == data['you']['body'][0]['y']):
+    if ((tail_x == data['you']['body'][0]['x']) and (tail_y == data['you']['body'][0]['y'])):
         directions = []
+        print("Tail and head are on the smae tile: " + str(tail_x) + " " + str(tail_y))
         return directions
 
     aStar.reset_grid((tail_x, tail_y))
@@ -209,6 +210,10 @@ def find_tail_path(aStar, data):
         directions = get_direction(data['you']['body'][0]['x'],data['you']['body'][0]['y'], 
                                     path[1][0], path[1][1])
 
+        print("Path to tail direction = " + str(directions))
+
         return directions
+
+    Print("No path to tail")
 
     return None
