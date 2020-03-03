@@ -261,7 +261,7 @@ def find_other_snake_tail_path(data, aStar, walls):
 
     if (shortest_path != None):
         directions = get_direction(data['you']['body'][0]['x'],data['you']['body'][0]['y'], 
-                                    path[1][0], path[1][1])
+                                    shortest_path[1][0], shortest_path[1][1])
 
         print("Path to snake " + snake_following_name + " tail direction = " + str(directions))
 

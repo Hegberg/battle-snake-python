@@ -32,7 +32,7 @@ def attack_chase(data, aStar, walls, survival_directions):
 
     if (shortest_path != None):
         chase_directions = get_direction(data['you']['body'][0]['x'],data['you']['body'][0]['y'], 
-                                    path[1][0], path[1][1])
+                                    shortest_path[1][0], shortest_path[1][1])
 
         print("Path to chasing snake " + snake_following_name + " head direction = " + str(chase_directions))
 
