@@ -191,6 +191,10 @@ def init_astar(data, with_own_head_blocking = False, growing = False):
         if (i == len(data['you']['body']) - 1):
             continue
 
+        #ignore own grown tail if growing
+        if (growing and i == len(data['you']['body']) - 2):
+            continue
+
         walls.append((data['you']['body'][i]['x'], data['you']['body'][i]['y']))
 
     for i in range(len(data['board']['snakes'])):
