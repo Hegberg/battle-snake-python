@@ -1,4 +1,5 @@
 from app.common import get_direction
+from app.a_star import init_astar
 
 def survival_choices(data, walls, aStar):
     directions = check_bounds(data)
@@ -191,7 +192,7 @@ def flood_fill_recursive(matrix, x, y):
         return matrix
     return matrix
 
-def find_tail_path(aStar, data):
+def find_tail_path(aStar, data, growing):
     #reset grid to have tail space as goal
     tail_x = data['you']['body'][len(data['you']['body']) - 1]['x']
     tail_y = data['you']['body'][len(data['you']['body']) - 1]['y']
@@ -199,12 +200,18 @@ def find_tail_path(aStar, data):
     #if head and tail are the same space, ie starting turn
     if ((tail_x == data['you']['body'][0]['x']) and (tail_y == data['you']['body'][0]['y'])):
         directions = []
-        print("Tail and head are on the smae tile: " + str(tail_x) + " " + str(tail_y))
+        print("Tail and head are on the same tile: " + str(tail_x) + " " + str(tail_y))
         return directions
 
-    aStar.reset_grid((tail_x, tail_y))
-
-    path = aStar.solve()
+    #if growing, need to find path to space before tail and solid tail
+    if (growing):
+        new_aStar, walls = init_astar(data, False, True)
+        set_ending_for_init_grid((tail_x, tail_y))
+        path = new_aStar.solve()
+    else:
+        aStar.reset_grid((tail_x, tail_y))
+        path = aStar.solve()
+    
 
     if (path != None):
         directions = get_direction(data['you']['body'][0]['x'],data['you']['body'][0]['y'], 
@@ -214,6 +221,6 @@ def find_tail_path(aStar, data):
 
         return directions
 
-    Print("No path to tail")
+    print("No path to tail")
 
     return None

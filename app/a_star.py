@@ -81,10 +81,18 @@ class AStar(object):
 
         self.end = self.get_cell(*end)
 
+    def set_ending_for_init_grid(self, end):
+        """Only use for unsued grids setting a new goal"""
+        self.end = self.get_cell(*end)
+
     def reset_grid_and_start(self, start, end):
         """Reset grid cells and set new goal and start location"""
         self.reset_grid(end)
         self.start = self.get_cell(*start)
+
+    def reset_grid_and_remove_wall(self, wall, end):
+        """Reset grid cells and set new goal and start location"""
+        self.reset_grid(end)
 
     def get_heuristic(self, cell):
         """Compute the heuristic value H for a cell.
@@ -167,3 +175,42 @@ class AStar(object):
                         self.update_cell(adj_cell, cell)
                         # add adj cell to open list
                         heapq.heappush(self.opened, (adj_cell.f, adj_cell))
+
+
+def init_astar(data, with_own_head_blocking = False, growing = False):
+    aStar = AStar()
+    
+    walls = []
+
+    start_point = 1
+    if (with_own_head_blocking):
+        start_point = 0
+
+    for i in range(start_point, len(data['you']['body'])):
+        #ignore own tail
+        if (i == len(data['you']['body']) - 1):
+            continue
+
+        walls.append((data['you']['body'][i]['x'], data['you']['body'][i]['y']))
+
+    for i in range(len(data['board']['snakes'])):
+        if (data['board']['snakes'][i]['id'] == data['you']['id']):
+            continue #skip self
+
+        for j in range(len(data['board']['snakes'][i]['body'])):
+            #if tail, don't count as wall
+            if (j == len(data['board']['snakes'][i]['body']) - 1):
+                continue
+
+            walls.append((data['board']['snakes'][i]['body'][j]['x'], data['board']['snakes'][i]['body'][j]['y']))
+
+    #print("Obstacles in board: " + str(walls))
+
+    #init astar with new board, set end goal as temp value
+    x = data['you']['body'][0]['x']
+    y = data['you']['body'][0]['y']
+    current_position = (x, y)
+    goal = (0,0)
+    aStar.init_grid(data['board']['width'], data['board']['height'], walls, current_position, goal)
+
+    return aStar, walls

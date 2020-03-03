@@ -10,6 +10,7 @@ from app.eat import consumption_choices
 from app.eat import get_direction
 
 from app.a_star import AStar
+from app.a_star import init_astar
 
 from app.common import directions1_in_directions2
 
@@ -22,8 +23,10 @@ def get_move(data):
     #directions = ["up", "down", "left", "right"]
     survival_directions = survival_choices(data, walls, aStar) #get bad options, remove them from contention
 
+    growing = determine_if_growing(data)
+
     #check spacing
-    spacing_directions, can_follow_tail = get_spacing_directions(data, aStar, walls, survival_directions)
+    spacing_directions, can_follow_tail = get_spacing_directions(data, aStar, walls, survival_directions, growing)
 
     food_directions, nearest_food = consumption_choices(data, survival_directions, aStar)
 
@@ -63,10 +66,20 @@ def get_move(data):
     direction = random.choice(final_directions)
     return direction
 
-def get_spacing_directions(data, aStar, walls, survival_directions):
+def determine_if_growing(data):
+    if (len(data['you']['body']) > 2):
+        t1_x = data['you']['body'][len(data['you']['body']) - 1]['x']
+        t1_y = data['you']['body'][len(data['you']['body']) - 1]['y']
+        t2_x = data['you']['body'][len(data['you']['body']) - 2]['x']
+        t2_y = data['you']['body'][len(data['you']['body']) - 2]['y']
+        if (t1_x == t2_x and t1y == t2y):
+            return True
+    return False
+
+def get_spacing_directions(data, aStar, walls, survival_directions, growing):
     flood_directions, can_follow_flood = flood_fill(data, walls, survival_directions)
 
-    tail_directions = find_tail_path(aStar, data)
+    tail_directions = find_tail_path(aStar, data, growing)
 
     can_follow_tail = False
     #viable path to tail found
@@ -180,41 +193,3 @@ def head_to_food_to_tail_direction(data, aStar, nearest_food, survival_direction
                 return revised_path_directions
 
     return None
-
-def init_astar(data, with_own_head_blocking = False):
-    aStar = AStar()
-    
-    walls = []
-
-    start_point = 1
-    if (with_own_head_blocking):
-        start_point = 0
-
-    for i in range(start_point, len(data['you']['body'])):
-        #ignore own tail
-        if (i == len(data['you']['body']) - 1):
-            continue
-
-        walls.append((data['you']['body'][i]['x'], data['you']['body'][i]['y']))
-
-    for i in range(len(data['board']['snakes'])):
-        if (data['board']['snakes'][i]['id'] == data['you']['id']):
-            continue #skip self
-
-        for j in range(len(data['board']['snakes'][i]['body'])):
-            #if tail, don't count as wall
-            if (j == len(data['board']['snakes'][i]['body']) - 1):
-                continue
-
-            walls.append((data['board']['snakes'][i]['body'][j]['x'], data['board']['snakes'][i]['body'][j]['y']))
-
-    #print("Obstacles in board: " + str(walls))
-
-    #init astar with new board, set end goal as temp value
-    x = data['you']['body'][0]['x']
-    y = data['you']['body'][0]['y']
-    current_position = (x, y)
-    goal = (0,0)
-    aStar.init_grid(data['board']['width'], data['board']['height'], walls, current_position, goal)
-
-    return aStar, walls
