@@ -108,12 +108,13 @@ def get_directions_through_food_space_collision(consumption_directions, spacing_
     if (len(spacing_and_consumption_directions) > 0):
         no_head_collision_and_spacing_directions = directions1_in_directions2(spacing_and_consumption_directions, no_head_collisions_directions)
         print("Directions after collision and space merge 1 : " + str(no_head_collision_and_spacing_directions))
+    
     #if no viable spaces that give good space and avoid head on collisions, avoid head collisions first
     if (len(no_head_collision_and_spacing_directions) == 0 and len(no_head_collisions_directions) > 0):
         no_head_collision_and_spacing_directions = no_head_collisions_directions
         print("Directions after collision and space merge 2 : " + str(no_head_collision_and_spacing_directions))
     #if no collision spaces available, just use survival spaces
-    else:
+    elif (len(no_head_collision_and_spacing_directions) == 0 and len(no_head_collisions_directions) == 0):
         no_head_collision_and_spacing_directions = survival_directions
     print("Directions after collision and space merge 3 : " + str(no_head_collision_and_spacing_directions))
 
