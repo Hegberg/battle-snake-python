@@ -40,15 +40,17 @@ def avoid_death_collisions(data, walls, survival_directions):
     food_collision_modifier = 1
 
     for i in range(len(survival_directions)):
-        if (survival_directions[i] == 'up' and (pos_x, pos_y + 1) in snake_movements):
-            collision_spots['up'] = snake_movements[(pos_x, pos_y + 1)]
+        #need to move down to go up in y terms
+        if (survival_directions[i] == 'down' and (pos_x, pos_y + 1) in snake_movements):
+            collision_spots['down'] = snake_movements[(pos_x, pos_y + 1)]
             if ((pos_x, pos_y + 1) in food_spots):
-                collision_spots['up'] += food_collision_modifier
-
-        elif (survival_directions[i] == 'down' and (pos_x, pos_y - 1) in snake_movements):
-            collision_spots['down'] = snake_movements[(pos_x, pos_y - 1)]
-            if ((pos_x, pos_y - 1) in food_spots):
                 collision_spots['down'] += food_collision_modifier
+
+        #need to move up to go down in y terms
+        elif (survival_directions[i] == 'up' and (pos_x, pos_y - 1) in snake_movements):
+            collision_spots['up'] = snake_movements[(pos_x, pos_y - 1)]
+            if ((pos_x, pos_y - 1) in food_spots):
+                collision_spots['up'] += food_collision_modifier
 
         elif (survival_directions[i] == 'right' and (pos_x + 1, pos_y) in snake_movements):
             collision_spots['right'] = snake_movements[(pos_x + 1, pos_y)]
