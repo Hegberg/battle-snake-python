@@ -72,7 +72,7 @@ def determine_if_growing(data):
         t1_y = data['you']['body'][len(data['you']['body']) - 1]['y']
         t2_x = data['you']['body'][len(data['you']['body']) - 2]['x']
         t2_y = data['you']['body'][len(data['you']['body']) - 2]['y']
-        if (t1_x == t2_x and t1y == t2y):
+        if (t1_x == t2_x and t1_y == t2_y):
             return True
     return False
 
