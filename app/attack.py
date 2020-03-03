@@ -78,9 +78,9 @@ def get_collide_directions(data, walls, survival_directions):
         possible_moves = get_opposing_snake_survival_moves(data, walls, i)
 
         for j in range(len(possible_moves)):
-            if (possible_moves[i] in you_locations):
+            if (possible_moves[j] in you_locations):
                 direction = get_direction(data['you']['body'][0]['x'],data['you']['body'][0]['y'],
-                                possible_moves[i][0],possible_moves[i][1])
+                                possible_moves[j][0],possible_moves[j][1])
                 if (not (direction in collide_directions)):
                     collide_directions.append(direction)
 
