@@ -45,7 +45,7 @@ def check_if_path_in_between_walls(data, path, walls):
     additional_walls = walls[:]
 
     #remove head from single lane wall check
-    additional_walls.remove(data['you']['body'][0]['x'], data['you']['body'][0]['y'])
+    additional_walls.remove((data['you']['body'][0]['x'], data['you']['body'][0]['y']))
     #add border to walls
     for i in range(data['board']['width']):
         additional_walls.append((i, -1))
