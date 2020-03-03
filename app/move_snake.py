@@ -142,7 +142,7 @@ def get_spacing_directions(data, aStar, walls, survival_directions, growing):
         can_follow_tail = True
 
     #viable path to other snake tail found
-    if (tail_directions != None):
+    if (other_snake_tail_directions != None and len(other_snake_tail_directions) > 0):
         can_follow_other_snake_tail = True
 
     spacing_directions = []
