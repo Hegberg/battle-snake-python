@@ -52,7 +52,7 @@ def get_move(data):
     no_head_collisions_directions = avoid_death_collisions(data, walls, survival_directions)
 
     final_directions = get_directions_through_food_space_collision(consumption_directions, 
-                                    spacing_directions, no_head_collisions_directions)
+                                    spacing_directions, no_head_collisions_directions, survival_directions)
 
     #no path availabe that won't kill us, so just return any response
     if (len(final_directions) <= 0 and len(survival_directions) > 0):
@@ -90,7 +90,7 @@ def get_spacing_directions(data, aStar, walls, survival_directions):
 
     return spacing_directions, can_follow_tail
 
-def get_directions_through_food_space_collision(consumption_directions, spacing_directions, no_head_collisions_directions):
+def get_directions_through_food_space_collision(consumption_directions, spacing_directions, no_head_collisions_directions, survival_directions):
     #just need to use blank state of directions, try to fill in with useful ones
     spacing_and_consumption_directions = []
     #if space and consumptions possibilities, try to mix
