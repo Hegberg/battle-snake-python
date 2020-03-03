@@ -1,4 +1,4 @@
-
+from app.common import get_direction
 
 def survival_choices(data, walls, aStar):
     directions = check_bounds(data)
@@ -8,23 +8,6 @@ def survival_choices(data, walls, aStar):
     print("Check Self After: ", directions)
     directions = check_snake_collisions(directions, data)
     print("Check Snakes After: ", directions)
-
-    #check flood fill to see if space
-    flood_directions = flood_fill(data, walls, directions)
-
-    revised_flood_directions = []
-    for direction in flood_directions:
-        if (direction in directions):
-            revised_flood_directions.append(direction)
-
-    print("revised flood directions: " + str(revised_flood_directions))
-    if (len(revised_flood_directions) > 0):
-        return revised_flood_directions
-
-    #check if can follow tail
-    tail_direction = tail_path(aStar, data)
-
-    #avoid being cut off
 
     return directions
 
@@ -186,8 +169,11 @@ def flood_fill(data, walls, available_directions):
     
     if (len(final_directions) == 0):
         final_directions.append(largest_flood[0])
-    
-    return final_directions
+        #no large enough area found
+        return final_directions, False
+
+    #Found a large enough area
+    return final_directions, True
 
 def flood_fill_recursive(matrix, x, y):
     if (matrix[x][y] == 0):
@@ -204,5 +190,18 @@ def flood_fill_recursive(matrix, x, y):
         return matrix
     return matrix
 
-def tail_path(aStar, data):
-    pass
+def find_tail_path(aStar, data):
+    #reset grid to have tail space as goal
+    tail_x = data['you']['body'][len(data['you']['body']) - 1]['x']
+    tail_y = data['you']['body'][len(data['you']['body']) - 1]['y']
+    aStar.reset_grid((tail_x, tail_y))
+
+    path = aStar.solve()
+
+    if (path != None):
+        directions = get_direction(data['you']['body'][0]['x'],data['you']['body'][0]['y'], 
+                                    path[1][0], path[1][1])
+
+        return directions
+
+    return None
