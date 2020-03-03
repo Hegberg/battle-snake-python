@@ -52,7 +52,7 @@ def get_move(data):
     no_head_collisions_directions = avoid_death_collisions(data, walls, survival_directions)
 
     final_directions = get_directions_through_food_space_collision(consumption_directions, 
-                                    spacing_directions, no_head_collisions_directions, survival_directions)
+                                    spacing_directions, no_head_collisions_directions, survival_directions, food_tail_directions)
 
     #no path availabe that won't kill us, so just return any response
     if (len(final_directions) <= 0 and len(survival_directions) > 0):
@@ -90,13 +90,13 @@ def get_spacing_directions(data, aStar, walls, survival_directions):
 
     return spacing_directions, can_follow_tail
 
-def get_directions_through_food_space_collision(consumption_directions, spacing_directions, no_head_collisions_directions, survival_directions):
+def get_directions_through_food_space_collision(consumption_directions, spacing_directions, no_head_collisions_directions, survival_directions, food_tail_directions):
     #just need to use blank state of directions, try to fill in with useful ones
     spacing_and_consumption_directions = []
     #if space and consumptions possibilities, try to mix
     if (len(spacing_directions) > 0 and len(consumption_directions) > 0):
         #get spacing and food mix, if not possible just returns space directions
-        spacing_and_consumption_directions = get_spacing_and_consumption_directions(consumption_directions, spacing_directions)
+        spacing_and_consumption_directions = get_spacing_and_consumption_directions(consumption_directions, spacing_directions, food_tail_directions)
     #else check if spacing options exist, and just use those
     elif(len(spacing_directions) > 0):
         spacing_and_consumption_directions = spacing_directions
@@ -120,7 +120,7 @@ def get_directions_through_food_space_collision(consumption_directions, spacing_
     return no_head_collision_and_spacing_directions
 
 #returns directions that give space and food, if no overlap, gives space directions back
-def get_spacing_and_consumption_directions(consumption_directions, spacing_directions):
+def get_spacing_and_consumption_directions(consumption_directions, spacing_directions, food_tail_directions):
     #food directions viable after spacing taken into account
     spacing_and_consumption_directions = directions1_in_directions2(consumption_directions, spacing_directions)
     print("Food move after spacing merge: ", spacing_and_consumption_directions)
