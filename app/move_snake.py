@@ -73,7 +73,21 @@ def get_move(data):
     elif(len(final_directions) <= 0):
         final_directions = ["up", "down", "left", "right"]
 
-    print("Final Directions: " + str(final_directions))
+    print("Final Directions before centered: " + str(final_directions))
+
+    if (len(final_directions) > 0):
+        #multiple options, only get here if don't hve paths to follow, so just head towards mid preferred
+        center_directions = get_direction(data['you']['body'][0]['x'], data['you']['body'][0]['y'], data['board']['width']/2, data['board']['height']/2)
+        center_final_directions = []
+        for direction in center_directions:
+            if direction in final_directions:
+                center_final_directions.append(direction)
+
+        if (len(center_final_directions) > 0):
+            print("Final Directions after centered: " + str(center_final_directions))
+            direction = random.choice(center_final_directions)
+            return direction
+
 
     direction = random.choice(final_directions)
     return direction
