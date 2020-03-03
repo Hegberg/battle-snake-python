@@ -43,6 +43,7 @@ def check_self_collisions(directions, data):
         collision = check_beside_self(x,y,data['you']['body'][i]['x'],data['you']['body'][i]['y'])
         if (collision != 0 and collision in directions):
             directions.remove(collision)
+            print("Head x y: " + str(x) + " " + str(y) + " body x y: " + str(data['you']['body'][i]['x']) + " " + str(data['you']['body'][i]['y']))
 
     return directions
 
