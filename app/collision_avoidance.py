@@ -16,7 +16,7 @@ def avoid_death_collisions(data, walls, survival_directions):
     food_spots = []
 
     for i in range(len(data['board']['food'])):
-        food.append((data['board']['food'][i]['x'], data['board']['food'][i]['y']))
+        food_spots.append((data['board']['food'][i]['x'], data['board']['food'][i]['y']))
 
     for i in range(len(head_list)):
         x = head_list[i][0]
