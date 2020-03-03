@@ -108,7 +108,7 @@ def get_attack_directions(data, aStar, walls, survival_directions):
     attack_chase_directions = []
     if (snake_size_larger and data['you']['health'] >= 50):
         #if can close distance to opponent head
-        attack_chase_directions = attack_chase(data, aStar, survival_directions)
+        attack_chase_directions = attack_chase(data, aStar, walls, survival_directions)
 
     #add chase directions
     for direction in attack_chase_directions:
