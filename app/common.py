@@ -44,8 +44,8 @@ def add_to_dict(x, y, dict):
 def check_if_path_in_between_walls(data, path, walls):
     additional_walls = walls[:]
 
-    for i in range(len(data['you']['body'])):
-        #remove own body from single lane wall check
+    for i in range(len(data['you']['body']) - 1):
+        #remove own body from single lane wall check, besides tail
         additional_walls.remove((data['you']['body'][i]['x'], data['you']['body'][i]['y']))
 
     #add border to walls
