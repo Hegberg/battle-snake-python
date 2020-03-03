@@ -3,12 +3,14 @@
 def avoid_death_collisions(data, walls, survival_directions):
     #get list of heads of other snakes that are equal or larger to me in size
     head_list = []
+    self_len = len(data['you']['body'])
     for i in range(len(data['board']['snakes'])):
         if (data['board']['snakes'][i]['id'] == data['you']['id']):
             continue #skip self
 
-        head_list.append((data['board']['snakes'][i]['body'][0]['x'],
-                        data['board']['snakes'][i]['body'][0]['y']))
+        #if larger or equal size, add to list
+        if (len(data['board']['snakes'][i]['body']) >= self_len)
+            head_list.append((data['board']['snakes'][i]['body'][0]['x'], data['board']['snakes'][i]['body'][0]['y']))
 
     #get spaces they can move to that is not walls, and if tile has food
     #if there is food, try to choose any move but that one, since they will most likely go for food
