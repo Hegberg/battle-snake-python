@@ -121,7 +121,7 @@ def attack_cutoff(data, aStar, walls, survival_directions):
     #for all border directions, see if one cuts off closest snake
     for i in range(len(border_directions)):
 
-        too_much_free_space = rectangle_check(data, border_directions[i], border_paths, snake_cutoff_index)
+        too_much_free_space = rectangle_check(data, border_directions[i], border_paths, snake_cutoff_index, i)
 
         #too much free space, don't cutoff
         if (too_much_free_space):
@@ -221,7 +221,7 @@ def get_opposing_snake_survival_moves(data, walls, snake_index):
     return possible_moves
 
 #return True on too much space, False otherwise
-def rectangle_check(data, border_direction, border_paths, snake_cutoff_index):
+def rectangle_check(data, border_direction, border_paths, snake_cutoff_index, i):
     #create rectangle to snake, and border past usng cutoff wall
         
     snake_relative_directions = get_directions(data['you']['body'][0]['x'], data['you']['body'][0]['y'], data['board']['snakes'][snake_cutoff_index]['body'][0]['x'], data['board']['snakes'][snake_cutoff_index]['body'][0]['y'])
@@ -311,7 +311,7 @@ def get_snake_path_to_tail(data, walls, border_paths, snake_cutoff_index, border
 
 
     #init astar with new board
-    new_aStar - AStar()
+    new_aStar = AStar()
     x = data['board']['snakes'][snake_cutoff_index]['body'][0]['x']
     y = data['board']['snakes'][snake_cutoff_index]['body'][0]['y']
     current_position = (x, y)
