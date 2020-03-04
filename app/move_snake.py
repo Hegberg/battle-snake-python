@@ -102,7 +102,7 @@ def get_attack_directions(data, aStar, walls, survival_directions):
     attack_directions = []
 
     if (data['you']['health'] >= 25):
-        attack_cutoff_directions = attack_cutoff(data, aStar walls, survival_directions)
+        attack_cutoff_directions = attack_cutoff(data, aStar, walls, survival_directions)
 
         #add cutoff directions
         for direction in attack_cutoff_directions:
