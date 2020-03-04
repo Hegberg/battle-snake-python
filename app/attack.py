@@ -243,7 +243,7 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                         if (not ((k,j) in walls)):
                             free_space += 1
 
-            print("Free space calculated: " + str(free_space))
+            print("Free space calculated: " + str(free_space) + " in direction: " + str(direction) + " border_direction: " + border_direction)
             #if too much free space, don't cutoff
             if (free_space >= len(data['board']['snakes'][snake_cutoff_index]['body'])):
                 return True
@@ -271,7 +271,7 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                         if (not ((j,k) in walls)):
                             free_space += 1
 
-            print("Free space calculated: " + str(free_space))
+            print("Free space calculated: " + str(free_space) + " in direction: " + str(direction) + " border_direction: " + border_direction)
             #if too much free space, don't cutoff
             if (free_space >= len(data['board']['snakes'][snake_cutoff_index]['body'])):
                 return True
