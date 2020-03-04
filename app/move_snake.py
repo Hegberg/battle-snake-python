@@ -7,9 +7,10 @@ from app.survive import find_other_snake_tail_path
 
 from app.attack import attack_chase
 from app.attack import attack_cutoff
+from app.attack import attack_collide
 
 from app.eat import consumption_choices
-from app.eat import get_direction
+from app.eat import get_directions
 
 from app.a_star import AStar
 from app.a_star import init_astar
@@ -77,7 +78,7 @@ def get_move(data):
 
     if (len(final_directions) > 0):
         #multiple options, only get here if don't hve paths to follow, so just head towards mid preferred
-        center_directions = get_direction(data['you']['body'][0]['x'], data['you']['body'][0]['y'], data['board']['width']/2, data['board']['height']/2)
+        center_directions = get_directions(data['you']['body'][0]['x'], data['you']['body'][0]['y'], data['board']['width']/2, data['board']['height']/2)
         center_final_directions = []
         for direction in center_directions:
             if direction in final_directions:
@@ -92,8 +93,25 @@ def get_move(data):
     direction = random.choice(final_directions)
     return direction
 
+#TODO
+#change health check, to check for distance to nearest food, and if hunger left can get me there
+#with a small amount to spare, go to food
+#otherwise attack
+#currently just check if health is above decent value
 def get_attack_directions(data, aStar, walls, survival_directions):
     attack_directions = []
+
+    if (data['you']['health'] >= 25):
+        attack_cutoff_directions = attack_cutoff(data, aStar walls, survival_directions)
+
+        #add cutoff directions
+        for direction in attack_cutoff_directions:
+            if (direction in survival_directions):
+                attack_directions.append(direction)
+
+        #if can cutoff opposing snake, do it
+        if (len(attack_directions) > 0):
+            return attack_directions
 
     #if largest snake by 2, and hunger > 50 (0-100)
     required_size_difference = 1
@@ -107,22 +125,22 @@ def get_attack_directions(data, aStar, walls, survival_directions):
         if (len(data['you']['body']) < len(data['board']['snakes'][i]['body']) + required_size_difference):
             snake_size_larger = False
 
-    if (snake_size_larger):
-        #if can cutoff opposing snake and large
-        attack_cutoff_directions = attack_cutoff(data, aStar, walls, survival_directions)
+    if (snake_size_larger and data['you']['health'] >= 25):
+        #if can collide opposing snake and large
+        attack_collide_directions = attack_collide(data, walls, survival_directions)
 
-        #add cutoof directions
-        for direction in attack_cutoff_directions:
+        #add collide directions
+        for direction in attack_collide_directions:
             if (direction in survival_directions):
                 attack_directions.append(direction)
 
-        #if can cutoff opposing snake, do it
+        #if can collide opposing snake, do it
         if (len(attack_directions) > 0):
             return attack_directions
 
 
     attack_chase_directions = []
-    if (snake_size_larger and data['you']['health'] >= 50):
+    if (snake_size_larger and data['you']['health'] >= 25):
         #if can close distance to opponent head
         attack_chase_directions = attack_chase(data, aStar, walls, survival_directions)
 
@@ -269,7 +287,8 @@ def get_spacing_and_consumption_directions(consumption_directions, spacing_direc
 
     return spacing_and_consumption_directions
 
-
+#TODO
+#if tail <- food <- food <- head, don't eat food and follow tail since will die
 def head_to_food_to_tail_direction(data, aStar, nearest_food, survival_directions):
     
     you_x = data['you']['body'][0]['x']
@@ -290,7 +309,7 @@ def head_to_food_to_tail_direction(data, aStar, nearest_food, survival_direction
         to_tail_path = head_blocking_aStar.solve()
 
         if (to_tail_path != None):
-            path_directions = get_direction(you_x, you_y, to_food_path[1][0], to_food_path[1][1])
+            path_directions = get_directions(you_x, you_y, to_food_path[1][0], to_food_path[1][1])
             
             #if direction of food not in viable direction, remove option
             revised_path_directions = []

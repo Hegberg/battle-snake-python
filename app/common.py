@@ -12,7 +12,7 @@ def directions1_in_directions2(directions1, directions2):
 
     return None
 
-def get_direction(x,y,x2,y2):
+def get_directions(x,y,x2,y2):
  
     directions = []
 
@@ -96,3 +96,96 @@ def determine_if__snake_growing(data, snake_index):
         if (t1_x == t2_x and t1_y == t2_y):
             return True
     return False
+
+
+def get_previous_direction(data, snake_index):
+    if (len(data['board']['snakes'][snake_index]) > 2):
+        t1_x = data['board']['snakes'][snake_index]['body'][0]['x']
+        t1_y = data['board']['snakes'][snake_index]['body'][0]['y']
+        t2_x = data['board']['snakes'][snake_index]['body'][1]['x']
+        t2_y = data['board']['snakes'][snake_index]['body'][1]['y']
+
+        directions = get_direction(t1_x, t1_y, t2_x, t2_y)
+
+        #should only be 1 direction
+        if (len(directions) == 1):
+            return directions[0]
+
+    return None
+
+def get_straight_path_directions_to_border(data, walls, moveable_directions):
+
+    border_directions = []
+    straight_paths = []
+
+    for direction in moveable_directions:
+
+        cur_x = data['you']['body'][0]['x']
+        cur_y = data['you']['body'][0]['y']
+
+        hit_wall = False
+        hit_border = False
+
+        straight_path = []
+        
+        if (direction == 'up'):
+            #moving up, keep checking if in walls
+            while (not hit_wall and not hit_border):
+                cur_y -= 1
+                straight_path.append((cur_x, cur_y))
+                if ((cur_x, cur_y) in walls):
+                    hit_wall = True
+                    straight_path = []
+                if (cur_y < 0):
+                    hit_border = True
+                    straight_path.pop()
+
+            if (hit_border and not hit_wall):
+                border_directions.append('up')
+
+        if (direction == 'down'):
+            #moving down, keep checking if in walls
+            while (not hit_wall and not hit_border):
+                cur_y += 1
+                straight_path.append((cur_x, cur_y))
+                if ((cur_x, cur_y) in walls):
+                    hit_wall = True
+                if (cur_y >= data['board']['height']):
+                    hit_border = True
+                    straight_path.pop()
+
+            if (hit_border and not hit_wall):
+                border_directions.append('down')
+
+        if (direction == 'left'):
+            #moving left, keep checking if in walls
+            while (not hit_wall and not hit_border):
+                cur_x -= 1
+                straight_path.append((cur_x, cur_y))
+                if ((cur_x, cur_y) in walls):
+                    hit_wall = True
+                if (cur_x < 0):
+                    hit_border = True
+                    straight_path.pop()
+
+            if (hit_border and not hit_wall):
+                border_directions.append('left')
+
+        if (direction == 'right'):
+            #moving right, keep checking if in walls
+            while (not hit_wall and not hit_border):
+                cur_x += 1
+                straight_path.append((cur_x, cur_y))
+                if ((cur_x, cur_y) in walls):
+                    hit_wall = True
+                if (cur_x >= data['board']['width']):
+                    hit_border = True
+                    straight_path.pop()
+
+            if (hit_border and not hit_wall):
+                border_directions.append('right')
+
+        if (len(straight_path) > 0):
+            straight_paths.append(straight_path)
+
+    return border_directions, straight_paths

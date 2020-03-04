@@ -1,4 +1,4 @@
-from app.common import get_direction
+from app.common import get_directions
 from app.common import determine_if__snake_growing
 from app.a_star import init_astar
 
@@ -215,7 +215,7 @@ def find_own_tail_path(aStar, data, growing):
 
 
     if (path != None):
-        directions = get_direction(data['you']['body'][0]['x'],data['you']['body'][0]['y'], 
+        directions = get_directions(data['you']['body'][0]['x'],data['you']['body'][0]['y'], 
                                     path[1][0], path[1][1])
 
         print("Path to tail direction = " + str(directions))
@@ -260,7 +260,7 @@ def find_other_snake_tail_path(data, aStar, walls):
 
 
     if (shortest_path != None):
-        directions = get_direction(data['you']['body'][0]['x'],data['you']['body'][0]['y'], 
+        directions = get_directions(data['you']['body'][0]['x'],data['you']['body'][0]['y'], 
                                     shortest_path[1][0], shortest_path[1][1])
 
         print("Path to snake " + snake_following_name + " tail direction = " + str(directions))

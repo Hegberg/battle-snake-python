@@ -1,6 +1,6 @@
 
 from app.a_star import AStar
-from app.common import get_direction
+from app.common import get_directions
 from app.common import check_if_path_in_between_walls
 
 def consumption_choices(data, directions, aStar, walls):
@@ -46,7 +46,7 @@ def locate_food(x,y,data,directions, aStar, walls):
 
         #if path is good and is horter than other food paths, choose
         if ((path != None) and ((shortest_path == None) or (len(path) < len(shortest_path)))):
-            directions = get_direction(x,y, path[1][0], path[1][1])
+            directions = get_directions(x,y, path[1][0], path[1][1])
             shortest_path = path
             closest_food = food[i]
 
