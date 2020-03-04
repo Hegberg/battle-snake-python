@@ -80,10 +80,11 @@ def get_collide_directions(data, walls, survival_directions):
 
         for j in range(len(possible_moves)):
             if (possible_moves[j] in you_locations):
-                direction = get_direction(data['you']['body'][0]['x'],data['you']['body'][0]['y'],
+                directions = get_direction(data['you']['body'][0]['x'],data['you']['body'][0]['y'],
                                 possible_moves[j][0],possible_moves[j][1])
-                if (not (direction in collide_directions)):
-                    collide_directions.append(direction)
+                for direction in directions:
+                    if (not (direction in collide_directions)):
+                        collide_directions.append(direction)
 
     print("Collision directions and larger: " + str(collide_directions))
     return collide_directions
