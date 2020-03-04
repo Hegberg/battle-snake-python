@@ -254,7 +254,7 @@ def rectangle_check(data, border_direction, border_paths, snake_cutoff_index):
 
             return False
 
-    if (border_directions[i] == 'left' or border_directions[i] == 'right'):
+    if (border_direction == 'left' or border_direction == 'right'):
 
         for direction in snake_relative_directions:
             #create box to up of cutoff
