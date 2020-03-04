@@ -2,7 +2,7 @@ from app.common import get_location_from_direction
 from app.common import get_directions
 from app.common import check_if_path_in_between_walls
 from app.common import get_straight_path_directions_to_border
-from app.common import derdetermine_if__snake_growing
+from app.common import determine_if__snake_growing
 
 from app.a_star import AStar
 
