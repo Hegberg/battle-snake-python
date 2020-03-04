@@ -20,17 +20,17 @@ def attack_chase(data, aStar, walls, survival_directions):
             aStar.reset_grid((possible_moves[j][0], possible_moves[j][1]))
             path = aStar.solve()
 
-        #check if path goes through single lane, if so mark as bad and None
-        if (path != None):
-            print("Attack Path is before wall check: " + str(path))
-            single_lane = check_if_path_in_between_walls(data, path, walls)
-            if (single_lane):
-                print("Attack Path is between walls, ignore it: " + str(path))
-                path = None
+            #check if path goes through single lane, if so mark as bad and None
+            if (path != None):
+                print("Attack Path is before wall check: " + str(path))
+                single_lane = check_if_path_in_between_walls(data, path, walls)
+                if (single_lane):
+                    print("Attack Path is between walls, ignore it: " + str(path))
+                    path = None
 
-        if (path != None and (shortest_path == None or len(path) < len(shortest_path))):
-            shortest_path = path
-            snake_following_name = str(data['board']['snakes'][i]['name'])
+            if (path != None and (shortest_path == None or len(path) < len(shortest_path))):
+                shortest_path = path
+                snake_following_name = str(data['board']['snakes'][i]['name'])
 
     if (shortest_path != None):
         chase_directions = get_direction(data['you']['body'][0]['x'],data['you']['body'][0]['y'], 
