@@ -220,11 +220,8 @@ def get_opposing_snake_survival_moves(data, walls, snake_index):
 
     return possible_moves
 
-def check_if_enemy_blocked(data, walls, snake_index, direction):
-    pass
-
 #return True on too much space, False otherwise
-def rectangle_check(data, border_direction, border_paths, snake_index):
+def rectangle_check(data, border_direction, border_paths, snake_cutoff_index):
     #create rectangle to snake, and border past usng cutoff wall
         
     snake_relative_directions = get_directions(data['you']['body'][0]['x'], data['you']['body'][0]['y'], data['board']['snakes'][snake_cutoff_index]['body'][0]['x'], data['board']['snakes'][snake_cutoff_index]['body'][0]['y'])
