@@ -350,7 +350,7 @@ def flood_fill_snake(data, walls, snake_index):
                 flood_size += 1
     print("Cutoff flood size: ", flood_size)
     for k in range(len(flood_matrix)):
-        print("Flood Matrix Cutoff " + str(i) + ": " + str(flood_matrix[k]))
+        print("Flood Matrix Cutoff: " + str(flood_matrix[k]))
     
     #to accomidate for not adding head to flood walls
     flood_size -= 1
