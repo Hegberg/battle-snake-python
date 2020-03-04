@@ -129,7 +129,7 @@ def attack_cutoff(data, aStar, walls, survival_directions):
             continue
         
         #see if path to tail is loger than cutoff path
-        snake_path_to_tail, snake_path_to_you_tail = get_snake_path_to_tail(data, walls, border_paths, snake_cutoff_index, i)
+        snake_head_to_tail_path, snake_path_to_you_tail = get_snake_path_to_tail(data, walls, border_paths, snake_cutoff_index, i)
 
         #if path longer than cutoff path, proceed to cutoff
         if (snake_head_to_tail_path != None and len(snake_head_to_tail_path) < border_paths[i]):
