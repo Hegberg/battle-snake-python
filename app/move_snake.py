@@ -95,18 +95,6 @@ def get_move(data):
 def get_attack_directions(data, aStar, walls, survival_directions):
     attack_directions = []
 
-    #if can cutoff opposing snake
-    attack_cutoff_directions = attack_cutoff(data, aStar, walls, survival_directions)
-
-    #add cutoof directions
-    for direction in attack_cutoff_directions:
-        if (direction in survival_directions):
-            attack_directions.append(direction)
-
-    #if can cutoff opposing snake, do it
-    if (len(attack_directions) > 0):
-        return attack_directions
-
     #if largest snake by 2, and hunger > 50 (0-100)
     required_size_difference = 1
 
@@ -118,6 +106,20 @@ def get_attack_directions(data, aStar, walls, survival_directions):
 
         if (len(data['you']['body']) < len(data['board']['snakes'][i]['body']) + required_size_difference):
             snake_size_larger = False
+
+    if (snake_size_larger):
+        #if can cutoff opposing snake and large
+        attack_cutoff_directions = attack_cutoff(data, aStar, walls, survival_directions)
+
+        #add cutoof directions
+        for direction in attack_cutoff_directions:
+            if (direction in survival_directions):
+                attack_directions.append(direction)
+
+        #if can cutoff opposing snake, do it
+        if (len(attack_directions) > 0):
+            return attack_directions
+
 
     attack_chase_directions = []
     if (snake_size_larger and data['you']['health'] >= 50):
