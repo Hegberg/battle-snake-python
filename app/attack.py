@@ -105,10 +105,6 @@ def attack_cutoff(data, aStar, walls, survival_directions):
             aStar.reset_grid((possible_moves[j][0], possible_moves[j][1]))
             path = aStar.solve()
 
-            #check if path goes through single lane, if so mark as bad and None
-            if (path != None):
-                print("Attack Cutoff Possible Path check: " + str(path))
-
             if (path != None and (shortest_path == None or len(path) < len(shortest_path))):
                 shortest_path = path
                 snake_following_name = str(data['board']['snakes'][i]['name'])
@@ -300,7 +296,7 @@ def get_snake_path_to_tail(data, walls, border_paths, snake_cutoff_index, border
         if (data['board']['snakes'][i]['id'] == data['you']['id']):
             if (determine_if__snake_growing(data, i)):
                 cutoff_walls.remove((data['you']['body'][len(data['you']['body']) - 2]['x'], 
-                                    data['you']['body'][len(data['you']['body']) - 2]['x']))
+                                    data['you']['body'][len(data['you']['body']) - 2]['y']))
             break
     
 
