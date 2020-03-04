@@ -208,6 +208,10 @@ def get_directions_through_food_space_collision(consumption_directions, spacing_
 
 def get_directions_with_space_and_collision_merge(preferred_directions, spacing_directions, no_head_collisions_directions, survival_directions):
 #survival, spacing, avoid_head_on, preffered
+    print("Prefferred directions: " + str(preferred_directions))
+    print("Spacing directions: " + str(spacing_directions))
+    print("No Head Collision directions: " + str(no_head_collisions_directions))
+    print("Survival directions: " + str(survival_directions))
 
     no_head_collision_and_preffered_directions = []
     #prefered directions viable after taking into account collisions
@@ -225,22 +229,23 @@ def get_directions_with_space_and_collision_merge(preferred_directions, spacing_
     #(head on and preffered) taking into account spacing
     if ((len(spacing_directions) > 0) and len(no_head_collision_and_preffered_directions) > 0):
         preffered_and_spacing_directions = directions1_in_directions2(spacing_directions, no_head_collision_and_preffered_directions)
-        print("Directions after space and prefferred direction merge 4: " + str(no_head_collision_and_preffered_directions))
+        print("Directions after space and prefferred direction merge 4: " + str(preffered_and_spacing_directions))
     elif (len(spacing_directions) > 0):
         preffered_and_spacing_directions = spacing_directions
         print("Directions after space and prefferred direction merge 5: " + str(preffered_and_spacing_directions))
     else:
         preffered_and_spacing_directions = no_head_collision_and_preffered_directions
+        print("Directions after space and prefferred direction merge 6: " + str(preffered_and_spacing_directions))
     
     survival_and_spacing_directions = []
     #if no viable spaces that give good space and avoid head on collisions, try to get to open space first
     if (len(preffered_and_spacing_directions) > 0 and len(survival_directions) > 0):
         survival_and_spacing_directions = directions1_in_directions2(preffered_and_spacing_directions, survival_directions)
-        print("Directions after space and survival direction merge 6: " + str(survival_and_spacing_directions))
+        print("Directions after space and survival direction merge 7: " + str(survival_and_spacing_directions))
     
     if (len(survival_and_spacing_directions) == 0):
         survival_and_spacing_directions = survival_directions
-        print("Directions after space and survival direction merge 7: " + str(survival_and_spacing_directions))
+        print("Directions after space and survival direction merge 8: " + str(survival_and_spacing_directions))
 
     return survival_and_spacing_directions
 
