@@ -249,7 +249,7 @@ def rectangle_check(data, border_direction, border_paths, snake_cutoff_index):
 
             print("Free space calculated: " + str(free_space))
             #if too much free space, don't cutoff
-            if (free_space >= len(data['board']['snakes'][snake_index]['body'])):
+            if (free_space >= len(data['board']['snakes'][snake_cutoff_index]['body'])):
                 return True
 
             return False
@@ -277,7 +277,7 @@ def rectangle_check(data, border_direction, border_paths, snake_cutoff_index):
 
             print("Free space calculated: " + str(free_space))
             #if too much free space, don't cutoff
-            if (free_space >= len(data['board']['snakes'][snake_index]['body'])):
+            if (free_space >= len(data['board']['snakes'][snake_cutoff_index]['body'])):
                 return True
 
             return False
