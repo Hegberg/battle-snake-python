@@ -242,7 +242,7 @@ def get_directions_with_space_and_collision_merge(preferred_directions, spacing_
         survival_and_spacing_directions = survival_directions
         print("Directions after space and survival direction merge 7: " + str(survival_and_spacing_directions))
 
-    return no_head_collision_and_spacing_directions
+    return survival_and_spacing_directions
 
 #returns directions that give space and food, if no overlap, gives space directions back
 def get_spacing_and_consumption_directions(consumption_directions, spacing_directions, food_tail_directions):
