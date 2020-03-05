@@ -134,7 +134,6 @@ def attack_cutoff(data, aStar, walls, survival_directions):
 
         if (snake_head_to_tail_path != None and len(snake_head_to_tail_path) >= len(border_paths[i])):
             print("Path for snake to escape long enough to justify cutoff in direction: " + str(border_directions[i]))
-            print("Border path used: " + str(border_paths[i]))
             cutoff_directions.append(border_directions[i])
             continue
 
@@ -228,9 +227,19 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
         for direction in snake_relative_directions:
             #create box to left of cutoff
             free_space = 0
+            
+            j_start = border_paths[i][0][0]
+            j_stop = border_paths[i][len(border_paths[i]) - 1][0]
+            if (border_direction == 'up'):
+                j_stop -= 1
+                step = -1
+            elif (border_direction == 'down'):
+                j_stop += 1
+                step = 1
+
             if (direction == 'left'):
                 #along vertical line of cutoff wall
-                for j in range(border_paths[i][0][1], border_paths[i][len(border_paths[i]) - 1][1]):
+                for j in range(j_start, j_stop, step):
                     #from left border to cutoff wall (horizontal line)
                     for k in range(0, border_paths[i][0][0]):
                         if (not ((k,j) in walls)):
@@ -238,7 +247,7 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
             #create box to right of cutoff
             elif (direction == 'right'):
                 #along vertical line of cutoff wall
-                for j in range(border_paths[i][0][1], border_paths[i][len(border_paths[i]) - 1][1]):
+                for j in range(j_start, j_stop, step):
                     #from left border to cutoff wall (horizontal line)
                     for k in range(border_paths[i][0][0] + 1, data['board']['width']): # +1 to avoid using border wall in free space calc
                         if (not ((k,j) in walls)):
@@ -249,6 +258,7 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                 return True
 
             print("Free space calculated: " + str(free_space) + " in direction: " + str(direction) + " border_direction: " + border_direction)
+            print("Border path used: " + str(border_paths[i]))
             #if too much free space, don't cutoff
             if (free_space >= len(data['board']['snakes'][snake_cutoff_index]['body'])):
                 return True
@@ -260,9 +270,19 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
         for direction in snake_relative_directions:
             #create box to up of cutoff
             free_space = 0
+
+            j_start = border_paths[i][0][0]
+            j_stop = border_paths[i][len(border_paths[i]) - 1][0]
+            if (border_direction == 'left'):
+                j_stop -= 1
+                step = -1
+            elif (border_direction == 'right'):
+                j_stop += 1
+                step = 1
+
             if (direction == 'up'):
                 #along horizontal line of cutoff wall
-                for j in range(border_paths[i][0][0], border_paths[i][len(border_paths[i]) - 1][0]):
+                for j in range(j_start, j_stop, step):
                     #from up border to cutoff wall (vertical line)
                     for k in range(0, border_paths[i][0][1]):
                         if (not ((j,k) in walls)):
@@ -270,7 +290,7 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
             #create box to down of cutoff
             elif (direction == 'down'):
                 #along horizontal line of cutoff wall
-                for j in range(border_paths[i][0][0], border_paths[i][len(border_paths[i]) - 1][0]):
+                for j in range(j_start, j_stop, step):
                     #from left border to cutoff wall (vertical line)
                     for k in range(border_paths[i][0][1] + 1, data['board']['height']): # +1 to avoid using border wall in free space calc
                         if (not ((j,k) in walls)):
@@ -281,6 +301,7 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                 return True
 
             print("Free space calculated: " + str(free_space) + " in direction: " + str(direction) + " border_direction: " + border_direction)
+            print("Border path used: " + str(border_paths[i]))
             #if too much free space, don't cutoff
             if (free_space >= len(data['board']['snakes'][snake_cutoff_index]['body'])):
                 return True
@@ -356,6 +377,9 @@ def flood_fill_snake(data, walls, snake_index):
     for j in range(len(walls)):
         #access by column, row
         matrix[walls[j][0]][walls[j][1]] = 1
+
+    #set head of snake to not a wall so flood fill calculates correctly
+    matrix[x][y] = 0
 
     flood_size = 0
     flood_matrix = flood_fill_recursive(matrix, x, y)
