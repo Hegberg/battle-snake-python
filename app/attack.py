@@ -134,6 +134,7 @@ def attack_cutoff(data, aStar, walls, survival_directions):
 
         if (snake_head_to_tail_path != None and len(snake_head_to_tail_path) >= len(border_paths[i])):
             print("Path for snake to escape long enough to justify cutoff in direction: " + str(border_directions[i]))
+            print("Border path used: " + str(border_paths[i]))
             cutoff_directions.append(border_directions[i])
             continue
 
