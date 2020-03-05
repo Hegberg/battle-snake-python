@@ -28,10 +28,10 @@ def attack_chase(data, aStar, walls, survival_directions):
 
             #check if path goes through single lane, if so mark as bad and None
             if (path != None):
-                #print("Attack Path is before wall check: " + str(path))
+                print("Attack Path is before wall check: " + str(path))
                 single_lane = check_if_path_in_between_walls(data, path, walls)
                 if (single_lane):
-                    #print("Attack Path is between walls, ignore it: " + str(path))
+                    print("Attack Path is between walls, ignore it: " + str(path))
                     path = None
 
             if (path != None and (shortest_path == None or len(path) < len(shortest_path))):
@@ -255,10 +255,6 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                         if (not ((k,j) in walls)):
                             free_space += 1
 
-            #else direction == up or down, and in such case return true, meaning too much free space
-            else:
-                return True
-
             print("Free space calculated: " + str(free_space) + " in direction: " + str(direction) + " border_direction: " + border_direction)
             print("Border path used: " + str(border_paths[i]))
             #if too much free space, don't cutoff
@@ -266,6 +262,9 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                 return True
 
             return False
+
+        #else direction == left or right, and in such case return true, meaning too much free space
+        return True
 
     if ((border_direction == 'left' and 'left' in snake_relative_directions) or (border_direction == 'right' and 'right' in snake_relative_directions)):
 
@@ -300,9 +299,7 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                         if (not ((j,k) in walls)):
                             free_space += 1
             
-            #else direction == left or right, and in such case return true, meaning too much free space
-            else:
-                return True
+            
 
             print("Free space calculated: " + str(free_space) + " in direction: " + str(direction) + " border_direction: " + border_direction)
             print("Border path used: " + str(border_paths[i]))
@@ -311,6 +308,9 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                 return True
 
             return False
+
+        #else direction == left or right, and in such case return true, meaning too much free space
+        return True
 
     return True
 
