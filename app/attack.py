@@ -286,7 +286,7 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
 
             return False
 
-    return False
+    return True
 
 def get_snake_path_to_tail(data, walls, border_paths, snake_cutoff_index, border_paths_index):
     #get new path planned for opposing snake assuming cutoff has been made, 
