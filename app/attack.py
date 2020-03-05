@@ -324,6 +324,12 @@ def get_snake_path_to_tail(data, walls, border_paths, snake_cutoff_index, border
     goal = (gx,gy)
     new_aStar.init_grid(data['board']['width'], data['board']['height'], cutoff_walls, current_position, goal)
 
+    #if goal is start, ie first turn, return none path
+    if ((x,y) == (gx,gy) or data['turn'] == 0):
+        snake_head_to_tail_path = None
+        snake_head_to_you_tail_path = None
+        return snake_head_to_tail_path, snake_head_to_you_tail_path
+
     snake_head_to_tail_path = new_aStar.solve()
 
     #try getting path to my tail
