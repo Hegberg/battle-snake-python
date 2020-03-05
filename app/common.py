@@ -54,73 +54,104 @@ def add_to_dict(x, y, dict):
 
 #return true if path stuck between 2 walls
 def check_if_path_in_between_walls(data, path, walls):
-    additional_walls = walls[:]
 
-    for i in range(2):
-        #remove start own body from single lane wall check
-        additional_walls.remove((data['you']['body'][i]['x'], data['you']['body'][i]['y']))
-
-    #add border to walls
-    for i in range(data['board']['width']):
-        additional_walls.append((i, -1))
-        additional_walls.append((i, data['board']['height']))
-    
-    for i in range(data['board']['height']):
-        additional_walls.append((-1, i))
-        additional_walls.append((data['board']['width'], i))
+    snake_walls, border_walls, self_walls = seperate_walls(data,walls)
 
     for i in range(1, len(path)):
-        adjacent_x_axis_walls = 0
-        adjacent_y_axis_walls = 0
-        if ((path[i][0] + 1, path[i][1]) in additional_walls):
-            adjacent_x_axis_walls += 1
-        if ((path[i][0] - 1, path[i][1]) in additional_walls):
-            adjacent_x_axis_walls += 1
-        if ((path[i][0], path[i][1] + 1) in additional_walls):
-            adjacent_y_axis_walls += 1
-        if ((path[i][0], path[i][1] - 1) in additional_walls):
-            adjacent_y_axis_walls += 1
 
-        if (adjacent_x_axis_walls >= 2 or adjacent_y_axis_walls >= 2):
+        path_between_walls = check_pass_between_walls(data, (path[i][0] + 1, path[i][1]), snake_walls, border_walls, self_walls)
+
+        if (path_between_walls):
             #path in between 2 opposing walls
             return True
 
     return False
 
+
 def check_if_direction_in_between_walls(data, walls, direction):
     
     location = get_location_from_direction(direction, data['you']['body'][0]['x'], data['you']['body'][0]['y'])
 
-    additional_walls = walls[:]
+    snake_walls, border_walls, self_walls = seperate_walls(data,walls)
 
-    for i in range(2):
-        #remove start own body from single lane wall check
-        additional_walls.remove((data['you']['body'][i]['x'], data['you']['body'][i]['y']))
+    return check_pass_between_walls(data, location, snake_walls, border_walls, self_walls)
+
+
+def seperate_walls(data, walls):
+    snake_walls = walls[:]
+
+    self_walls = []
+
+    for i in range(0, len(data['you']['body'])):
+        #remove own body from walls
+        snake_walls.remove((data['you']['body'][i]['x'], data['you']['body'][i]['y']))
+
+        #ignore start of own body
+        if (i >= 2):
+            self_walls.append((data['you']['body'][i]['x'], data['you']['body'][i]['y']))
+
 
     #add border to walls
+    border_walls = []
     for i in range(data['board']['width']):
-        additional_walls.append((i, -1))
-        additional_walls.append((i, data['board']['height']))
+        border_walls.append((i, -1))
+        border_walls.append((i, data['board']['height']))
     
     for i in range(data['board']['height']):
-        additional_walls.append((-1, i))
-        additional_walls.append((data['board']['width'], i))
+        border_walls.append((-1, i))
+        border_walls.append((data['board']['width'], i))
 
-    adjacent_x_axis_walls = 0
-    adjacent_y_axis_walls = 0
-    if ((location[0] + 1, location[1]) in additional_walls):
-        adjacent_x_axis_walls += 1
-    if ((location[0] - 1, location[1]) in additional_walls):
-        adjacent_x_axis_walls += 1
-    if ((location[0], location[1] + 1) in additional_walls):
-        adjacent_y_axis_walls += 1
-    if ((location[0], location[1] - 1) in additional_walls):
-        adjacent_y_axis_walls += 1
+    return snake_walls, border_walls, self_walls
 
-    if (adjacent_x_axis_walls >= 2 or adjacent_y_axis_walls >= 2):
-        #path in between 2 opposing walls
+def check_pass_between_walls(data, location, snake_walls, border_walls, self_walls):
+
+    snake_x_axis_walls = 0
+    snake_y_axis_walls = 0
+    if ((location[0] + 1, location[1]) in snake_walls):
+        snake_x_axis_walls += 1
+    if ((location[0] - 1, location[1]) in snake_walls):
+        snake_x_axis_walls += 1
+    if ((location[0], location[1] + 1) in snake_walls):
+        snake_y_axis_walls += 1
+    if ((location[0], location[1] - 1) in snake_walls):
+        snake_y_axis_walls += 1
+
+    border_x_axis_walls = 0
+    border_y_axis_walls = 0
+    if ((location[0] + 1, location[1]) in border_walls):
+        border_x_axis_walls += 1
+    if ((location[0] - 1, location[1]) in border_walls):
+        border_x_axis_walls += 1
+    if ((location[0], location[1] + 1) in border_walls):
+        border_y_axis_walls += 1
+    if ((location[0], location[1] - 1) in border_walls):
+        border_y_axis_walls += 1
+
+    self_x_axis_walls = 0
+    self_y_axis_walls = 0
+    if ((location[0] + 1, location[1]) in self_walls):
+        self_x_axis_walls += 1
+    if ((location[0] - 1, location[1]) in self_walls):
+        self_x_axis_walls += 1
+    if ((location[0], location[1] + 1) in self_walls):
+        self_y_axis_walls += 1
+    if ((location[0], location[1] - 1) in self_walls):
+        self_y_axis_walls += 1
+
+    #passing between 2 snakes
+    if (snake_x_axis_walls >= 2 or snake_y_axis_walls >= 2):
+        return True
+
+    #passing between snake and border
+    if (snake_x_axis_walls == 1 and border_x_axis_walls == 1) or (snake_y_axis_walls == 1 and border_y_axis_walls == 1):
         return True
     
+    #passing between own body and snake
+    if (snake_x_axis_walls == 1 and self_x_axis_walls == 1) or (snake_y_axis_walls == 1 and self_y_axis_walls == 1):
+        return True
+
+    #passing between self and border ok
+
     return False
 
 def determine_if__snake_growing(data, snake_index):
