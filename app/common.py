@@ -153,6 +153,7 @@ def check_pass_between_walls(data, location, snake_walls, border_walls, self_wal
         return True
 
     #passing between self and border ok
+    #passing between self and self ok
 
     return False
 
