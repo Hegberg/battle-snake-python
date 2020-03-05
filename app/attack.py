@@ -222,7 +222,7 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
         
     snake_relative_directions = get_directions(data['you']['body'][0]['x'], data['you']['body'][0]['y'], data['board']['snakes'][snake_cutoff_index]['body'][0]['x'], data['board']['snakes'][snake_cutoff_index]['body'][0]['y'])
     #border going up or down, create rectangle to right or left, depending on where snake is
-    if (border_direction == 'up' or border_direction == 'down'):
+    if ((border_direction == 'up' and 'up' in snake_relative_directions) or (border_direction == 'down' and 'down' in snake_relative_directions)):
 
         for direction in snake_relative_directions:
             #create box to left of cutoff
@@ -254,7 +254,7 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
 
             return False
 
-    if (border_direction == 'left' or border_direction == 'right'):
+    if ((border_direction == 'left' and 'left' in snake_relative_directions) or (border_direction == 'right' and 'right' in snake_relative_directions)):
 
         for direction in snake_relative_directions:
             #create box to up of cutoff
