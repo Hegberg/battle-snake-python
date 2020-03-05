@@ -235,13 +235,17 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                         if (not ((k,j) in walls)):
                             free_space += 1
             #create box to right of cutoff
-            if (direction == 'right'):
+            elif (direction == 'right'):
                 #along vertical line of cutoff wall
                 for j in range(border_paths[i][0][1], border_paths[i][len(border_paths[i]) - 1][1]):
                     #from left border to cutoff wall (horizontal line)
                     for k in range(border_paths[i][0][0] + 1, data['board']['width']): # +1 to avoid using border wall in free space calc
                         if (not ((k,j) in walls)):
                             free_space += 1
+
+            #else direction == up or down, and in such case return true, meaning too much free space
+            else:
+                return True
 
             print("Free space calculated: " + str(free_space) + " in direction: " + str(direction) + " border_direction: " + border_direction)
             #if too much free space, don't cutoff
@@ -263,13 +267,17 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                         if (not ((j,k) in walls)):
                             free_space += 1
             #create box to down of cutoff
-            if (direction == 'down'):
+            elif (direction == 'down'):
                 #along horizontal line of cutoff wall
                 for j in range(border_paths[i][0][0], border_paths[i][len(border_paths[i]) - 1][0]):
                     #from left border to cutoff wall (vertical line)
                     for k in range(border_paths[i][0][1] + 1, data['board']['height']): # +1 to avoid using border wall in free space calc
                         if (not ((j,k) in walls)):
                             free_space += 1
+            
+            #else direction == left or right, and in such case return true, meaning too much free space
+            else:
+                return True
 
             print("Free space calculated: " + str(free_space) + " in direction: " + str(direction) + " border_direction: " + border_direction)
             #if too much free space, don't cutoff
