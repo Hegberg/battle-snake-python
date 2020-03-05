@@ -31,7 +31,7 @@ def attack_chase(data, aStar, walls, survival_directions):
                 #print("Attack Path is before wall check: " + str(path))
                 single_lane = check_if_path_in_between_walls(data, path, walls)
                 if (single_lane):
-                    print("Attack Path is between walls, ignore it: " + str(path))
+                    #print("Attack Path is between walls, ignore it: " + str(path))
                     path = None
 
             if (path != None and (shortest_path == None or len(path) < len(shortest_path))):
@@ -42,7 +42,7 @@ def attack_chase(data, aStar, walls, survival_directions):
         chase_directions = get_directions(data['you']['body'][0]['x'],data['you']['body'][0]['y'], 
                                     shortest_path[1][0], shortest_path[1][1])
 
-        print("Path to chasing snake " + snake_following_name + " head direction = " + str(chase_directions))
+        print("Path to chasing snake " + snake_following_name + " head direction = " + str(chase_directions) + " on path: " + str(shortest_path))
 
         return chase_directions
 
@@ -228,8 +228,10 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
             #create box to left of cutoff
             free_space = 0
             
-            j_start = border_paths[i][0][0]
-            j_stop = border_paths[i][len(border_paths[i]) - 1][0]
+            #start at head for free space calculations
+            j_start = data['you']['body'][0]['y']
+            #j_start = border_paths[i][0][1]
+            j_stop = border_paths[i][len(border_paths[i]) - 1][1]
             if (border_direction == 'up'):
                 j_stop -= 1
                 step = -1
@@ -271,7 +273,9 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
             #create box to up of cutoff
             free_space = 0
 
-            j_start = border_paths[i][0][0]
+            #start at head for free space calculations
+            j_start = data['you']['body'][0]['x']
+            #j_start = border_paths[i][0][0]
             j_stop = border_paths[i][len(border_paths[i]) - 1][0]
             if (border_direction == 'left'):
                 j_stop -= 1
