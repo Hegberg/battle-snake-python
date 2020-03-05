@@ -84,7 +84,9 @@ def seperate_walls(data, walls):
 
     for i in range(0, len(data['you']['body'])):
         #remove own body from walls
-        snake_walls.remove((data['you']['body'][i]['x'], data['you']['body'][i]['y']))
+        #check to make sure not trying to remove tail or growing tail that is not included
+        if ((data['you']['body'][i]['x'], data['you']['body'][i]['y']) in snake_walls):
+            snake_walls.remove((data['you']['body'][i]['x'], data['you']['body'][i]['y']))
 
         #ignore start of own body
         if (i >= 2):
