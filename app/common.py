@@ -87,6 +87,42 @@ def check_if_path_in_between_walls(data, path, walls):
 
     return False
 
+def check_if_direction_in_between_walls(data, walls, direction):
+    
+    location = get_location_from_direction(direction, data['you']['body'][0]['x'], data['you']['body'][0]['y'])
+
+    additional_walls = walls[:]
+
+    for i in range(2):
+        #remove start own body from single lane wall check
+        additional_walls.remove((data['you']['body'][i]['x'], data['you']['body'][i]['y']))
+
+    #add border to walls
+    for i in range(data['board']['width']):
+        additional_walls.append((i, -1))
+        additional_walls.append((i, data['board']['height']))
+    
+    for i in range(data['board']['height']):
+        additional_walls.append((-1, i))
+        additional_walls.append((data['board']['width'], i))
+
+    adjacent_x_axis_walls = 0
+    adjacent_y_axis_walls = 0
+    if ((location[0] + 1, location[1]) in additional_walls):
+        adjacent_x_axis_walls += 1
+    if ((location[0] - 1, location[1]) in additional_walls):
+        adjacent_x_axis_walls += 1
+    if ((location[0], location[1] + 1) in additional_walls):
+        adjacent_y_axis_walls += 1
+    if ((location[0], location[1] - 1) in additional_walls):
+        adjacent_y_axis_walls += 1
+
+    if (adjacent_x_axis_walls >= 2 or adjacent_y_axis_walls >= 2):
+        #path in between 2 opposing walls
+        return True
+    
+    return False
+
 def determine_if__snake_growing(data, snake_index):
     if (len(data['board']['snakes'][snake_index]) > 2):
         t1_x = data['board']['snakes'][snake_index]['body'][len(data['board']['snakes'][snake_index]['body']) - 1]['x']

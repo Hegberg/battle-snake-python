@@ -124,8 +124,10 @@ def flood_fill(data, walls, available_directions):
                     if (matrix[j][k] == 2):
                         flood_size += 1
             print("Up flood size: ", flood_size)
+            """
             for k in range(len(flood_matrix)):
                 print("Flood Matrix Up " + str(i) + ": " + str(flood_matrix[k]))
+            """
             flood_directions.append(('up',flood_size))
 
         elif (available_directions[i] == 'down'):
@@ -135,8 +137,10 @@ def flood_fill(data, walls, available_directions):
                     if (matrix[j][k] == 2):
                         flood_size += 1
             print("Down flood size: ", flood_size)
+            """
             for k in range(len(flood_matrix)):
                 print("Flood Matrix Down " + str(i) + ": " + str(flood_matrix[k]))
+            """
             flood_directions.append(('down',flood_size))
         
         elif (available_directions[i] == 'left'):
@@ -146,8 +150,10 @@ def flood_fill(data, walls, available_directions):
                     if (matrix[j][k] == 2):
                         flood_size += 1
             print("Left flood size: ", flood_size)
+            """
             for k in range(len(flood_matrix)):
                 print("Flood Matrix Left " + str(i) + ": " + str(flood_matrix[k]))
+            """
             flood_directions.append(('left',flood_size))
 
         elif (available_directions[i] == 'right'):
@@ -157,8 +163,10 @@ def flood_fill(data, walls, available_directions):
                     if (matrix[j][k] == 2):
                         flood_size += 1
             print("Right flood size: ", flood_size)
+            """
             for k in range(len(flood_matrix)):
                 print("Flood Matrix Right " + str(i) + ": " + str(flood_matrix[k]))
+            """
             flood_directions.append(('right',flood_size))
     
     largest_flood = ['', 0]

@@ -3,9 +3,9 @@ from app.a_star import AStar
 from app.common import get_directions
 from app.common import check_if_path_in_between_walls
 
-def consumption_choices(data, directions, aStar, walls):
+def consumption_choices(data, aStar, walls):
     
-    nearest_food_directions, nearest_food = locate_food(data['you']['body'][0]['x'], data['you']['body'][0]['y'], data, directions, aStar, walls)
+    nearest_food_directions, nearest_food = locate_food(data['you']['body'][0]['x'], data['you']['body'][0]['y'], data, aStar, walls)
 
     if (nearest_food_directions != None):
         #return directions of nearest food
@@ -14,7 +14,7 @@ def consumption_choices(data, directions, aStar, walls):
 
     return None, None
 
-def locate_food(x,y,data,directions, aStar, walls):
+def locate_food(x,y,data, aStar, walls):
 
     food = []
     

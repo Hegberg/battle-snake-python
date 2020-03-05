@@ -16,6 +16,7 @@ from app.a_star import AStar
 from app.a_star import init_astar
 
 from app.common import directions1_in_directions2
+from app.common import check_if_direction_in_between_walls
 
 from app.collision_avoidance import avoid_death_collisions
 
@@ -31,7 +32,7 @@ def get_move(data):
     #check spacing
     spacing_directions, can_follow_tail = get_spacing_directions(data, aStar, walls, survival_directions, growing)
 
-    food_directions, nearest_food = consumption_choices(data, survival_directions, aStar, walls)
+    food_directions, nearest_food = consumption_choices(data, aStar, walls)
 
     consumption_directions = directions1_in_directions2(food_directions, survival_directions) 
     print("Food move after survival direction clear: ", consumption_directions)
@@ -208,6 +209,20 @@ def get_spacing_directions(data, aStar, walls, survival_directions, growing):
                 spacing_directions.append(direction)
         print("Area Flood after normal flood and tail follow fail: ", spacing_directions)
 
+    #if multiple spacing options
+    #check if any spacing directions go through single path, if they do remove that option
+    if (len(spacing_directions) > 1):
+        space_directions_before_single_lane = spacing_directions[:]
+        for direction in space_directions_before_single_lane:
+            if (check_if_direction_in_between_walls(data, walls, direction)):
+                space_directions_before_single_lane.remove(direction)
+
+        #if directions still exist that are not of single path use new directions, 
+        #otherwise use directions before check
+        print("Spaces not part of single lane: " + str(space_directions_before_single_lane))
+        if (len(space_directions_before_single_lane) > 0):
+            spacing_directions = space_directions_before_single_lane
+            print("Spacing directions after single lane filter: " + str(spacing_directions))
 
     return spacing_directions, can_follow_tail
 

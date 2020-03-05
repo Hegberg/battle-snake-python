@@ -381,7 +381,8 @@ def flood_fill_snake(data, walls, snake_index):
     #set head of snake to not a wall so flood fill calculates correctly
     matrix[x][y] = 0
 
-    flood_size = 0
+    #-1 not 0 to accomidate for removing head from walls 
+    flood_size =  -1
     flood_matrix = flood_fill_recursive(matrix, x, y)
     for j in range(len(matrix)):
         for k in range(len(matrix[j])):
