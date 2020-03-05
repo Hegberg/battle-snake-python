@@ -59,7 +59,7 @@ def check_if_path_in_between_walls(data, path, walls):
 
     for i in range(1, len(path)):
 
-        path_between_walls = check_pass_between_walls(data, (path[i][0] + 1, path[i][1]), snake_walls, border_walls, self_walls)
+        path_between_walls = check_pass_between_walls(data, (path[i][0], path[i][1]), snake_walls, border_walls, self_walls)
 
         if (path_between_walls):
             #path in between 2 opposing walls
