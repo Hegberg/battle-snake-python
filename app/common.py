@@ -190,15 +190,14 @@ def get_straight_path_directions_to_border(data, walls, moveable_directions):
 
     for direction in moveable_directions:
 
-        cur_x = data['you']['body'][0]['x']
-        cur_y = data['you']['body'][0]['y']
-
         hit_wall = False
         hit_border = False
 
         straight_path = []
         
         if (direction == 'up'):
+            cur_x = data['you']['body'][0]['x']
+            cur_y = data['you']['body'][0]['y']
             #moving up, keep checking if in walls
             while (not hit_wall and not hit_border):
                 cur_y -= 1
@@ -214,6 +213,8 @@ def get_straight_path_directions_to_border(data, walls, moveable_directions):
                 border_directions.append('up')
 
         if (direction == 'down'):
+            cur_x = data['you']['body'][0]['x']
+            cur_y = data['you']['body'][0]['y']
             #moving down, keep checking if in walls
             while (not hit_wall and not hit_border):
                 cur_y += 1
@@ -228,6 +229,8 @@ def get_straight_path_directions_to_border(data, walls, moveable_directions):
                 border_directions.append('down')
 
         if (direction == 'left'):
+            cur_x = data['you']['body'][0]['x']
+            cur_y = data['you']['body'][0]['y']
             #moving left, keep checking if in walls
             while (not hit_wall and not hit_border):
                 cur_x -= 1
@@ -242,6 +245,8 @@ def get_straight_path_directions_to_border(data, walls, moveable_directions):
                 border_directions.append('left')
 
         if (direction == 'right'):
+            cur_x = data['you']['body'][0]['x']
+            cur_y = data['you']['body'][0]['y']
             #moving right, keep checking if in walls
             while (not hit_wall and not hit_border):
                 cur_x += 1
