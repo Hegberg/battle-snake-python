@@ -127,6 +127,11 @@ def flood_fill(data, walls, available_directions):
             """
             for k in range(len(flood_matrix)):
                 print("Flood Matrix Up " + str(i) + ": " + str(flood_matrix[k]))
+            for j in range(len(flood_matrix[0])):
+                print("Flood Matrix Up: ", , end='')
+                for k in range(len(flood_matrix)):
+                    print(str(flood_matrix[k][j]) + " " , end='')
+                print(" ")
             """
             flood_directions.append(('up',flood_size))
 
@@ -140,6 +145,11 @@ def flood_fill(data, walls, available_directions):
             """
             for k in range(len(flood_matrix)):
                 print("Flood Matrix Down " + str(i) + ": " + str(flood_matrix[k]))
+            for j in range(len(flood_matrix[0])):
+                print("Flood Matrix Down: ", , end='')
+                for k in range(len(flood_matrix)):
+                    print(str(flood_matrix[k][j]) + " " , end='')
+                print(" ")
             """
             flood_directions.append(('down',flood_size))
         
@@ -153,6 +163,11 @@ def flood_fill(data, walls, available_directions):
             """
             for k in range(len(flood_matrix)):
                 print("Flood Matrix Left " + str(i) + ": " + str(flood_matrix[k]))
+            for j in range(len(flood_matrix[0])):
+                print("Flood Matrix Left: ", , end='')
+                for k in range(len(flood_matrix)):
+                    print(str(flood_matrix[k][j]) + " " , end='')
+                print(" ")
             """
             flood_directions.append(('left',flood_size))
 
@@ -166,6 +181,11 @@ def flood_fill(data, walls, available_directions):
             """
             for k in range(len(flood_matrix)):
                 print("Flood Matrix Right " + str(i) + ": " + str(flood_matrix[k]))
+            for j in range(len(flood_matrix[0])):
+                print("Flood Matrix Right: ", , end='')
+                for k in range(len(flood_matrix)):
+                    print(str(flood_matrix[k][j]) + " " , end='')
+                print(" ")
             """
             flood_directions.append(('right',flood_size))
     

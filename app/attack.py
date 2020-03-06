@@ -248,8 +248,8 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                             free_space += 1
 
                 print("Direction left border up/down")
-                for k in range(0, border_paths[i][0][0]):
-                    for j in range(j_start, j_stop, step):
+                for j in range(j_start, j_stop, step):
+                    for k in range(0, border_paths[i][0][0]):
                         if (not ((k,j) in walls)):
                             print("0 " , end='')
                         else:
@@ -266,8 +266,8 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                             free_space += 1
 
                 print("Direction right border up/down")
-                for k in range(border_paths[i][0][0] + 1, data['board']['width']):
-                    for j in range(j_start, j_stop, step):
+                for j in range(j_start, j_stop, step):
+                    for k in range(border_paths[i][0][0] + 1, data['board']['width']):
                         if (not ((k,j) in walls)):
                             print("0 " , end='')
                         else:
@@ -409,11 +409,12 @@ def get_snake_path_to_tail(data, walls, border_paths, snake_cutoff_index, border
     return snake_head_to_tail_path, snake_head_to_you_tail_path
 
 #return true if large enough area for it too survive, false otherwise
-def flood_fill_snake(data, walls, snake_index):
+def flood_fill_snake(data, walls, snake_index, cutoff_path):
     x = data['board']['snakes'][snake_index]['body'][0]['x']
     y = data['board']['snakes'][snake_index]['body'][0]['y']
 
     flood_directions = []
+    flood_walls = walls[:]
 
     matrix = []
     for j in range(data['board']['width']):
@@ -421,10 +422,13 @@ def flood_fill_snake(data, walls, snake_index):
         for k in range(data['board']['height']):
             row.append(0)
         matrix.append(row)
+
+    for location in cutoff_path:
+        flood_walls.append(location)
             
     for j in range(len(walls)):
         #access by column, row
-        matrix[walls[j][0]][walls[j][1]] = 1
+        matrix[flood_walls[j][0]][flood_walls[j][1]] = 1
 
     #set head of snake to not a wall so flood fill calculates correctly
     matrix[x][y] = 0
@@ -437,9 +441,11 @@ def flood_fill_snake(data, walls, snake_index):
             if (matrix[j][k] == 2):
                 flood_size += 1
     print("Cutoff flood size: ", flood_size)
-    for k in range(len(flood_matrix)):
-        print("Flood Matrix Cutoff: " + str(flood_matrix[k]))
-    
+    for j in range(len(flood_matrix[0])):
+        print("Flood Matrix Cutoff: ", , end='')
+        for k in range(len(flood_matrix)):
+            print(str(flood_matrix[k][j]) + " " , end='')
+        print(" ")
     #to accomidate for not adding head to flood walls
     flood_size -= 1
 
