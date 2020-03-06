@@ -285,8 +285,8 @@ def get_directions_with_space_and_collision_merge(preferred_directions, spacing_
 
     survival_and_spacing_directions = []
     #if no viable spaces that give good space and avoid head on collisions, try to get to open space first
-    if (len(preffered_and_spacing_directions) > 0 and len(survival_directions) > 0):
-        survival_and_spacing_directions = directions1_in_directions2(preffered_and_spacing_directions, survival_directions)
+    if (len(no_head_collision_and_preffered_directions) > 0 and len(survival_directions) > 0):
+        survival_and_spacing_directions = directions1_in_directions2(no_head_collision_and_preffered_directions, survival_directions)
         print("Directions after space and survival direction merge 9: " + str(survival_and_spacing_directions))
     
     #no valid merge between spacing and survival, use survival
