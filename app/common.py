@@ -212,7 +212,7 @@ def get_straight_path_directions_to_border(data, walls, moveable_directions):
             if (hit_border and not hit_wall):
                 border_directions.append('up')
             else:
-                border_directions = []
+                straight_path = []
 
         elif (direction == 'down'):
             cur_x = data['you']['body'][0]['x']
@@ -230,7 +230,7 @@ def get_straight_path_directions_to_border(data, walls, moveable_directions):
             if (hit_border and not hit_wall):
                 border_directions.append('down')
             else:
-                border_directions = []
+                straight_path = []
 
         elif (direction == 'left'):
             cur_x = data['you']['body'][0]['x']
@@ -248,7 +248,7 @@ def get_straight_path_directions_to_border(data, walls, moveable_directions):
             if (hit_border and not hit_wall):
                 border_directions.append('left')
             else:
-                border_directions = []
+                straight_path = []
 
         elif (direction == 'right'):
             cur_x = data['you']['body'][0]['x']
@@ -266,7 +266,7 @@ def get_straight_path_directions_to_border(data, walls, moveable_directions):
             if (hit_border and not hit_wall):
                 border_directions.append('right')
             else:
-                border_directions = []
+                straight_path = []
 
         if (len(straight_path) > 0):
             straight_paths.append(straight_path)
