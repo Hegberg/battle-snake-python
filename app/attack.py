@@ -250,7 +250,7 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                 print("Direction left border up/down")
                 for k in range(0, border_paths[i][0][0]):
                     for j in range(j_start, j_stop, step):
-                        if (not ((j,k) in walls)):
+                        if (not ((k,j) in walls)):
                             print("0 " , end='')
                         else:
                             print("1 " , end='')
@@ -268,7 +268,7 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                 print("Direction right border up/down")
                 for k in range(border_paths[i][0][0] + 1, data['board']['width']):
                     for j in range(j_start, j_stop, step):
-                        if (not ((j,k) in walls)):
+                        if (not ((k,j) in walls)):
                             print("0 " , end='')
                         else:
                             print("1 " , end='')
