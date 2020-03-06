@@ -248,39 +248,39 @@ def get_directions_with_space_and_collision_merge(preferred_directions, spacing_
     print("No Head Collision directions: " + str(no_head_collisions_directions))
     print("Survival directions: " + str(survival_directions))
 
-    no_head_collision_and_preffered_directions = []
-    #prefered directions viable after taking into account collisions
-    if (len(preferred_directions) > 0 and len(no_head_collisions_directions) > 0):
-        no_head_collision_and_preffered_directions = directions1_in_directions2(preferred_directions, no_head_collisions_directions)
-        print("Directions after no collision and prefferred direction merge 1: " + str(no_head_collision_and_preffered_directions))
-    elif (len(no_head_collisions_directions) > 0):
-        no_head_collision_and_preffered_directions = no_head_collisions_directions
-        print("Directions after no collision and prefferred direction merge 2: " + str(no_head_collision_and_preffered_directions))
-    else:
-        no_head_collision_and_preffered_directions = preferred_directions
-        print("Directions after no collision and prefferred direction merge 3: " + str(no_head_collision_and_preffered_directions))
-
-    #if no valid merge between the collision and preffered, and collision has options, use that as collision and preffered directions
-    if (len(no_head_collision_and_preffered_directions) == 0 and len(no_head_collisions_directions) > 0):
-        no_head_collision_and_preffered_directions = no_head_collisions_directions
-        print("Directions after no collision and prefferred direction merge 4: " + str(no_head_collisions_directions))
-
     preffered_and_spacing_directions = []
-    #(head on and preffered) taking into account spacing
-    if ((len(spacing_directions) > 0) and len(no_head_collision_and_preffered_directions) > 0):
-        preffered_and_spacing_directions = directions1_in_directions2(spacing_directions, no_head_collision_and_preffered_directions)
-        print("Directions after space and prefferred direction merge 5: " + str(preffered_and_spacing_directions))
+    #prefered directions viable after taking into account collisions
+    if (len(preferred_directions) > 0 and len(spacing_directions) > 0):
+        preffered_and_spacing_directions = directions1_in_directions2(preferred_directions, spacing_directions)
+        print("Directions after space and prefferred direction merge 1: " + str(preffered_and_spacing_directions))
     elif (len(spacing_directions) > 0):
         preffered_and_spacing_directions = spacing_directions
-        print("Directions after space and prefferred direction merge 6: " + str(preffered_and_spacing_directions))
+        print("Directions after space and prefferred direction merge 2: " + str(preffered_and_spacing_directions))
     else:
-        preffered_and_spacing_directions = no_head_collision_and_preffered_directions
-        print("Directions after space and prefferred direction merge 7: " + str(preffered_and_spacing_directions))
-    
-    #if no valid merge between the spacing and preffered, and spacing has options, use that as spacing and preffered directions
+        preffered_and_spacing_directions = preferred_directions
+        print("Directions after space and prefferred direction merge 3: " + str(preffered_and_spacing_directions))
+
+    #if no valid merge between the collision and preffered, and collision has options, use that as collision and preffered directions
     if (len(preffered_and_spacing_directions) == 0 and len(spacing_directions) > 0):
         preffered_and_spacing_directions = spacing_directions
-        print("Directions after space and prefferred direction merge 8: " + str(preffered_and_spacing_directions))
+        print("Directions after no collision and prefferred direction merge 4: " + str(spacing_directions))
+
+    no_head_collision_and_preffered_directions = []
+    #(head on and preffered) taking into account spacing
+    if ((len(no_head_collisions_directions) > 0) and len(preffered_and_spacing_directions) > 0):
+        no_head_collision_and_preffered_directions = directions1_in_directions2(no_head_collisions_directions, preffered_and_spacing_directions)
+        print("Directions after no collision and prefferred direction merge 5: " + str(no_head_collision_and_preffered_directions))
+    elif (len(no_head_collisions_directions) > 0):
+        no_head_collision_and_preffered_directions = no_head_collisions_directions
+        print("Directions after no collision and prefferred direction merge 6: " + str(no_head_collision_and_preffered_directions))
+    else:
+        no_head_collision_and_preffered_directions = preffered_and_spacing_directions
+        print("Directions after no collision and prefferred direction merge 7: " + str(no_head_collision_and_preffered_directions))
+    
+    #if no valid merge between the spacing and collision, and spacing has options, use that as spacing and collision directions
+    if (len(no_head_collision_and_preffered_directions) == 0 and len(no_head_collisions_directions) > 0):
+        no_head_collision_and_preffered_directions = no_head_collisions_directions
+        print("Directions after no collision and prefferred direction merge 8: " + str(no_head_collision_and_preffered_directions))
 
 
     survival_and_spacing_directions = []

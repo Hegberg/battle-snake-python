@@ -255,6 +255,10 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                         if (not ((k,j) in walls)):
                             free_space += 1
 
+            #else not right or left so go to start of loop
+            else:
+                continue
+
             print("Free space calculated: " + str(free_space) + " in direction: " + str(direction) + " border_direction: " + border_direction)
             print("Border path used: " + str(border_paths[i]))
             #if too much free space, don't cutoff
@@ -300,6 +304,9 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                             free_space += 1
             
             
+            #else not up or down so go to start of loop
+            else:
+                continue
 
             print("Free space calculated: " + str(free_space) + " in direction: " + str(direction) + " border_direction: " + border_direction)
             print("Border path used: " + str(border_paths[i]))
