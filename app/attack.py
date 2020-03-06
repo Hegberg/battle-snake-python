@@ -8,6 +8,11 @@ from app.a_star import AStar
 
 from app.survive import flood_fill_recursive
 
+
+#TODO
+#if path too tail too long, longer than own body size???
+#or wraps around my own body or something
+#than just head to snake general direction
 def attack_chase(data, aStar, walls, survival_directions):
     chase_directions = []
     shortest_path = None
