@@ -128,7 +128,7 @@ def flood_fill(data, walls, available_directions):
             for k in range(len(flood_matrix)):
                 print("Flood Matrix Up " + str(i) + ": " + str(flood_matrix[k]))
             for j in range(len(flood_matrix[0])):
-                print("Flood Matrix Up: ", , end='')
+                print("Flood Matrix Up: ", end='')
                 for k in range(len(flood_matrix)):
                     print(str(flood_matrix[k][j]) + " " , end='')
                 print(" ")
@@ -146,7 +146,7 @@ def flood_fill(data, walls, available_directions):
             for k in range(len(flood_matrix)):
                 print("Flood Matrix Down " + str(i) + ": " + str(flood_matrix[k]))
             for j in range(len(flood_matrix[0])):
-                print("Flood Matrix Down: ", , end='')
+                print("Flood Matrix Down: ", end='')
                 for k in range(len(flood_matrix)):
                     print(str(flood_matrix[k][j]) + " " , end='')
                 print(" ")
@@ -164,7 +164,7 @@ def flood_fill(data, walls, available_directions):
             for k in range(len(flood_matrix)):
                 print("Flood Matrix Left " + str(i) + ": " + str(flood_matrix[k]))
             for j in range(len(flood_matrix[0])):
-                print("Flood Matrix Left: ", , end='')
+                print("Flood Matrix Left: ", end='')
                 for k in range(len(flood_matrix)):
                     print(str(flood_matrix[k][j]) + " " , end='')
                 print(" ")
@@ -182,7 +182,7 @@ def flood_fill(data, walls, available_directions):
             for k in range(len(flood_matrix)):
                 print("Flood Matrix Right " + str(i) + ": " + str(flood_matrix[k]))
             for j in range(len(flood_matrix[0])):
-                print("Flood Matrix Right: ", , end='')
+                print("Flood Matrix Right: ", end='')
                 for k in range(len(flood_matrix)):
                     print(str(flood_matrix[k][j]) + " " , end='')
                 print(" ")
