@@ -144,7 +144,7 @@ def attack_cutoff(data, aStar, walls, survival_directions):
 
         #if both paths don't exist, flood fill area too see if small enough (< body size) to trap snake
         if (snake_head_to_tail_path == None and snake_path_to_you_tail == None):
-            if (flood_fill_snake(data, walls, snake_cutoff_index)):
+            if (flood_fill_snake(data, walls, snake_cutoff_index, border_paths[i])):
                 print("Too large of area to for snake to survive in, don't cutoff in direction: " + str(border_directions[i]))
                 continue
 
