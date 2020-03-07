@@ -9,7 +9,7 @@ def avoid_death_collisions(data, walls, survival_directions):
     self_len = len(data['you']['body'])
 
     food_collision_modifier = 1
-    large_snake_collision_modifier = 3
+    large_snake_collision_modifier = 2
 
     for i in range(len(data['board']['snakes'])):
         if (data['board']['snakes'][i]['id'] == data['you']['id']):
