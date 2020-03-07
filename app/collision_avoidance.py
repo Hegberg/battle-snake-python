@@ -2,16 +2,23 @@ from app.common import add_to_dict
 
 def avoid_death_collisions(data, walls, survival_directions):
     #get list of heads of other snakes that are equal or larger to me in size
-    head_list = []
+    same_size_head_list = []
+    large_size_head_list = []
     self_len = len(data['you']['body'])
+
+    food_collision_modifier = 1
+    large_snake_collision_modifier = 2
 
     for i in range(len(data['board']['snakes'])):
         if (data['board']['snakes'][i]['id'] == data['you']['id']):
             continue #skip self
 
         #if larger or equal size, add to list
-        if (len(data['board']['snakes'][i]['body']) >= self_len):
-            head_list.append((data['board']['snakes'][i]['body'][0]['x'], data['board']['snakes'][i]['body'][0]['y']))
+        if (len(data['board']['snakes'][i]['body']) == self_len):
+            same_size_head_list.append((data['board']['snakes'][i]['body'][0]['x'], data['board']['snakes'][i]['body'][0]['y']))
+        
+        elif (len(data['board']['snakes'][i]['body']) >= self_len):
+            large_size_head_list.append((data['board']['snakes'][i]['body'][0]['x'], data['board']['snakes'][i]['body'][0]['y']))
 
     #get spaces they can move to that is not walls, and if tile has food
     #if there is food, try to choose any move but that one, since they will most likely go for food
@@ -21,9 +28,9 @@ def avoid_death_collisions(data, walls, survival_directions):
     for i in range(len(data['board']['food'])):
         food_spots.append((data['board']['food'][i]['x'], data['board']['food'][i]['y']))
 
-    for i in range(len(head_list)):
-        x = head_list[i][0]
-        y = head_list[i][1]
+    for i in range(len(same_size_head_list)):
+        x = same_size_head_list[i][0]
+        y = same_size_head_list[i][1]
         if (x > 0):
             add_to_dict(x - 1, y, snake_movements)
         if (x < data['board']['width'] - 1):
@@ -33,14 +40,24 @@ def avoid_death_collisions(data, walls, survival_directions):
         if (y < data['board']['height'] - 1):
             add_to_dict(x, y + 1, snake_movements)
 
+    for i in range(len(large_size_head_list)):
+        x = large_size_head_list[i][0]
+        y = large_size_head_list[i][1]
+        if (x > 0):
+            add_to_dict(x - 1, y, snake_movements, large_snake_collision_modifier)
+        if (x < data['board']['width'] - 1):
+            add_to_dict(x + 1, y, snake_movements, large_snake_collision_modifier)
+        if (y > 0):
+            add_to_dict(x, y - 1, snake_movements, large_snake_collision_modifier)
+        if (y < data['board']['height'] - 1):
+            add_to_dict(x, y + 1, snake_movements, large_snake_collision_modifier)
+
 
     #find spaces that coincide with my movement     
     collision_spots = {}
 
     pos_x = data['you']['body'][0]['x']
     pos_y = data['you']['body'][0]['y']
-
-    food_collision_modifier = 1
 
     for i in range(len(survival_directions)):
         #need to move down to go up in y terms

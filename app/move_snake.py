@@ -99,6 +99,9 @@ def get_move(data):
 #with a small amount to spare, go to food
 #otherwise attack
 #currently just check if health is above decent value
+
+#TODO
+#if multiple attack directions, choose one that will next turn keep me able to continue chasing the opponents head
 def get_attack_directions(data, aStar, walls, survival_directions):
     attack_directions = []
 
@@ -213,7 +216,7 @@ def get_spacing_directions(data, aStar, walls, survival_directions, growing):
     #check if any spacing directions go through single path, if they do remove that option
     if (len(spacing_directions) > 1):
         space_directions_before_single_lane = spacing_directions[:]
-        for direction in space_directions_before_single_lane:
+        for direction in spacing_directions: #use spacing directions as in check so don't remove elemts while iterating through and missing some
             if (check_if_direction_in_between_walls(data, walls, direction)):
                 space_directions_before_single_lane.remove(direction)
 
