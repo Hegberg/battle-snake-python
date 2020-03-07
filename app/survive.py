@@ -221,6 +221,10 @@ def flood_fill_recursive(matrix, x, y):
         return matrix
     return matrix
 
+#TODO
+#if space between head and tail
+#remove body that gets in way to tail from walls in path if body would move out of way once head
+#arrvies at that location
 def find_own_tail_path(aStar, data, growing):
     #reset grid to have tail space as goal
     tail_x = data['you']['body'][len(data['you']['body']) - 1]['x']
