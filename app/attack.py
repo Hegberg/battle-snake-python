@@ -331,7 +331,7 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                     for k in range(border_paths[i][0][1] + 1, data['board']['height']): # +1 to avoid using border wall in free space calc
                         if (not ((j,k) in walls)):
                             free_space += 1
-                
+
                 print("Direction down border left/right")
                 for k in range(border_paths[i][0][1] + 1, data['board']['height']):
                     for j in range(j_start, j_stop, step):
