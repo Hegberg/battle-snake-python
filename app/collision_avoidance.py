@@ -1,7 +1,5 @@
 from app.common import add_to_dict
 
-#TODO
-#add, prefer collisions with snakes same size vs snakes of smaller size
 def avoid_death_collisions(data, walls, survival_directions):
     #get list of heads of other snakes that are equal or larger to me in size
     same_size_head_list = []
