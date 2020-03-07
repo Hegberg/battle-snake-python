@@ -46,11 +46,11 @@ def get_location_from_direction(direction, x, y):
 
     return None
 
-def add_to_dict(x, y, dict):
+def add_to_dict(x, y, dict, val = 1):
     if (not (x,y) in dict):
-        dict[(x,y)] = 1
+        dict[(x,y)] = val
     else:
-        dict[(x,y)] += 1
+        dict[(x,y)] += val
 
 #return true if path stuck between 2 walls
 def check_if_path_in_between_walls(data, path, walls):

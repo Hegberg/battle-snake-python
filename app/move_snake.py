@@ -99,6 +99,9 @@ def get_move(data):
 #with a small amount to spare, go to food
 #otherwise attack
 #currently just check if health is above decent value
+
+#TODO
+#if multiple attack directions, choose one that will next turn keep me able to continue chasing the opponents head
 def get_attack_directions(data, aStar, walls, survival_directions):
     attack_directions = []
 
