@@ -131,10 +131,9 @@ def block_head(data, aStar, walls, opposing_snake, survival_directions):
 
         if (path != None and (shortest_path == None or len(path) < len(shortest_path))):
             shortest_path = path
-            snake_following_name = str(data['board']['snakes'][opposing_snake]['name'])
 
     if (shortest_path == None):
-        print("No viable path to opposing snake " + str(snake_following_name) + " head to block")
+        print("No viable path to opposing snake " + str(data['board']['snakes'][opposing_snake]['name']) + " head to block")
         return None
 
     self_body = []
@@ -563,7 +562,7 @@ def flood_fill_snake(data, walls, snake_index, cutoff_path):
     for location in cutoff_path:
         flood_walls.append(location)
             
-    for j in range(len(walls)):
+    for j in range(len(flood_walls)):
         #access by column, row
         matrix[flood_walls[j][0]][flood_walls[j][1]] = 1
 
