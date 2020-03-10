@@ -162,6 +162,10 @@ def block_head(data, aStar, walls, opposing_snake, survival_directions):
 
     direction_to_border, path_to_border = get_shortest_direction_to_border(data, walls, shortest_path[body_adjacent_index])
 
+    if (direction_to_border == None or path_to_border == None):
+        print("No path to head of snake and too border")
+        return None
+
     #get flood fill of now blocked off area from perspective of opponent snake, if small enough, than do cutoff
     #otherwise, don't block
 
