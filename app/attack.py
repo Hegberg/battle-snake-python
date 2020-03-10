@@ -180,7 +180,7 @@ def block_body(data, aStar, walls, opposing_snake, survival_directions):
 def maintian_block(data, aStar, walls, opposing_snake, survival_directions):
     return []
 
-def attack_collide(data, aStar, walls, survival_directions):
+def attack_collide(data, walls, survival_directions):
     #if can collide with snake and win, do it
     collide_directions = get_collide_directions(data, walls, survival_directions)
 
