@@ -59,9 +59,15 @@ def attack_chase(data, aStar, walls, survival_directions):
     # 2 2 2 2 2 2 0 0 0
     # 2 2 - > 0 0 0 0 0
 
+    #either need to follow own tail if they can't get out, to prevent them from getting out
+    wall_directions = create_wall()
+
     print("No path to chasing opposing snakes heads")
 
     return chase_directions
+
+def create_wall():
+    pass
 
 def attack_collide(data, walls, survival_directions):
     #if can collide with snake and win, do it
