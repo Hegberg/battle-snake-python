@@ -112,6 +112,9 @@ def create_wall(data, aStar, walls, opposing_snake, survival_directions):
     #for eating, find food closest to body loop, eat that if hungry
     maintian_block_directions = maintian_block(data, aStar, walls, opposing_snake, survival_directions)
 
+    #TODO
+    #choose path that keeps snake closest to cuting off opposing snake, to keep more area control, even if can't cutoff
+
     if (maintian_block_directions != None and len(maintian_block_directions) > 0):
         print("Maintaining blocking off opponent in directions: " + str(maintian_block_directions))
         return maintian_block_directions
@@ -162,6 +165,8 @@ def block_head(data, aStar, walls, opposing_snake, survival_directions):
     #from last place in path, find closest border to go to to block off
     print("Space blocking off head from: " + str(shortest_path[body_adjacent_index]))
 
+    #TODO
+    #shortest path isn't necessarily the one that blocks off snake, use one that is relative to snake directions as well
     direction_to_border, path_to_border = get_shortest_direction_to_border(data, walls, shortest_path[body_adjacent_index])
 
     if (direction_to_border == None or path_to_border == None):
@@ -176,6 +181,9 @@ def block_head(data, aStar, walls, opposing_snake, survival_directions):
         block_head_directions = get_directions(data['you']['body'][0]['x'], data['you']['body'][0]['y'], shortest_path[0][0], shortest_path[0][1]) 
         print("Blocking path: " + str(shortest_path) + " and to border path: " + str(path_to_border) + " in direction: " + str(block_head_directions) + " will trap opposing snake")
         return block_head_directions
+
+    #TODO
+    #even if floodfill too large, still keep them stuck in smaller area
 
     print("Unable to block off head in 1v1")
     return None
