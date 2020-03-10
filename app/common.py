@@ -276,3 +276,109 @@ def get_straight_path_directions_to_border(data, walls, moveable_directions):
 
 
     return border_directions, straight_paths
+
+def get_shortest_direction_to_border(data, walls, location):
+
+    border_directions = []
+
+    hit_wall = False
+    hit_border = False
+
+    straight_path = []
+    straight_paths = []
+
+    cur_x = location[0]
+    cur_y = location[1]
+    
+    #moving up, keep checking if in walls
+    while (not hit_wall and not hit_border):
+        cur_y -= 1
+        straight_path.append((cur_x, cur_y))
+        if ((cur_x, cur_y) in walls):
+            hit_wall = True
+            straight_path = []
+        if (cur_y < 0):
+            hit_border = True
+            straight_path.pop()
+
+    if (hit_border and not hit_wall):
+        border_directions.append('up')
+        straight_paths.append(straight_path)
+        straight_path = []
+    else:
+        straight_path = []
+
+    cur_x = location[0]
+    cur_y = location[1]
+    #moving down, keep checking if in walls
+    while (not hit_wall and not hit_border):
+        cur_y += 1
+        straight_path.append((cur_x, cur_y))
+        if ((cur_x, cur_y) in walls):
+            hit_wall = True
+        if (cur_y >= data['board']['height']):
+            hit_border = True
+            straight_path.pop()
+
+    if (hit_border and not hit_wall):
+        border_directions.append('down')
+        straight_paths.append(straight_path)
+        straight_path = []
+    else:
+        straight_path = []
+
+    cur_x = location[0]
+    cur_y = location[1]
+    #moving left, keep checking if in walls
+    while (not hit_wall and not hit_border):
+        cur_x -= 1
+        straight_path.append((cur_x, cur_y))
+        if ((cur_x, cur_y) in walls):
+            hit_wall = True
+        if (cur_x < 0):
+            hit_border = True
+            straight_path.pop()
+
+    if (hit_border and not hit_wall):
+        border_directions.append('left')
+        straight_paths.append(straight_path)
+        straight_path = []
+    else:
+        straight_path = []
+
+    cur_x = location[0]
+    cur_y = location[1]
+    #moving right, keep checking if in walls
+    while (not hit_wall and not hit_border):
+        cur_x += 1
+        straight_path.append((cur_x, cur_y))
+        if ((cur_x, cur_y) in walls):
+            hit_wall = True
+        if (cur_x >= data['board']['width']):
+            hit_border = True
+            straight_path.pop()
+
+    if (hit_border and not hit_wall):
+        border_directions.append('right')
+        straight_paths.append(straight_path)
+        straight_path = []
+    else:
+        straight_path = []
+
+    print("Possible block border directions: " + str(border_directions))
+    print("Possible block border paths: " + str(straight_paths))
+
+    if (len(straight_paths) == 0):
+        return None, None
+
+    short_path = straight_paths[0]
+    short_direction = border_directions[0]
+    for i in range(1, len(straight_paths)):
+        if (len(straight_paths[i]) < len(short_path)):
+            short_path = straight_paths[i]
+            short_direction = border_directions[i]
+
+    print("Block border direction: " + str(short_direction))
+    print("Block border path: " + str(short_path))
+
+    return short_direction, short_path

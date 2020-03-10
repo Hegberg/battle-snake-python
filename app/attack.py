@@ -3,6 +3,7 @@ from app.common import get_directions
 from app.common import check_if_path_in_between_walls
 from app.common import get_straight_path_directions_to_border
 from app.common import determine_if__snake_growing
+from app.common import get_shortest_direction_to_border
 
 from app.a_star import AStar
 
@@ -60,16 +61,126 @@ def attack_chase(data, aStar, walls, survival_directions):
     # 2 2 - > 0 0 0 0 0
 
     #either need to follow own tail if they can't get out, to prevent them from getting out
-    wall_directions = create_wall()
+    #or find where they can get out and create wall
+    
+    #if only 1 other snake
+    if (len(data['board']['snakes']) > 2):
+        print("No path to chasing opposing snakes heads")
+        return chase_directions
+
+    opposing_snake = -1
+    for i in range(len(data['board']['snakes'])):
+        if (data['board']['snakes'][i]['id'] != data['you']['id']):
+            opposing_snake = i
+            break
+
+    wall_in_directions = create_wall(data, aStar, walls, opposing_snake, survival_directions)
+
+    if (len(wall_in_directions) > 0):
+        chase_directions = wall_in_directions
+        print("Path to wall in snake " + snake_following_name + " head direction = " + str(chase_directions) + " on path: " + str(shortest_path))
+        return chase_directions
 
     print("No path to chasing opposing snakes heads")
 
     return chase_directions
 
-def create_wall():
-    pass
+def create_wall(data, aStar, walls, opposing_snake, survival_directions):
+    #block head
+    #find path to head
+    #find last space adjacent to my body
+    #find space in path including that spot or before that is not in between walls
+    #from that space, create a path to closest border to wall off snake
+    block_head_directions = block_head(data, aStar, walls, opposing_snake, survival_directions)
 
-def attack_collide(data, walls, survival_directions):
+    if (block_head_directions != None and lean(block_head_directions) > 0):
+        print("Blocking off head of opponent in directions: " + str(block_head_directions))
+        return block_head_directions
+
+    #fill in wall
+    #find path to any part of snake body
+    #find last space adjacent to my body
+    block_body_directions = block_body(data, aStar, walls, opposing_snake, survival_directions)
+
+    if (block_body_directions != None and lean(block_body_directions) > 0):
+        print("Blocking off body of opponent in directions: " + str(block_body_directions))
+        return block_body_directions
+
+    #if no paths to it's body, follow tail
+    #only follow tail, if they don't have path to my head (ie can't cut me off as I'm following my tail)
+    #for eating, find food closest to body loop, eat that if hungry
+    maintian_block_directions = maintian_block(data, aStar, walls, opposing_snake, survival_directions)
+
+    if (maintian_block_directions != None and lean(maintian_block_directions) > 0):
+        print("Maintaining blocking off opponent in directions: " + str(maintian_block_directions))
+        return maintian_block_directions
+
+    return []
+
+def block_head(data, aStar, walls, opposing_snake, survival_directions):
+    shortest_path = None
+    path = None
+
+    #get areas it's head can move to, try to move to closest one
+    possible_moves = get_opposing_snake_survival_moves(data, walls, opposing_snake)
+
+    for j in range(len(possible_moves)):
+        aStar.reset_grid((possible_moves[j][0], possible_moves[j][1]))
+        path = aStar.solve()
+
+        if (path != None and (shortest_path == None or len(path) < len(shortest_path))):
+            shortest_path = path
+            snake_following_name = str(data['board']['snakes'][opposing_snake]['name'])
+
+    if (shortest_path == None):
+        print("No viable path to opposing snake " + str(snake_following_name) + " head to block")
+        return None
+
+    self_body = []
+
+    for i in range(0, len(data['you']['body'])):
+        self_body.append((data['you']['body'][i]['x'], data['you']['body'][i]['y']))
+
+    #find last space adjacent to my body
+    body_adjacent_index = -1
+    for i in range(len(shortest_path) - 1, 0, -1):
+        if ((shortest_path[i][0] + 1, shortest_path[i][1]) in self_body):
+            body_adjacent_index = i
+            break
+        if ((shortest_path[i][0] - 1, shortest_path[i][1]) in self_body):
+            body_adjacent_index = i
+            break
+        if ((shortest_path[i][0], shortest_path[i][1] + 1) in self_body):
+            body_adjacent_index = i
+            break
+        if ((shortest_path[i][0], shortest_path[i][1] - 1) in self_body):
+            body_adjacent_index = i
+            break
+
+    #from last place in path, find closest border to go to to block off
+    print("Space blocking off head from: " + str(shortest_path[body_adjacent_index]))
+
+    direction_to_border, path_to_border = get_shortest_direction_to_border(data, walls, shortest_path[body_adjacent_index])
+
+    #get flood fill of now blocked off area from perspective of opponent snake, if small enough, than do cutoff
+    #otherwise, don't block
+
+    if (not (flood_fill_snake(data, walls, snake_index, path_to_border))):
+        #small enough area to trap snake
+        block_head_directions = get_directions(data['you']['body'][0]['x'], data['you']['body'][0]['y'], shortest_path[0][0], shortest_path[0][1]) 
+        print("Blocking path: " + str(shortest_path) + " and to border path: " + str(path_to_border) + " in direction: " + str(block_head_directions) + " will trap opposing snake")
+        return block_head_directions
+
+    print("Unable to block off head in 1v1")
+    return None
+
+def block_body(data, aStar, walls, opposing_snake, survival_directions):
+    return []
+
+def maintian_block(data, aStar, walls, opposing_snake, survival_directions):
+    return []
+
+def attack_collide(data, aStar, walls, survival_directions):
     #if can collide with snake and win, do it
     collide_directions = get_collide_directions(data, walls, survival_directions)
 
