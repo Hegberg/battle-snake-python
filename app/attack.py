@@ -136,6 +136,8 @@ def block_head(data, aStar, walls, opposing_snake, survival_directions):
         print("No viable path to opposing snake " + str(data['board']['snakes'][opposing_snake]['name']) + " head to block")
         return None
 
+    print("Shortest path to opposing snakes " + str(data['board']['snakes'][opposing_snake]['name']) + "head on path: " + str(shortest_path))
+
     self_body = []
 
     for i in range(0, len(data['you']['body'])):
