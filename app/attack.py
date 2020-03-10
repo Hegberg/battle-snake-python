@@ -53,6 +53,11 @@ def attack_chase(data, aStar, walls, survival_directions):
 
     #TODO
     #if no path to their head, but are only 1 other snake and still larger than them, go to cutoff
+    #find their exit path, and cutoff exit instead of going for food
+    # 1 1 1 1 - > 0 0 0
+    # 1 1 1 1 1 1 1 0 0
+    # 2 2 2 2 2 2 0 0 0
+    # 2 2 - > 0 0 0 0 0
 
     print("No path to chasing opposing snakes heads")
 
