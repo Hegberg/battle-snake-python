@@ -310,6 +310,8 @@ def get_shortest_direction_to_border(data, walls, location):
 
     cur_x = location[0]
     cur_y = location[1]
+    hit_wall = False
+    hit_border = False
     #moving down, keep checking if in walls
     while (not hit_wall and not hit_border):
         cur_y += 1
@@ -329,6 +331,8 @@ def get_shortest_direction_to_border(data, walls, location):
 
     cur_x = location[0]
     cur_y = location[1]
+    hit_wall = False
+    hit_border = False
     #moving left, keep checking if in walls
     while (not hit_wall and not hit_border):
         cur_x -= 1
@@ -348,6 +352,8 @@ def get_shortest_direction_to_border(data, walls, location):
 
     cur_x = location[0]
     cur_y = location[1]
+    hit_wall = False
+    hit_border = False
     #moving right, keep checking if in walls
     while (not hit_wall and not hit_border):
         cur_x += 1
