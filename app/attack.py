@@ -74,6 +74,7 @@ def attack_chase(data, aStar, walls, survival_directions):
             opposing_snake = i
             break
 
+    print("Creating wall to block in snake")
     wall_in_directions = create_wall(data, aStar, walls, opposing_snake, survival_directions)
 
     if (len(wall_in_directions) > 0):
@@ -93,7 +94,7 @@ def create_wall(data, aStar, walls, opposing_snake, survival_directions):
     #from that space, create a path to closest border to wall off snake
     block_head_directions = block_head(data, aStar, walls, opposing_snake, survival_directions)
 
-    if (block_head_directions != None and lean(block_head_directions) > 0):
+    if (block_head_directions != None and len(block_head_directions) > 0):
         print("Blocking off head of opponent in directions: " + str(block_head_directions))
         return block_head_directions
 
@@ -102,7 +103,7 @@ def create_wall(data, aStar, walls, opposing_snake, survival_directions):
     #find last space adjacent to my body
     block_body_directions = block_body(data, aStar, walls, opposing_snake, survival_directions)
 
-    if (block_body_directions != None and lean(block_body_directions) > 0):
+    if (block_body_directions != None and len(block_body_directions) > 0):
         print("Blocking off body of opponent in directions: " + str(block_body_directions))
         return block_body_directions
 
@@ -111,7 +112,7 @@ def create_wall(data, aStar, walls, opposing_snake, survival_directions):
     #for eating, find food closest to body loop, eat that if hungry
     maintian_block_directions = maintian_block(data, aStar, walls, opposing_snake, survival_directions)
 
-    if (maintian_block_directions != None and lean(maintian_block_directions) > 0):
+    if (maintian_block_directions != None and len(maintian_block_directions) > 0):
         print("Maintaining blocking off opponent in directions: " + str(maintian_block_directions))
         return maintian_block_directions
 
