@@ -165,7 +165,7 @@ def block_head(data, aStar, walls, opposing_snake, survival_directions):
     #get flood fill of now blocked off area from perspective of opponent snake, if small enough, than do cutoff
     #otherwise, don't block
 
-    if (not (flood_fill_snake(data, walls, snake_index, path_to_border))):
+    if (not (flood_fill_snake(data, walls, opposing_snake, path_to_border))):
         #small enough area to trap snake
         block_head_directions = get_directions(data['you']['body'][0]['x'], data['you']['body'][0]['y'], shortest_path[0][0], shortest_path[0][1]) 
         print("Blocking path: " + str(shortest_path) + " and to border path: " + str(path_to_border) + " in direction: " + str(block_head_directions) + " will trap opposing snake")
