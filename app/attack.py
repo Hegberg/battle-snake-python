@@ -51,6 +51,9 @@ def attack_chase(data, aStar, walls, survival_directions):
 
         return chase_directions
 
+    #TODO
+    #if no path to their head, but are only 1 other snake and still larger than them, go to cutoff
+
     print("No path to chasing opposing snakes heads")
 
     return chase_directions
@@ -64,6 +67,12 @@ def attack_collide(data, walls, survival_directions):
 
     return []
 
+#TODO
+#if snake like 1 1 1 1 1 1
+#              0 0 0 1 1 1
+#              2 2 2 2 2 2
+#              0 0 0 2 2 1
+#recognize the snake is on the border and i can still cut him off by going the relative direction to cut him off
 def attack_cutoff(data, aStar, walls, survival_directions):
 
     cutoff_directions = []
