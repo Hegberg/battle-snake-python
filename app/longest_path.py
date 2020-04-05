@@ -64,6 +64,7 @@ class LongestPath(object):
 
 		#attach current location onto front of path, return
 		longest_path_addition.insert(0, location)
+		print("Longest path addition: " + str(longest_path_addition))
 		return longest_path_addition
 
 
