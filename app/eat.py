@@ -41,7 +41,7 @@ def locate_food(x,y,data, aStar, walls):
         if (path != None):
             single_lane = check_if_path_in_between_walls(data, path, walls)
             if (single_lane):
-                print("Eat Path is between walls, ignore it: " + str(path))
+                #print("Eat Path is between walls, ignore it: " + str(path))
                 path = None
 
         #if path is good and is horter than other food paths, choose

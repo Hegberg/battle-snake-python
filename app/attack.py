@@ -372,7 +372,12 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
         
     snake_relative_directions = get_directions(data['you']['body'][0]['x'], data['you']['body'][0]['y'], data['board']['snakes'][snake_cutoff_index]['body'][0]['x'], data['board']['snakes'][snake_cutoff_index]['body'][0]['y'])
     #border going up or down, create rectangle to right or left, depending on where snake is
-    if ((border_direction == 'up' and 'up' in snake_relative_directions) or (border_direction == 'down' and 'down' in snake_relative_directions)):
+
+    #print("For border direction: " + str(border_direction) + " snake relative directions: " + str(snake_relative_directions))
+    #print("border_path: " str(border_paths[i]))
+
+    #if ((border_direction == 'up' and 'up' in snake_relative_directions) or (border_direction == 'down' and 'down' in snake_relative_directions)):
+    if ((border_direction == 'up') or (border_direction == 'down')):#snake can be below but still able to cut off up as an example
 
         for direction in snake_relative_directions:
             #create box to left of cutoff
@@ -439,7 +444,8 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
         #else direction == left or right, and in such case return true, meaning too much free space
         return True
 
-    if ((border_direction == 'left' and 'left' in snake_relative_directions) or (border_direction == 'right' and 'right' in snake_relative_directions)):
+    #if ((border_direction == 'left' and 'left' in snake_relative_directions) or (border_direction == 'right' and 'right' in snake_relative_directions)):
+    if ((border_direction == 'left') or (border_direction == 'right')):#snake can be to right but still able to cut off left as an example
 
         for direction in snake_relative_directions:
             #create box to up of cutoff

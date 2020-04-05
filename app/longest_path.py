@@ -19,10 +19,8 @@ class LongestPath(object):
 	def find_closest_tail(self):
 		closest_tail = None
 		closest_distance = None
-		print("first_space: " + str(self.first_space))
 		for i in range(len(self.data['board']['snakes'])):
 			tail = self.data['board']['snakes'][i]['body'][len(self.data['board']['snakes'][i]['body']) - 1]
-			print("Tail: " + str(tail))
 			distance = self.get_distance_between_points((tail['x'], tail['y']), self.first_space)
 			if (closest_tail == None):
 				closest_tail = (tail['x'], tail['y'])
