@@ -44,6 +44,8 @@ class LongestPath(object):
 
 	#find longest path, if tie, choose path closest to tail
 	def depth_first_search(self, matrix, location):
+		print("Traversable matrix: " + str(matrix))
+		print("location: " + str(location))
 
 		#if already visited or does not exist, return no path
 		if (not (location[0],location[1]) in matrix):
