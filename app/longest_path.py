@@ -44,7 +44,9 @@ class LongestPath(object):
 	#find longest path, if tie, choose path closest to tail
 	def depth_first_search(self, matrix, location):
 
-		#if already visited, return no path
+		#if already visited or does not exist, return no path
+		if (not (location[0],location[1]) in matrix):
+			return []
 		if (matrix[location[0]][location[1]] != 0):
 			return []
 
