@@ -9,8 +9,8 @@ class LongestPath(object):
 
 	def get_longest_path(self):
 
-		print("Traversable area: " + str(self.traversable_area))
-		print("first_space: " + str(self.first_space))
+		#print("Traversable area: " + str(self.traversable_area))
+		#print("first_space: " + str(self.first_space))
 
 		longest_path = self.depth_first_search(self.traversable_area, self.first_space)
 
@@ -44,8 +44,8 @@ class LongestPath(object):
 
 	#find longest path, if tie, choose path closest to tail
 	def depth_first_search(self, matrix, location):
-		print("Traversable matrix: " + str(matrix))
-		print("location: " + str(location))
+		#print("Traversable matrix: " + str(matrix))
+		#print("location: " + str(location))
 
 		#if already visited or does not exist, return no path
 		if (not (location[0],location[1]) in matrix):
@@ -75,7 +75,7 @@ class LongestPath(object):
 
 		#attach current location onto front of path, return
 		longest_path_addition.insert(0, location)
-		print("Longest path addition: " + str(longest_path_addition))
+		#print("Longest path addition: " + str(longest_path_addition))
 		return longest_path_addition
 
 
