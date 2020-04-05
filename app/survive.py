@@ -104,7 +104,7 @@ def flood_fill(data, walls, available_directions):
 
 
     flood_directions = []
-    flood_areas = {}
+    flood_areas = []
 
     for i in range(len(available_directions)):
         matrix = []
