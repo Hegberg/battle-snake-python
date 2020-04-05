@@ -23,20 +23,20 @@ class LongestPath(object):
 		for i in range(len(self.data['board']['snakes'])):
 			tail = self.data['board']['snakes'][i]['body'][len(self.data['board']['snakes'][i]['body']) - 1]
 			print("Tail: " + str(tail))
-			distance = self.get_distance_between_points(tail, self.first_space)
+			distance = self.get_distance_between_points((tail['x'], tail['y']), self.first_space)
 			if (closest_tail == None):
-				closest_tail = tail
+				closest_tail = (tail['x'], tail['y'])
 				closest_distance = distance
 
 			elif (closest_distance > distance):
-				closest_tail = tail
+				closest_tail = (tail['x'], tail['y'])
 				closest_distance = distance
 
 			#if distances, are the same, and one is own tail, choose own tail
 			elif (closest_distance == distance):
 				if (tail == self.data['you']['body'][len(self.data['you']['body']) - 1]):
 					closest_distance = distance
-					closest_tail = tail
+					closest_tail = (tail['x'], tail['y'])
 
 		return closest_tail
 
