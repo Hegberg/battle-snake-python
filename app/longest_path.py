@@ -57,10 +57,21 @@ class LongestPath(object):
 		longest_path_addition = []
 
 		#get longest path from among neighbours
-		self.check_new_point(matrix, (location[0] + 1, location[1]), longest_path_addition)
-		self.check_new_point(matrix, (location[0] - 1, location[1]), longest_path_addition)
-		self.check_new_point(matrix, (location[0], location[1] + 1), longest_path_addition)
-		self.check_new_point(matrix, (location[0], location[1] - 1), longest_path_addition)
+		new_matrix = matrix.copy()
+		path_addition = self.depth_first_search(new_matrix, (location[0] + 1, location[1]))
+		longest_path_addition = self.check_new_path(path_addition, longest_path_addition)
+
+		new_matrix = matrix.copy()
+		path_addition = self.depth_first_search(new_matrix, (location[0] - 1, location[1]))
+		longest_path_addition = self.check_new_path(path_addition, longest_path_addition)
+
+		new_matrix = matrix.copy()
+		path_addition = self.depth_first_search(new_matrix, (location[0], location[1] + 1))
+		longest_path_addition = self.check_new_path(path_addition, longest_path_addition)
+
+		new_matrix = matrix.copy()
+		path_addition = self.depth_first_search(new_matrix, (location[0], location[1] - 1))
+		longest_path_addition = self.check_new_path(path_addition, longest_path_addition)
 
 		#attach current location onto front of path, return
 		longest_path_addition.insert(0, location)
@@ -72,19 +83,17 @@ class LongestPath(object):
 		return abs(point_1[0] - point_2[0]) + abs(point_1[1] - point_2[1])
 
 
-	def check_new_point(self, matrix, location, longest_path_addition):
-
-		if ((location[0], location[1]) in matrix and matrix[(location[0],location[1])] == 0):
-			new_matrix = matrix.copy()
-			path_addition = self.depth_first_search(new_matrix, (location[0], location[1]))
-
-			if (len(path_addition) > len(longest_path_addition)):
+	def check_new_path(self, path_addition, longest_path_addition):
+		if (len(path_addition) > len(longest_path_addition)):
+			longest_path_addition = path_addition
+		#if same distance, find path with closer ending to closest tail
+		elif(len(path_addition) > 0 and (len(path_addition) == len(longest_path_addition))):
+			if (self.get_distance_between_points(path_addition[len(path_addition) - 1], self.closest_tail) > 
+				self.get_distance_between_points(longest_path_addition[len(longest_path_addition) - 1], self.closest_tail)):
 				longest_path_addition = path_addition
-			#if same distance, find path with closer ending to closest tail
-			elif(len(path_addition) > 0 and (len(path_addition) == len(longest_path_addition))):
-				if (self.get_distance_between_points(path_addition[len(path_addition) - 1], self.closest_tail) > 
-					self.get_distance_between_points(longest_path_addition[len(longest_path_addition) - 1], self.closest_tail)):
-					longest_path_addition = path_addition
+
+		return longest_path_addition
+		
 
 
 
