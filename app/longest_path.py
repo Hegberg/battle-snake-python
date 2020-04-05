@@ -9,6 +9,9 @@ class LongestPath(object):
 
 	def get_longest_path(self):
 
+		print("Traversable area: " + str(self.traversable_area))
+		print("first_space: " + str(self.first_space))
+
 		longest_path = self.depth_first_search(self.traversable_area, self.first_space)
 
 		print("Longest Path from location: " + str(self.first_space))
