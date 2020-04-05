@@ -1,5 +1,6 @@
 from app.common import get_directions
 from app.common import determine_if__snake_growing
+from app.common import get_location_from_direction
 from app.a_star import init_astar
 from app.longest_path import find_longest_path
 
