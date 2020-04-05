@@ -47,10 +47,10 @@ class LongestPath(object):
 		#if already visited or does not exist, return no path
 		if (not (location[0],location[1]) in matrix):
 			return []
-		if (matrix[location[0]][location[1]] != 0):
+		if (matrix[(location[0],location[1])] != 0):
 			return []
 
-		matrix[location[0]][location[1]] = 1
+		matrix[(location[0],location[1])] = 1
 		longest_path_addition = []
 
 		#get longest path from among neighbours
@@ -70,7 +70,7 @@ class LongestPath(object):
 
 	def check_new_point(self, matrix, location, longest_path_addition):
 
-		if ((location[0], location[1]) in matrix and matrix[location[0]][location[1]] == 0):
+		if ((location[0], location[1]) in matrix and matrix[(location[0],location[1])] == 0):
 			new_matrix = matrix.copy()
 			path_addition = self.depth_first_search(new_matrix, (location[0], location[1]))
 
