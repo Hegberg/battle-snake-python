@@ -1,6 +1,7 @@
 from app.common import get_directions
 from app.common import determine_if__snake_growing
 from app.a_star import init_astar
+from app.longest_path import find_longest_path
 
 def survival_choices(data, walls, aStar):
     directions = check_bounds(data)
@@ -103,6 +104,7 @@ def flood_fill(data, walls, available_directions):
 
 
     flood_directions = []
+    flood_areas = {}
 
     for i in range(len(available_directions)):
         matrix = []
@@ -117,12 +119,14 @@ def flood_fill(data, walls, available_directions):
             matrix[walls[j][0]][walls[j][1]] = 1
 
         flood_size = 0
+        flood_area = []
         if (available_directions[i] == 'up'):
             flood_matrix = flood_fill_recursive(matrix, x, y-1)
             for j in range(len(matrix)):
                 for k in range(len(matrix[j])):
                     if (matrix[j][k] == 2):
                         flood_size += 1
+                        flood_area[j,k] = 0
             print("Up flood size: ", flood_size)
             """
             for k in range(len(flood_matrix)):
@@ -134,6 +138,7 @@ def flood_fill(data, walls, available_directions):
                 print(" ")
             """
             flood_directions.append(('up',flood_size))
+            flood_areas.append(flood_area)
 
         elif (available_directions[i] == 'down'):
             flood_matrix = flood_fill_recursive(matrix, x, y+1)
@@ -141,6 +146,7 @@ def flood_fill(data, walls, available_directions):
                 for k in range(len(matrix[j])):
                     if (matrix[j][k] == 2):
                         flood_size += 1
+                        flood_area[j,k] = 0
             print("Down flood size: ", flood_size)
             """
             for k in range(len(flood_matrix)):
@@ -152,6 +158,7 @@ def flood_fill(data, walls, available_directions):
                 print(" ")
             """
             flood_directions.append(('down',flood_size))
+            flood_areas.append(flood_area)
         
         elif (available_directions[i] == 'left'):
             flood_matrix = flood_fill_recursive(matrix, x-1, y)
@@ -159,6 +166,7 @@ def flood_fill(data, walls, available_directions):
                 for k in range(len(matrix[j])):
                     if (matrix[j][k] == 2):
                         flood_size += 1
+                        flood_area[j,k] = 0
             print("Left flood size: ", flood_size)
             """
             for k in range(len(flood_matrix)):
@@ -170,6 +178,7 @@ def flood_fill(data, walls, available_directions):
                 print(" ")
             """
             flood_directions.append(('left',flood_size))
+            flood_areas.append(flood_area)
 
         elif (available_directions[i] == 'right'):
             flood_matrix = flood_fill_recursive(matrix, x+1, y)
@@ -177,6 +186,7 @@ def flood_fill(data, walls, available_directions):
                 for k in range(len(matrix[j])):
                     if (matrix[j][k] == 2):
                         flood_size += 1
+                        flood_area[j,k] = 0
             print("Right flood size: ", flood_size)
             """
             for k in range(len(flood_matrix)):
@@ -188,12 +198,20 @@ def flood_fill(data, walls, available_directions):
                 print(" ")
             """
             flood_directions.append(('right',flood_size))
+            flood_areas.append(flood_area)
     
     largest_flood = ['', 0]
     final_directions = []
     for i in range(len(flood_directions)):
         if (flood_directions[i][1] > len(data['you']['body'])):
             final_directions.append(flood_directions[i][0])
+        #TODO
+        #If snake goes to area smaller than itself, start moving through and occuping space and see if space opens up, or path to tail open
+        else:
+            longest_path = find_longest_path(data, get_location_from_direction(flood_directions[i][0],x,y), flood_areas[i])
+            #TODO
+            #traverse longest path, and see if path to tail opens up during path traversal, if so, area is viable to go through
+
         if (flood_directions[i][1] > largest_flood[1]):
             largest_flood[0] = flood_directions[i][0]
             largest_flood[1] = flood_directions[i][1]
