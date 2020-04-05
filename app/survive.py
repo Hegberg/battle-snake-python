@@ -119,7 +119,7 @@ def flood_fill(data, walls, available_directions):
             matrix[walls[j][0]][walls[j][1]] = 1
 
         flood_size = 0
-        flood_area = []
+        flood_area = {}
         if (available_directions[i] == 'up'):
             flood_matrix = flood_fill_recursive(matrix, x, y-1)
             for j in range(len(matrix)):
