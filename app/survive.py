@@ -355,6 +355,7 @@ def traverse_longest_path(data, path, closest_tail):
     snake_body = data['you']['body'].copy()
 
     print("Snake body: " + str(snake_body))
+    print("Snake path: " + str(path))
 
     for i in range(len(path)):
 
