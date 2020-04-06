@@ -95,14 +95,13 @@ def check_beside_self(x,y,x2,y2):
     #nothing directly beside
     return 0
 
-def flood_fill(data, walls, available_directions):
+def flood_fill(data, walls, available_directions, aStar):
    
     x = data['you']['body'][0]['x']
     y = data['you']['body'][0]['y']
 
     #add head as wall
     walls.append((x,y))
-
 
     flood_directions = []
     flood_areas = []
@@ -202,20 +201,39 @@ def flood_fill(data, walls, available_directions):
             flood_areas.append(flood_area)
     
     largest_flood = ['', 0]
+    large_flood_area = []
     final_directions = []
+
     for i in range(len(flood_directions)):
         if (flood_directions[i][1] > len(data['you']['body'])):
             final_directions.append(flood_directions[i][0])
-        #TODO
+        
         #If snake goes to area smaller than itself, start moving through and occuping space and see if space opens up, or path to tail open
         else:
-            longest_path = find_longest_path(data, get_location_from_direction(flood_directions[i][0],x,y), flood_areas[i])
-            #TODO
+            longest_path, closest_tail = find_longest_path(data, get_location_from_direction(flood_directions[i][0],x,y), flood_areas[i])
             #traverse longest path, and see if path to tail opens up during path traversal, if so, area is viable to go through
+            if (traverse_longest_path(aStar, data, longest_path, closest_tail)):
+                final_directions.append(flood_directions[i][0])
 
+        #TODO
+        #check if largest flood area is less than body size, if so, go with direction that has longest path, 
+        #not just direction with largest flood that may or may not have same flood size as other direction
         if (flood_directions[i][1] > largest_flood[1]):
             largest_flood[0] = flood_directions[i][0]
             largest_flood[1] = flood_directions[i][1]
+            large_flood_area = flood_areas[i]
+        #same size, choose flood with longer path
+        elif (flood_directions[i][1] == largest_flood[1] and flood_directions[i][1] > 0 and flood_directions[i][1] < len(data['you']['body'])):
+            longest_path, closest_tail = find_longest_path(data, get_location_from_direction(flood_directions[i][0],x,y), flood_areas[i])
+            large_longest_path, large_closest_tail = find_longest_path(data, get_location_from_direction(largest_flood[0],x,y), large_flood_area)
+            #if path longer, or path the smae and distance to tail shorter
+            if ((len(longest_path) > len(large_longest_path)) or 
+                ((len(longest_path) == len(large_longest_path)) and
+                (get_distance_between_points(longest_path[len(longest_path) - 1], closest_tail) < get_distance_between_points(large_longest_path[len(large_longest_path) - 1], large_closest_tail)))):
+                largest_flood[0] = flood_directions[i][0]
+                largest_flood[1] = flood_directions[i][1]
+                large_flood_area = flood_areas[i]
+
     
     if (len(final_directions) == 0):
         final_directions.append(largest_flood[0])
@@ -321,3 +339,46 @@ def find_other_snake_tail_path(data, aStar, walls):
     print("No path to snake opposing snakes tails")
 
     return None
+
+def traverse_longest_path(aStar, data, path, closest_tail):
+
+    update_own_tail_as_target = False
+    tail_x = closest_tail[0]
+    tail_y = closest_tail[1]
+
+    #if closest tail is own, target tail is always own tail, otherwise do not change target tail
+    if (closest_tail == (data['you']['body'][len(data['you']['body']) - 1]['x'], data['you']['body'][len(data['you']['body']) - 1]['y'])):
+        update_own_tail_as_target = True
+
+    snake_body = data['you']['body'].copy()
+
+    for i in range(len(path)):
+
+        for j in range(len(snake_body) - 1, 0, - 1):
+            snake_body[j]['x'] = snake_body[j - 1]['x']
+            snake_body[j]['y'] = snake_body[j - 1]['y']
+
+        snake_body[0]['x'] = path[i][0]
+        snake_body[0]['y'] = path[i][1]
+
+        head_x = snake_body[0]['x']
+        head_y = snake_body[0]['y']
+
+        if (update_own_tail_as_target):
+            tail_x = snake_body[len(snake_body) - 1]['x']
+            tail_y = snake_body[len(snake_body) - 1]['y']
+
+
+        aStar.reset_grid_and_start((head_x, head_y), (tail_x, tail_y))
+        path = aStar.solve()
+
+        if (path != None):
+            print("Path to tail in bloacked in area available: " + str(path))
+
+            return True
+        
+    return False
+
+
+def get_distance_between_points(point_1, point_2):
+    return abs(point_1[0] - point_2[0]) + abs(point_1[1] - point_2[1])

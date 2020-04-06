@@ -166,7 +166,7 @@ def determine_if_growing(data):
     return False
 
 def get_spacing_directions(data, aStar, walls, survival_directions, growing):
-    flood_directions, can_follow_flood = flood_fill(data, walls, survival_directions)
+    flood_directions, can_follow_flood = flood_fill(data, walls, survival_directions, aStar)
 
     tail_directions = find_own_tail_path(aStar, data, growing)
 

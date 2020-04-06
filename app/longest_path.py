@@ -100,4 +100,4 @@ class LongestPath(object):
 def find_longest_path(data, first_space, traversable_area):
 	long_path = LongestPath(data, first_space, traversable_area)
 
-	return long_path.get_longest_path()
+	return long_path.get_longest_path(), long_path.closest_tail
