@@ -341,7 +341,7 @@ def find_other_snake_tail_path(data, aStar, walls):
 
     return None
 
-def traverse_longest_path(data, path, closest_tail):
+def traverse_longest_path(data, longest_path, closest_tail):
 
     update_own_tail_as_target = False
     tail_x = closest_tail[0]
@@ -353,20 +353,14 @@ def traverse_longest_path(data, path, closest_tail):
 
     snake_body = data['you']['body'].copy()
 
-    print("Snake body: " + str(snake_body))
-    print("Snake path: " + str(path))
-
-    for i in range(len(path)):
+    for i in range(len(longest_path)):
 
         for j in range(len(snake_body) - 1, 0, - 1):
             snake_body[j]['x'] = snake_body[j - 1]['x']
             snake_body[j]['y'] = snake_body[j - 1]['y']
 
-        print("Snake body: " + str(snake_body))
-        print("Snake path: " + str(path))
-
-        snake_body[0]['x'] = path[i][0]
-        snake_body[0]['y'] = path[i][1]
+        snake_body[0]['x'] = longest_path[i][0]
+        snake_body[0]['y'] = longest_path[i][1]
 
         head_x = snake_body[0]['x']
         head_y = snake_body[0]['y']
