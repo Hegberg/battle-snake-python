@@ -357,7 +357,8 @@ def traverse_longest_path(data, longest_path, closest_tail):
     if (closest_tail == (data['you']['body'][len(data['you']['body']) - 1]['x'], data['you']['body'][len(data['you']['body']) - 1]['y'])):
         update_own_tail_as_target = True
 
-    snake_body = data['you']['body'].copy()
+    snake_copy = data.copy()
+    snake_body = snake_copy['you']['body']
 
     for i in range(len(longest_path)):
 
