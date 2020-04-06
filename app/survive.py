@@ -363,6 +363,8 @@ def traverse_longest_path(data, path, closest_tail):
             snake_body[j]['x'] = snake_body[j - 1]['x']
             snake_body[j]['y'] = snake_body[j - 1]['y']
 
+        print("Snake body: " + str(snake_body))
+
         snake_body[0]['x'] = path[i][0]
         snake_body[0]['y'] = path[i][1]
 
