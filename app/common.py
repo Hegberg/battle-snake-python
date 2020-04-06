@@ -92,7 +92,6 @@ def seperate_walls(data, walls):
         if (i >= 2):
             self_walls.append((data['you']['body'][i]['x'], data['you']['body'][i]['y']))
 
-
     #add border to walls
     border_walls = []
     for i in range(data['board']['width']):

@@ -213,8 +213,10 @@ def flood_fill(data, walls, available_directions, aStar):
         else:
             longest_path, closest_tail = find_longest_path(data, get_location_from_direction(flood_directions[i][0],x,y), flood_areas[i])
             #traverse longest path, and see if path to tail opens up during path traversal, if so, area is viable to go through
+            print("Snake you: " + str(data['you']['body']))
             if (traverse_longest_path(data, longest_path, closest_tail)):
                 final_directions.append(flood_directions[i][0])
+            print("Snake you 2: " + str(data['you']['body']))
 
         #TODO
         #check if largest flood area is less than body size, if so, go with direction that has longest path, 
@@ -229,12 +231,17 @@ def flood_fill(data, walls, available_directions, aStar):
             large_longest_path, large_closest_tail = find_longest_path(data, get_location_from_direction(largest_flood[0],x,y), large_flood_area)
             #if path longer, or path the smae and distance to tail shorter
             if ((len(longest_path) > len(large_longest_path)) or 
-                ((len(longest_path) == len(large_longest_path)) and
-                (get_distance_between_points(longest_path[len(longest_path) - 1], closest_tail) < get_distance_between_points(large_longest_path[len(large_longest_path) - 1], large_closest_tail)))):
+                ((len(longest_path) == len(large_longest_path) and len(longest_path) > 0 and len(large_longest_path) > 0)
+                (get_distance_between_points(longest_path[len(longest_path) - 1], closest_tail) < 
+                    get_distance_between_points(large_longest_path[len(large_longest_path) - 1], large_closest_tail)))):
                 largest_flood[0] = flood_directions[i][0]
                 largest_flood[1] = flood_directions[i][1]
                 large_flood_area = flood_areas[i]
-
+            #if largest area path does not exist but smaller area does
+            elif (len(large_longest_path) == 0 and len(longest_path) > 0):
+                largest_flood[0] = flood_directions[i][0]
+                largest_flood[1] = flood_directions[i][1]
+                large_flood_area = flood_areas[i]
     
     if (len(final_directions) == 0):
         final_directions.append(largest_flood[0])
@@ -282,7 +289,6 @@ def find_own_tail_path(aStar, data, growing):
     else:
         aStar.reset_grid((tail_x, tail_y))
         path = aStar.solve()
-
 
     if (path != None):
         directions = get_directions(data['you']['body'][0]['x'],data['you']['body'][0]['y'], 
