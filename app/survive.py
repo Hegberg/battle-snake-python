@@ -212,7 +212,6 @@ def flood_fill(data, walls, available_directions, aStar):
         #If snake goes to area smaller than itself, start moving through and occuping space and see if space opens up, or path to tail open
         else:
             longest_path, closest_tail = find_longest_path(data, get_location_from_direction(flood_directions[i][0],x,y), flood_areas[i])
-            print("longest_path: " + str(longest_path))
             #traverse longest path, and see if path to tail opens up during path traversal, if so, area is viable to go through
             if (traverse_longest_path(data, longest_path, closest_tail)):
                 final_directions.append(flood_directions[i][0])
@@ -364,6 +363,7 @@ def traverse_longest_path(data, path, closest_tail):
             snake_body[j]['y'] = snake_body[j - 1]['y']
 
         print("Snake body: " + str(snake_body))
+        print("Snake path: " + str(path))
 
         snake_body[0]['x'] = path[i][0]
         snake_body[0]['y'] = path[i][1]
