@@ -222,3 +222,46 @@ def init_astar(data, with_own_head_blocking = False, growing = False, snake_grow
     aStar.init_grid(data['board']['width'], data['board']['height'], walls, current_position, goal)
 
     return aStar, walls
+
+def init_astar_with_custom_snake(data, self_new_body, goal, growing = False, snake_growing_index = -1):
+    aStar = AStar()
+    
+    walls = []
+
+    start_point = 1
+
+    for i in range(start_point, len(self_new_body)):
+        #ignore own tail
+        if (i == len(self_new_body) - 1):
+            continue
+
+        #ignore own grown tail if growing
+        if (growing and i == len(self_new_body) - 2):
+            continue
+
+        walls.append((self_new_body[i]['x'], self_new_body[i]['y']))
+
+    for i in range(len(data['board']['snakes'])):
+        if (data['board']['snakes'][i]['id'] == data['you']['id']):
+            continue #skip self
+
+        for j in range(len(data['board']['snakes'][i]['body'])):
+            #if tail, don't count as wall
+            if (j == len(data['board']['snakes'][i]['body']) - 1):
+                continue
+
+            #ignore snake grown tail
+            if ((snake_growing_index == i) and j == len(data['you']['body']) - 2):
+                continue
+
+            walls.append((data['board']['snakes'][i]['body'][j]['x'], data['board']['snakes'][i]['body'][j]['y']))
+
+    #print("Obstacles in board: " + str(walls))
+
+    #init astar with new board, set end goal as temp value
+    x = self_new_body[0]['x']
+    y = self_new_body[0]['y']
+    current_position = (x, y)
+    aStar.init_grid(data['board']['width'], data['board']['height'], walls, current_position, goal)
+
+    return aStar, walls

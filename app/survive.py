@@ -2,6 +2,7 @@ from app.common import get_directions
 from app.common import determine_if__snake_growing
 from app.common import get_location_from_direction
 from app.a_star import init_astar
+from app.a_star import init_astar_with_custom_snake
 from app.longest_path import find_longest_path
 
 def survival_choices(data, walls, aStar):
@@ -340,7 +341,7 @@ def find_other_snake_tail_path(data, aStar, walls):
 
     return None
 
-def traverse_longest_path(aStar, data, path, closest_tail):
+def traverse_longest_path(data, path, closest_tail):
 
     update_own_tail_as_target = False
     tail_x = closest_tail[0]
@@ -370,12 +371,11 @@ def traverse_longest_path(aStar, data, path, closest_tail):
             tail_x = snake_body[len(snake_body) - 1]['x']
             tail_y = snake_body[len(snake_body) - 1]['y']
 
-
-        aStar.reset_grid_and_start((head_x, head_y), (tail_x, tail_y))
-        path = aStar.solve()
+        custom_aStar, walls = init_astar_with_custom_snake(data, snake_body, (tail_x, tail_y))
+        path = custom_aStar.solve()
 
         if (path != None):
-            print("Path to tail in bloacked in area available: " + str(path))
+            print("Path to tail in blocked in area available: " + str(path))
 
             return True
         
