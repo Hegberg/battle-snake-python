@@ -5,6 +5,8 @@ from app.a_star import init_astar
 from app.a_star import init_astar_with_custom_snake
 from app.longest_path import find_longest_path
 
+import copy
+
 def survival_choices(data, walls, aStar):
     directions = check_bounds(data)
 
@@ -357,7 +359,7 @@ def traverse_longest_path(data, longest_path, closest_tail):
     if (closest_tail == (data['you']['body'][len(data['you']['body']) - 1]['x'], data['you']['body'][len(data['you']['body']) - 1]['y'])):
         update_own_tail_as_target = True
 
-    snake_body = data['you']['body'][:]
+    snake_body = copy.deepcopy(data['you']['body'][:])
 
     for i in range(len(longest_path)):
 
