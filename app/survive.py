@@ -215,7 +215,7 @@ def flood_fill(data, walls, available_directions, aStar):
         else:
             longest_path, closest_tail = find_longest_path(data, get_location_from_direction(flood_directions[i][0],x,y), flood_areas[i])
             #traverse longest path, and see if path to tail opens up during path traversal, if so, area is viable to go through
-            if (traverse_longest_path(data, longest_path, closest_tail)):
+            if (len(longest_path) > 0 and traverse_longest_path(data, longest_path, closest_tail)):
                 final_directions.append(flood_directions[i][0])
 
         
