@@ -448,6 +448,10 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
             #else, if path for other snake to first border cutoff cell, passes through blocked off cells, cutoff, otherwise don't
             snake_body = copy.deepcopy(data['board']['snakes'][snake_cutoff_index]['body'][:])
             snake_goal =  (border_paths[i][0][0], border_paths[i][0][1])
+            if (snake_goal == (snake_body[0][0], snake_body[0][1])):
+                print("Snake goal same as snake head: " + str(snake_goal))
+                return True
+            
             custom_aStar, walls = init_astar_with_custom_snake(data, snake_body, data['board']['snakes'][snake_cutoff_index]['id'], snake_goal)
             path = custom_aStar.solve()
 
@@ -538,6 +542,10 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
             #else, if path for other snake to first border cutoff cell, passes through blocked off cells, cutoff, otherwise don't
             snake_body = copy.deepcopy(data['board']['snakes'][snake_cutoff_index]['body'][:])
             snake_goal =  (border_paths[i][0][0], border_paths[i][0][1])
+            if (snake_goal == (snake_body[0][0], snake_body[0][1])):
+                print("Snake goal same as snake head: " + str(snake_goal))
+                return True
+
             custom_aStar, walls = init_astar_with_custom_snake(data, snake_body, data['board']['snakes'][snake_cutoff_index]['id'], snake_goal)
             path = custom_aStar.solve()
 
