@@ -78,17 +78,23 @@ def get_move(data):
     print("Final Directions before centered: " + str(final_directions))
 
     if (len(final_directions) > 0):
-        #multiple options, only get here if don't hve paths to follow, so just head towards mid preferred
-        center_directions = get_directions(data['you']['body'][0]['x'], data['you']['body'][0]['y'], data['board']['width']/2, data['board']['height']/2)
-        center_final_directions = []
-        for direction in center_directions:
-            if direction in final_directions:
-                center_final_directions.append(direction)
+        #multiple options, only get here if don't have paths to follow, so just head towards mid preferred
 
-        if (len(center_final_directions) > 0):
-            print("Final Directions after centered: " + str(center_final_directions))
-            direction = random.choice(center_final_directions)
-            return direction
+        aStar.reset_grid((int(data['board']['width']/2), (data['board']['height']/2)))
+        path = aStar.solve()
+
+        #if path to mid exists
+        if (path != None):
+            center_directions = get_directions(data['you']['body'][0]['x'],data['you']['body'][0]['y'], path[1][0], path[1][1])
+            center_final_directions = []
+            for direction in center_directions:
+                if direction in final_directions:
+                    center_final_directions.append(direction)
+
+            if (len(center_final_directions) > 0):
+                print("Final Directions after centered: " + str(center_final_directions))
+                direction = random.choice(center_final_directions)
+                return direction
 
 
     direction = random.choice(final_directions)
