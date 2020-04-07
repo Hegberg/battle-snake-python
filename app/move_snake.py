@@ -80,7 +80,7 @@ def get_move(data):
     if (len(final_directions) > 0):
         #multiple options, only get here if don't have paths to follow, so just head towards mid preferred
 
-        aStar.reset_grid((int(data['board']['width']/2), (data['board']['height']/2)))
+        aStar.reset_grid((int(data['board']['width']/2), int(data['board']['height']/2)))
         path = aStar.solve()
 
         #if path to mid exists
