@@ -9,6 +9,7 @@ from app.a_star import AStar
 
 from app.survive import flood_fill_recursive
 
+import copy
 
 #TODO
 #if path too tail too long, longer than own body size???
