@@ -6,6 +6,7 @@ from app.common import determine_if__snake_growing
 from app.common import get_shortest_direction_to_border
 
 from app.a_star import AStar
+from app.a_star import init_astar_with_custom_snake
 
 from app.survive import flood_fill_recursive
 
