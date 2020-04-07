@@ -377,7 +377,6 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
     #print("border_path: " str(border_paths[i]))
  
     #if ((border_direction == 'up' and 'up' in snake_relative_directions) or (border_direction == 'down' and 'down' in snake_relative_directions)):
-    #TODO
     #below bugs out in case of snake not actually in cutoff area, but algorithm assuming it is, so cuts off nothing
     if ((border_direction == 'up') or (border_direction == 'down')):
 
@@ -468,7 +467,6 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
         return True
 
     #if ((border_direction == 'left' and 'left' in snake_relative_directions) or (border_direction == 'right' and 'right' in snake_relative_directions)):
-    #TODO
     #below bugs out in case of snake not actually in cutoff area, but algorithm assuming it is, so cuts off nothing
     if ((border_direction == 'left') or (border_direction == 'right')):
 
