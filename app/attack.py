@@ -376,14 +376,15 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
     #print("For border direction: " + str(border_direction) + " snake relative directions: " + str(snake_relative_directions))
     #print("border_path: " str(border_paths[i]))
  
-    if ((border_direction == 'up' and 'up' in snake_relative_directions) or (border_direction == 'down' and 'down' in snake_relative_directions)):
+    #if ((border_direction == 'up' and 'up' in snake_relative_directions) or (border_direction == 'down' and 'down' in snake_relative_directions)):
     #TODO
     #below bugs out in case of snake not actually in cutoff area, but algorithm assuming it is, so cuts off nothing
-    #if ((border_direction == 'up') or (border_direction == 'down')):
+    if ((border_direction == 'up') or (border_direction == 'down')):
 
         for direction in snake_relative_directions:
             #create box to left of cutoff
             free_space = 0
+            blocked_off_cells = []
             
             #start at head for free space calculations
             j_start = data['you']['body'][0]['y']
@@ -403,6 +404,7 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                     for k in range(0, border_paths[i][0][0]):
                         if (not ((k,j) in walls)):
                             free_space += 1
+                            blocked_off_cells.append((k,j))
 
                 print("Direction left border up/down")
                 for j in range(j_start, j_stop, step):
@@ -421,6 +423,7 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                     for k in range(border_paths[i][0][0] + 1, data['board']['width']): # +1 to avoid using border wall in free space calc
                         if (not ((k,j) in walls)):
                             free_space += 1
+                            blocked_off_cells.append((k,j))
 
                 print("Direction right border up/down")
                 for j in range(j_start, j_stop, step):
@@ -441,19 +444,38 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
             if (free_space >= len(data['board']['snakes'][snake_cutoff_index]['body'])):
                 return True
 
-            return False
+            #else, if path for other snake to first border cutoff cell, passes through blocked off cells, cutoff, otherwise don't
+            snake_body = copy.deepcopy(data['board']['snakes'][snake_cutoff_index]['body'][:])
+            snake_goal =  (border_paths[i][0][0], border_paths[i][0][1])
+            custom_aStar, walls = init_astar_with_custom_snake(data, snake_body, data['board']['snakes'][snake_cutoff_index]['id'], snake_goal)
+            path = custom_aStar.solve()
+
+            if (path != None):
+                can_cutoff = False
+                for s in range(len(path)):
+                    #path to get out of cutoff goes through cutoff area, so cutoff
+                    if ((path[s][0], path[s][1]) in blocked_off_cells):
+                        can_cutoff = True
+                        break
+
+                #inverse reply, since if can cutoff, means there is not enough room for snake to survive
+                #so return false
+                return (not can_cutoff)
+
+            return True
 
         #else direction == left or right, and in such case return true, meaning too much free space
         return True
 
-    if ((border_direction == 'left' and 'left' in snake_relative_directions) or (border_direction == 'right' and 'right' in snake_relative_directions)):
+    #if ((border_direction == 'left' and 'left' in snake_relative_directions) or (border_direction == 'right' and 'right' in snake_relative_directions)):
     #TODO
     #below bugs out in case of snake not actually in cutoff area, but algorithm assuming it is, so cuts off nothing
-    #if ((border_direction == 'left') or (border_direction == 'right')):
+    if ((border_direction == 'left') or (border_direction == 'right')):
 
         for direction in snake_relative_directions:
             #create box to up of cutoff
             free_space = 0
+            blocked_off_cells = []
 
             #start at head for free space calculations
             j_start = data['you']['body'][0]['x']
@@ -473,6 +495,7 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                     for k in range(0, border_paths[i][0][1]):
                         if (not ((j,k) in walls)):
                             free_space += 1
+                            blocked_off_cells.append((k,j))
 
                 print("Direction up border left/right")
                 for k in range(0, border_paths[i][0][1]):
@@ -491,6 +514,7 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                     for k in range(border_paths[i][0][1] + 1, data['board']['height']): # +1 to avoid using border wall in free space calc
                         if (not ((j,k) in walls)):
                             free_space += 1
+                            blocked_off_cells.append((k,j))
 
                 print("Direction down border left/right")
                 for k in range(border_paths[i][0][1] + 1, data['board']['height']):
@@ -511,7 +535,25 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
             if (free_space >= len(data['board']['snakes'][snake_cutoff_index]['body'])):
                 return True
 
-            return False
+            #else, if path for other snake to first border cutoff cell, passes through blocked off cells, cutoff, otherwise don't
+            snake_body = copy.deepcopy(data['board']['snakes'][snake_cutoff_index]['body'][:])
+            snake_goal =  (border_paths[i][0][0], border_paths[i][0][1])
+            custom_aStar, walls = init_astar_with_custom_snake(data, snake_body, data['board']['snakes'][snake_cutoff_index]['id'], snake_goal)
+            path = custom_aStar.solve()
+
+            if (path != None):
+                can_cutoff = False
+                for s in range(len(path)):
+                    #path to get out of cutoff goes through cutoff area, so cutoff
+                    if ((path[s][0], path[s][1]) in blocked_off_cells):
+                        can_cutoff = True
+                        break
+
+                #inverse reply, since if can cutoff, means there is not enough room for snake to survive
+                #so return false
+                return (not can_cutoff)
+
+            return True
 
         #else direction == left or right, and in such case return true, meaning too much free space
         return True

@@ -224,7 +224,7 @@ def init_astar(data, with_own_head_blocking = False, growing = False, snake_grow
 
     return aStar, walls
 
-def init_astar_with_custom_snake(data, self_new_body, goal, growing = False, snake_growing_index = -1):
+def init_astar_with_custom_snake(data, self_new_body, snake_body_id, goal, growing = False, snake_growing_index = -1):
     aStar = AStar()
     
     walls = []
@@ -243,7 +243,7 @@ def init_astar_with_custom_snake(data, self_new_body, goal, growing = False, sna
         walls.append((self_new_body[i]['x'], self_new_body[i]['y']))
 
     for i in range(len(data['board']['snakes'])):
-        if (data['board']['snakes'][i]['id'] == data['you']['id']):
+        if (data['board']['snakes'][i]['id'] == snake_body_id):
             continue #skip self
 
         for j in range(len(data['board']['snakes'][i]['body'])):
