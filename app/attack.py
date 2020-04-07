@@ -375,11 +375,11 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
 
     #print("For border direction: " + str(border_direction) + " snake relative directions: " + str(snake_relative_directions))
     #print("border_path: " str(border_paths[i]))
-
-    if ((border_direction == 'up' and 'up' in snake_relative_directions) or (border_direction == 'down' and 'down' in snake_relative_directions)):
+ 
+    #if ((border_direction == 'up' and 'up' in snake_relative_directions) or (border_direction == 'down' and 'down' in snake_relative_directions)):
     #TODO
     #below bugs out in case of snake not actually in cutoff area, but algorithm assuming it is, so cuts off nothing
-    #if ((border_direction == 'up') or (border_direction == 'down')):#snake can be below but still able to cut off up as an example
+    if ((border_direction == 'up') or (border_direction == 'down')):
 
         for direction in snake_relative_directions:
             #create box to left of cutoff
@@ -446,10 +446,10 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
         #else direction == left or right, and in such case return true, meaning too much free space
         return True
 
-    if ((border_direction == 'left' and 'left' in snake_relative_directions) or (border_direction == 'right' and 'right' in snake_relative_directions)):
+    #if ((border_direction == 'left' and 'left' in snake_relative_directions) or (border_direction == 'right' and 'right' in snake_relative_directions)):
     #TODO
     #below bugs out in case of snake not actually in cutoff area, but algorithm assuming it is, so cuts off nothing
-    #if ((border_direction == 'left') or (border_direction == 'right')):#snake can be to right but still able to cut off left as an example
+    if ((border_direction == 'left') or (border_direction == 'right')):
 
         for direction in snake_relative_directions:
             #create box to up of cutoff
