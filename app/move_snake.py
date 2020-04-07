@@ -80,8 +80,12 @@ def get_move(data):
     if (len(final_directions) > 0):
         #multiple options, only get here if don't have paths to follow, so just head towards mid preferred
 
-        aStar.reset_grid((int(data['board']['width']/2), int(data['board']['height']/2)))
-        path = aStar.solve()
+        if ((int(data['board']['width']/2), int(data['board']['height']/2)) == (data['you']['body'][0]['x'], data['you']['body'][0]['y'])):
+            print("Center map same as you snake head: " + str(snake_goal))
+            path = None
+        else:
+            aStar.reset_grid((int(data['board']['width']/2), int(data['board']['height']/2)))
+            path = aStar.solve()
 
         #if path to mid exists
         if (path != None):
