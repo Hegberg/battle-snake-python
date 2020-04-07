@@ -271,7 +271,7 @@ def get_directions_with_space_and_collision_merge(preferred_directions, spacing_
     no_head_collision_and_preffered_directions = []
     #(head on and preffered) taking into account spacing
     #merge preffered and spacing with no head on collision
-    spacing_and_no_head_collision_merge(no_head_collisions_directions, preffered_and_spacing_directions)
+    no_head_collision_and_preffered_directions = spacing_and_no_head_collision_merge(no_head_collisions_directions, preffered_and_spacing_directions)
 
     #if no valid merge between the preferred_spacing and collision, and spacing has options, use that as spacing and collision directions
     if (len(no_head_collision_and_preffered_directions) == 0 and len(spacing_directions) > 0):
@@ -279,7 +279,7 @@ def get_directions_with_space_and_collision_merge(preferred_directions, spacing_
         print("Directions after no collision and prefferred direction merge 8: " + str(preffered_and_spacing_directions))
 
         #preform spacing and no_head_collision_merge, again, but now with just spacing instead of preferred spacing
-        spacing_and_no_head_collision_merge(no_head_collisions_directions, preffered_and_spacing_directions)
+        no_head_collision_and_preffered_directions = spacing_and_no_head_collision_merge(no_head_collisions_directions, preffered_and_spacing_directions)
     
     #if no valid merge between the spacing and collision, and spacing has options, use that as spacing and collision directions
     if (len(no_head_collision_and_preffered_directions) == 0 and len(no_head_collisions_directions) > 0):
