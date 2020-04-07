@@ -62,6 +62,7 @@ class AStar(object):
                     reachable = False
                 else:
                     reachable = True
+                #print(str(x) + " " + str(y) + " " + str(reachable))
                 self.cells.append(Cell(x, y, reachable))
         self.start = self.get_cell(*start)
         self.end = self.get_cell(*end)

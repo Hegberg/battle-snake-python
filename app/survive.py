@@ -375,6 +375,10 @@ def traverse_longest_path(data, longest_path, closest_tail):
             tail_x = snake_body[len(snake_body) - 1]['x']
             tail_y = snake_body[len(snake_body) - 1]['y']
 
+        if ((tail_x, tail_y) == (head_x, head_y)):
+            print("Path to tail (0 distace) in blocked in area available: " + str((tail_x, tail_y)))
+            return True
+
         custom_aStar, walls = init_astar_with_custom_snake(data, snake_body, (tail_x, tail_y))
         path = custom_aStar.solve()
 

@@ -1,0 +1,7 @@
+
+from app.move_snake import get_move
+
+if __name__ == '__main__':
+
+	data = {"game": {"id": "5a46bdde-0190-4769-8430-50dce56bd746"}, "turn": 41, "board": {"height": 11, "width": 11, "food": [{"x": 1, "y": 0}], "snakes": [{"id": "gs_YpY8wRY37b6CpyCxHjk7d8yK", "name": "Dunno", "health": 83, "body": [{"x": 4, "y": 3}, {"x": 4, "y": 4}, {"x": 5, "y": 4}, {"x": 5, "y": 5}, {"x": 4, "y": 5}, {"x": 3, "y": 5}], "shout": ""}, {"id": "gs_vQFxgrCCTrddwxXcbfK3TWRM", "name": "Cool_as_ice", "health": 80, "body": [{"x": 3, "y": 2}, {"x": 3, "y": 3}, {"x": 2, "y": 3}, {"x": 2, "y": 2}], "shout": ""}, {"id": "gs_r8DcWqCXQDfwVdVwDkJk6t99", "name": "Dragonborn", "health": 96, "body": [{"x": 3, "y": 6}, {"x": 2, "y": 6}, {"x": 1, "y": 6}, {"x": 0, "y": 6}, {"x": 0, "y": 7}, {"x": 1, "y": 7}, {"x": 2, "y": 7}, {"x": 3, "y": 7}], "shout": ""}, {"id": "gs_QCMrDxJvTQrRgk8XRwtvt8p3", "name": "shielded-woodland", "health": 93, "body": [{"x": 3, "y": 4}, {"x": 2, "y": 4}, {"x": 1, "y": 4}, {"x": 1, "y": 5}, {"x": 0, "y": 5}], "shout": ""}]}, "you": {"id": "gs_QCMrDxJvTQrRgk8XRwtvt8p3", "name": "shielded-woodland", "health": 93, "body": [{"x": 3, "y": 4}, {"x": 2, "y": 4}, {"x": 1, "y": 4}, {"x": 1, "y": 5}, {"x": 0, "y": 5}], "shout": ""}}
+	move = get_move(data)
