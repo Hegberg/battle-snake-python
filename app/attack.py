@@ -371,13 +371,13 @@ def get_opposing_snake_survival_moves(data, walls, snake_index):
 #return True on too much space, False otherwise
 def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_index, i):
     #create rectangle to snake, and border past usng cutoff wall
-        
+
     snake_relative_directions = get_directions(data['you']['body'][0]['x'], data['you']['body'][0]['y'], data['board']['snakes'][snake_cutoff_index]['body'][0]['x'], data['board']['snakes'][snake_cutoff_index]['body'][0]['y'])
     #border going up or down, create rectangle to right or left, depending on where snake is
 
     #print("For border direction: " + str(border_direction) + " snake relative directions: " + str(snake_relative_directions))
     #print("border_path: " str(border_paths[i]))
- 
+
     #if ((border_direction == 'up' and 'up' in snake_relative_directions) or (border_direction == 'down' and 'down' in snake_relative_directions)):
     #below bugs out in case of snake not actually in cutoff area, but algorithm assuming it is, so cuts off nothing
     if ((border_direction == 'up') or (border_direction == 'down')):
@@ -446,28 +446,7 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                 return True
 
             #else, if path for other snake to first border cutoff cell, passes through blocked off cells, cutoff, otherwise don't
-            snake_body = copy.deepcopy(data['board']['snakes'][snake_cutoff_index]['body'][:])
-            snake_goal =  (border_paths[i][0][0], border_paths[i][0][1])
-            if (snake_goal == (snake_body[0]['x'], snake_body[0]['y'])):
-                print("Snake goal same as snake head: " + str(snake_goal))
-                return True
-
-            custom_aStar, walls = init_astar_with_custom_snake(data, snake_body, data['board']['snakes'][snake_cutoff_index]['id'], snake_goal)
-            path = custom_aStar.solve()
-
-            if (path != None):
-                can_cutoff = False
-                for s in range(len(path)):
-                    #path to get out of cutoff goes through cutoff area, so cutoff
-                    if ((path[s][0], path[s][1]) in blocked_off_cells):
-                        can_cutoff = True
-                        break
-
-                #inverse reply, since if can cutoff, means there is not enough room for snake to survive
-                #so return false
-                return (not can_cutoff)
-
-            return True
+            return (not can_cutoff_head_and_tail_check(data, border_paths,snake_cutoff_index, i))
 
         #else direction == left or right, and in such case return true, meaning too much free space
         return True
@@ -540,33 +519,45 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                 return True
 
             #else, if path for other snake to first border cutoff cell, passes through blocked off cells, cutoff, otherwise don't
-            snake_body = copy.deepcopy(data['board']['snakes'][snake_cutoff_index]['body'][:])
-            snake_goal =  (border_paths[i][0][0], border_paths[i][0][1])
-            if (snake_goal == (snake_body[0]['x'], snake_body[0]['y'])):
-                print("Snake goal same as snake head: " + str(snake_goal))
-                return True
-
-            custom_aStar, walls = init_astar_with_custom_snake(data, snake_body, data['board']['snakes'][snake_cutoff_index]['id'], snake_goal)
-            path = custom_aStar.solve()
-
-            if (path != None):
-                can_cutoff = False
-                for s in range(len(path)):
-                    #path to get out of cutoff goes through cutoff area, so cutoff
-                    if ((path[s][0], path[s][1]) in blocked_off_cells):
-                        can_cutoff = True
-                        break
-
-                #inverse reply, since if can cutoff, means there is not enough room for snake to survive
-                #so return false
-                return (not can_cutoff)
-
-            return True
+            return (not can_cutoff_head_and_tail_check(data, border_paths,snake_cutoff_index, i))
 
         #else direction == left or right, and in such case return true, meaning too much free space
         return True
 
     return True
+
+def can_cutoff_head_and_tail_check(data, border_paths, snake_cutoff_index, i):
+    #else, if path for other snake to first border cutoff cell, passes through blocked off cells, cutoff, otherwise don't
+    snake_body = copy.deepcopy(data['board']['snakes'][snake_cutoff_index]['body'][:])
+    snake_goal =  (border_paths[i][0][0], border_paths[i][0][1])
+    if (snake_goal == (snake_body[0]['x'], snake_body[0]['y'])):
+        print("Snake goal same as snake head: " + str(snake_goal))
+        return False
+
+    custom_aStar, walls = init_astar_with_custom_snake(data, snake_body, data['board']['snakes'][snake_cutoff_index]['id'], snake_goal)
+    path = custom_aStar.solve()
+
+    if (path != None):
+        can_cutoff = False
+        for s in range(len(path)):
+            #path to get out of cutoff goes through cutoff area, so cutoff
+            if ((path[s][0], path[s][1]) in blocked_off_cells):
+                can_cutoff = True
+                break
+
+        #if can cutoff, check if with cutoff path, have path too my tail, if so, don't cut off
+        if (can_cutoff):
+            custom_aStar, walls = init_astar_with_custom_snake(data, snake_body, data['board']['snakes'][snake_cutoff_index]['id'], snake_goal, border_paths[i])
+            path = custom_aStar.solve()
+
+            if (path != None):
+                can_cutoff = False
+
+        #inverse reply, since if can cutoff, means there is not enough room for snake to survive
+        #so return false
+        return can_cutoff
+
+    return False
 
 def get_snake_path_to_tail(data, walls, border_paths, snake_cutoff_index, border_paths_index):
     #get new path planned for opposing snake assuming cutoff has been made, 

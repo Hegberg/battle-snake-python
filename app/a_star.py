@@ -224,12 +224,15 @@ def init_astar(data, with_own_head_blocking = False, growing = False, snake_grow
 
     return aStar, walls
 
-def init_astar_with_custom_snake(data, self_new_body, snake_body_id, goal, growing = False, snake_growing_index = -1):
+def init_astar_with_custom_snake(data, self_new_body, snake_body_id, goal, extra_walls = [], growing = False, snake_growing_index = -1):
     aStar = AStar()
     
     walls = []
 
     start_point = 1
+
+    for i in range(len(extra_walls)):
+        walls.append((extra_walls[i][0], extra_walls[i][1]))
 
     for i in range(start_point, len(self_new_body)):
         #ignore own tail
