@@ -446,7 +446,7 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                 return True
 
             #else, if path for other snake to first border cutoff cell, passes through blocked off cells, cutoff, otherwise don't
-            return (not can_cutoff_head_and_tail_check(data, border_paths,snake_cutoff_index, i))
+            return (not can_cutoff_head_and_tail_check(data, border_paths, blocked_off_cells, snake_cutoff_index, i))
 
         #else direction == left or right, and in such case return true, meaning too much free space
         return True
@@ -519,14 +519,14 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                 return True
 
             #else, if path for other snake to first border cutoff cell, passes through blocked off cells, cutoff, otherwise don't
-            return (not can_cutoff_head_and_tail_check(data, border_paths,snake_cutoff_index, i))
+            return (not can_cutoff_head_and_tail_check(data, border_paths, blocked_off_cells, snake_cutoff_index, i))
 
         #else direction == left or right, and in such case return true, meaning too much free space
         return True
 
     return True
 
-def can_cutoff_head_and_tail_check(data, border_paths, snake_cutoff_index, i):
+def can_cutoff_head_and_tail_check(data, border_paths, blocked_off_cells, snake_cutoff_index, i):
     #else, if path for other snake to first border cutoff cell, passes through blocked off cells, cutoff, otherwise don't
     snake_body = copy.deepcopy(data['board']['snakes'][snake_cutoff_index]['body'][:])
     snake_goal =  (border_paths[i][0][0], border_paths[i][0][1])
