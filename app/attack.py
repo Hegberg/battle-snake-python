@@ -537,6 +537,8 @@ def can_cutoff_head_and_tail_check(data, border_paths, blocked_off_cells, snake_
     custom_aStar, walls = init_astar_with_custom_snake(data, snake_body, data['board']['snakes'][snake_cutoff_index]['id'], snake_goal)
     path = custom_aStar.solve()
 
+    print("Cutoff path to start of cutoff: " + str(path))
+
     if (path != None):
         can_cutoff = False
         for s in range(len(path)):
@@ -545,13 +547,31 @@ def can_cutoff_head_and_tail_check(data, border_paths, blocked_off_cells, snake_
                 can_cutoff = True
                 break
 
+        print("Cutoff: " + str(can_cutoff))
+
         #if can cutoff, check if with cutoff path, have path too my tail, if so, don't cut off
         if (can_cutoff):
+            snake_goal = (data['you']['body'][len(data['you']['body']) - 1]['x'], data['you']['body'][len(data['you']['body']) - 1]['y'])
             custom_aStar, walls = init_astar_with_custom_snake(data, snake_body, data['board']['snakes'][snake_cutoff_index]['id'], snake_goal, border_paths[i])
             path = custom_aStar.solve()
 
+            print("Cutoff path to my tail: " + str(path))
+
             if (path != None):
+                print("Cutoff path to my tail valid: " + str(path))
                 can_cutoff = False
+
+            #check if can also reach its own tail, if it can, don't cutoff, otherwise, do
+            if (can_cutoff):
+                snake_goal = (data['board']['snakes'][snake_cutoff_index]['body'][len(data['board']['snakes'][snake_cutoff_index]['body']) - 1]['x'],
+                    data['board']['snakes'][snake_cutoff_index]['body'][len(data['board']['snakes'][snake_cutoff_index]['body']) - 1]['y'])
+                custom_aStar.reset_grid(snake_goal)
+                path = custom_aStar.solve()
+
+                if (path != None):
+                    print("Cutoff path to snakes own tail valid: " + str(path))
+                    can_cutoff = False
+
 
         #inverse reply, since if can cutoff, means there is not enough room for snake to survive
         #so return false
