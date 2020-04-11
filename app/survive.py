@@ -173,6 +173,7 @@ def flood_fill(data, walls, available_directions, aStar):
 
     #for flood directions, go through small sizes and see if can survive in
     for i in range(len(flood_directions)):
+
         if (flood_directions[i][1] > len(data['you']['body'])):
             #append direction, and single lane
             final_directions.append((flood_directions[i][0], flood_directions[i][2]))
@@ -188,8 +189,6 @@ def flood_fill(data, walls, available_directions, aStar):
                 if (path_availabe):
                     final_directions.append((flood_directions[i][0], single_lane))
                     print("flood directions after longest path: " + str(final_directions))
-
-
         
         #check if largest flood area is less than body size, if so, go with direction that has longest path, 
         #not just direction with largest flood that may or may not have same flood size as other direction
@@ -202,7 +201,9 @@ def flood_fill(data, walls, available_directions, aStar):
         elif (flood_directions[i][1] == largest_flood[1] and flood_directions[i][1] > 0 and flood_directions[i][1] < len(data['you']['body'])):
             longest_path, closest_tail = find_longest_path(data, get_location_from_direction(flood_directions[i][0],x,y), flood_areas[i])
             large_longest_path, large_closest_tail = find_longest_path(data, get_location_from_direction(largest_flood[0],x,y), large_flood_area)
-            #if path longer, or path the smae and distance to tail shorter
+
+
+            #if path longer, or path the same and distance to tail shorter
             if ((len(longest_path) > len(large_longest_path)) or 
                 ((len(longest_path) == len(large_longest_path) and len(longest_path) > 0 and len(large_longest_path) > 0)
                 and (get_distance_between_points(longest_path[len(longest_path) - 1], closest_tail) < 

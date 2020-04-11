@@ -408,6 +408,7 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                             blocked_off_cells.append((k,j))
 
                 print("Direction left border up/down")
+                """
                 for j in range(j_start, j_stop, step):
                     for k in range(0, border_paths[i][0][0]):
                         if (not ((k,j) in walls)):
@@ -415,6 +416,7 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                         else:
                             print("1 " , end='')
                     print(" ")
+                """
 
             #create box to right of cutoff
             elif (direction == 'right'):
@@ -427,6 +429,7 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                             blocked_off_cells.append((k,j))
 
                 print("Direction right border up/down")
+                """
                 for j in range(j_start, j_stop, step):
                     for k in range(border_paths[i][0][0] + 1, data['board']['width']):
                         if (not ((k,j) in walls)):
@@ -434,6 +437,7 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                         else:
                             print("1 " , end='')
                     print(" ")
+                """
 
             #else not right or left so go to start of loop
             else:
@@ -481,6 +485,7 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                             blocked_off_cells.append((k,j))
 
                 print("Direction up border left/right")
+                """
                 for k in range(0, border_paths[i][0][1]):
                     for j in range(j_start, j_stop, step):
                         if (not ((j,k) in walls)):
@@ -488,7 +493,7 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                         else:
                             print("1 " , end='')
                     print(" ")
-
+                """
             #create box to down of cutoff
             elif (direction == 'down'):
                 #along horizontal line of cutoff wall
@@ -500,6 +505,7 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                             blocked_off_cells.append((k,j))
 
                 print("Direction down border left/right")
+                """
                 for k in range(border_paths[i][0][1] + 1, data['board']['height']):
                     for j in range(j_start, j_stop, step):
                         if (not ((j,k) in walls)):
@@ -507,6 +513,7 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                         else:
                             print("1 " , end='')
                     print(" ")
+                """
             
             #else not up or down so go to start of loop
             else:
@@ -662,11 +669,13 @@ def flood_fill_snake(data, walls, aStar, snake_index, cutoff_path):
             if (matrix[j][k] == 2):
                 flood_size += 1
     print("Cutoff flood size: ", flood_size)
+    """
     for j in range(len(flood_matrix[0])):
         print("Flood Matrix Cutoff: ", end='')
         for k in range(len(flood_matrix)):
             print(str(flood_matrix[k][j]) + " " , end='')
         print(" ")
+    """
     #to accomidate for not adding head to flood walls
     flood_size -= 1
 

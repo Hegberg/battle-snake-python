@@ -4,7 +4,7 @@ class LongestPath(object):
 	def __init__(self, data, first_space, traversable_area):
 		self.data = data
 		self.first_space = first_space
-		self.traversable_area = traversable_area #dictionary of useable spaces
+		self.traversable_area = traversable_area.copy() #dictionary of useable spaces
 		self.closest_tail = self.find_closest_tail()
 
 	def get_longest_path(self):
