@@ -84,7 +84,7 @@ def get_move(data):
             print("Center map same as you snake head")
             path = None
         else:
-            aStar.reset_grid((int(data['board']['width']/2), int(data['board']['height']/2)))
+            aStar.reset_grid_and_start((data['you']['body'][0]['x'], data['you']['body'][0]['y']), (int(data['board']['width']/2), int(data['board']['height']/2)))
             path = aStar.solve()
 
         #if path to mid exists
