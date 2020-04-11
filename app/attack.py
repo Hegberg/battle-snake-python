@@ -178,7 +178,7 @@ def block_head(data, aStar, walls, opposing_snake, survival_directions):
     #get flood fill of now blocked off area from perspective of opponent snake, if small enough, than do cutoff
     #otherwise, don't block
 
-    if (not (flood_fill_snake(data, walls, opposing_snake, path_to_border))):
+    if (not (flood_fill_snake(data, walls, aStar, opposing_snake, path_to_border))):
         #small enough area to trap snake
         block_head_directions = get_directions(data['you']['body'][0]['x'], data['you']['body'][0]['y'], shortest_path[0][0], shortest_path[0][1]) 
         print("Blocking path: " + str(shortest_path) + " and to border path: " + str(path_to_border) + " in direction: " + str(block_head_directions) + " will trap opposing snake")
@@ -291,7 +291,7 @@ def attack_cutoff(data, aStar, walls, survival_directions):
 
         #if both paths don't exist, flood fill area too see if small enough (< body size) to trap snake
         if (snake_head_to_tail_path == None and snake_path_to_you_tail == None):
-            if (flood_fill_snake(data, walls, snake_cutoff_index, border_paths[i])):
+            if (flood_fill_snake(data, walls, aStar, snake_cutoff_index, border_paths[i])):
                 print("Too large of area to for snake to survive in, don't cutoff in direction: " + str(border_directions[i]))
                 continue
 
@@ -630,7 +630,7 @@ def get_snake_path_to_tail(data, walls, border_paths, snake_cutoff_index, border
     return snake_head_to_tail_path, snake_head_to_you_tail_path
 
 #return true if large enough area for it too survive, false otherwise
-def flood_fill_snake(data, walls, snake_index, cutoff_path):
+def flood_fill_snake(data, walls, aStar, snake_index, cutoff_path):
     x = data['board']['snakes'][snake_index]['body'][0]['x']
     y = data['board']['snakes'][snake_index]['body'][0]['y']
 
@@ -656,7 +656,7 @@ def flood_fill_snake(data, walls, snake_index, cutoff_path):
 
     #-1 not 0 to accomidate for removing head from walls 
     flood_size =  -1
-    flood_matrix = flood_fill_recursive(matrix, x, y)
+    flood_matrix = flood_fill_recursive(matrix, x, y, data, walls, aStar)
     for j in range(len(matrix)):
         for k in range(len(matrix[j])):
             if (matrix[j][k] == 2):

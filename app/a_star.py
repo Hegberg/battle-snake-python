@@ -91,9 +91,14 @@ class AStar(object):
         self.reset_grid(end)
         self.start = self.get_cell(*start)
 
-    def reset_grid_and_remove_wall(self, wall, end):
+    def reset_grid_and_remove_wall(self, start, end, wall):
         """Reset grid cells and set new goal and start location"""
         self.reset_grid(end)
+        self.start = self.get_cell(*start)
+        self.remove_wall(*wall)
+
+    def add_wall(self, wall):
+        self.add_wall_x_y(*wall)
 
     def get_heuristic(self, cell):
         """Compute the heuristic value H for a cell.
@@ -109,6 +114,22 @@ class AStar(object):
         @returns cell
         """
         return self.cells[x * self.grid_height + y]
+
+    def add_wall_x_y(self, x, y):
+        """Removes a cell reachable from the cells list.
+        @param x cell x coordinate
+        @param y cell y coordinate
+        @returns cell
+        """
+        self.cells[x * self.grid_height + y].reachable = False
+
+    def remove_wall(self, x, y):
+        """Adds a cell reachable from the cells list.
+        @param x cell x coordinate
+        @param y cell y coordinate
+        @returns cell
+        """
+        self.cells[x * self.grid_height + y].reachable = True
 
     def get_adjacent_cells(self, cell):
         """Returns adjacent cells to a cell.

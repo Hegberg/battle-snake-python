@@ -61,6 +61,12 @@ def move():
     #shout = "I am a python snake!"
     shout = "I like em big... I like em Chunky!"
 
+    end = time.time()
+
+    elapsed_time = end - start
+
+    print("Time elsapsed: " + str(elapsed_time))
+
     response = {"move": move, "shout": shout}
     print("MOVE RESPONSE:", response)
     return HTTPResponse(
@@ -89,7 +95,9 @@ def end():
 def main():
     bottle.run(
         application,
-        host=os.getenv("IP", "0.0.0.0"),
+        host=os.getenv("IP", "192.168.1.65"),
+        #host=os.getenv("IP", "127.0.0.1"),
+        #host=os.getenv("IP", "0.0.0.0"),
         port=os.getenv("PORT", "8080"),
         debug=os.getenv("DEBUG", True),
     )

@@ -176,17 +176,23 @@ def determine_if_growing(data):
     return False
 
 def get_spacing_directions(data, aStar, walls, survival_directions, growing):
-    flood_directions, can_follow_flood = flood_fill(data, walls, survival_directions, aStar)
+    flood_directions_and_lane, can_follow_flood = flood_fill(data, walls, survival_directions, aStar)
+    lane_filter_flood_directions, single_lane_flood = single_lane_filter(flood_directions_and_lane)
+    flood_directions = lane_filter_flood_directions
 
-    tail_directions = find_own_tail_path(aStar, data, growing)
+    tail_directions_and_lane = find_own_tail_path(aStar, walls, data, growing)
+    lane_filter_tail_directions, single_lane_tail = single_lane_filter(tail_directions_and_lane)
+    tail_directions = lane_filter_tail_directions
 
-    other_snake_tail_directions = find_other_snake_tail_path(data, aStar, walls)
+    other_snake_tail_directions_and_lane = find_other_snake_tail_path(data, aStar, walls)
+    lane_filter_other_snake_tail_directions, single_lane_other_tail = single_lane_filter(other_snake_tail_directions_and_lane)
+    other_snake_tail_directions = lane_filter_other_snake_tail_directions
 
     can_follow_tail = False
     can_follow_other_snake_tail = False
 
     #viable path to tail found
-    if (tail_directions != None):
+    if (tail_directions != None and len(tail_directions) > 0):
         can_follow_tail = True
 
     #viable path to other snake tail found
@@ -198,32 +204,38 @@ def get_spacing_directions(data, aStar, walls, survival_directions, growing):
     if (can_follow_flood):
         for direction in flood_directions:
             if (direction in survival_directions):
-                spacing_directions.append(direction)
+                spacing_directions.append((direction, single_lane_flood))
         print("Area Flood after survival direction clear: ", spacing_directions)
 
     #can follow tail, add direction to spacing directions
     if (can_follow_tail):
         for direction in tail_directions:
-            if (direction in survival_directions and not(direction in spacing_directions)):
-                spacing_directions.append(direction)
+            if (direction in survival_directions and not((direction, single_lane_tail) in spacing_directions)):
+                spacing_directions.append((direction, single_lane_tail))
         print("Head->Food->Tail and Flood after survival direction clear: ", spacing_directions)
     
     #if can follow opponent tail, add direction to spacing directions
     if (can_follow_other_snake_tail):
         for direction in other_snake_tail_directions:
-            if (direction in survival_directions and not(direction in spacing_directions)):
-                spacing_directions.append(direction)
+            if (direction in survival_directions and not((direction, single_lane_other_tail) in spacing_directions)):
+                spacing_directions.append((direction, single_lane_other_tail))
         print("Other snake tail follow and spacing after survival direction clear: ", spacing_directions)
 
     #if can't follow tail, and no area large enough, and can't follow opponent tail, go with largest area
     if (not can_follow_flood and not can_follow_tail and not can_follow_other_snake_tail):
         for direction in flood_directions:
             if (direction in survival_directions):
-                spacing_directions.append(direction)
+                spacing_directions.append((direction, single_lane_flood))
         print("Area Flood after normal flood and tail follow fail: ", spacing_directions)
 
     #if multiple spacing options
     #check if any spacing directions go through single path, if they do remove that option
+
+    spacing_directions, spacing_single_filter = single_lane_filter(spacing_directions)
+
+    print("spacing direstions after merge and single lane filter: " + str(spacing_directions))
+    print(spacing_single_filter)
+
     if (len(spacing_directions) > 1):
         space_directions_before_single_lane = spacing_directions[:]
         for direction in spacing_directions: #use spacing directions as in check so don't remove elemts while iterating through and missing some
@@ -238,6 +250,26 @@ def get_spacing_directions(data, aStar, walls, survival_directions, growing):
             print("Spacing directions after single lane filter: " + str(spacing_directions))
 
     return spacing_directions, can_follow_tail
+
+def single_lane_filter(directions_and_single_lane):
+    single_lane_directions = []
+    multi_lane_directions = []
+    #go through entire list, seperate into single and non single lane
+    for i in range(len(directions_and_single_lane)):
+        #make sure direction not None
+        if (directions_and_single_lane[i][0] == None):
+            continue
+
+        #true means single lane, false means multi
+        if (directions_and_single_lane[i][1]):
+            single_lane_directions.append(directions_and_single_lane[i][0])
+        else:
+            multi_lane_directions.append(directions_and_single_lane[i][0])
+
+    if (len(multi_lane_directions) > 0):
+        return multi_lane_directions, False
+    else:
+        return single_lane_directions, True
 
 def get_directions_through_food_space_collision(consumption_directions, spacing_directions, no_head_collisions_directions, survival_directions, food_tail_directions):
     #just need to use blank state of directions, try to fill in with useful ones

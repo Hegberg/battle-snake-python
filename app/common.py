@@ -76,6 +76,11 @@ def check_if_direction_in_between_walls(data, walls, direction):
 
     return check_if_location_pass_between_walls(data, location, snake_walls, border_walls, self_walls)
 
+def check_if_location_in_between_walls(data, walls, location):
+    snake_walls, border_walls, self_walls = seperate_walls(data,walls)
+
+    return check_if_location_pass_between_walls(data, location, snake_walls, border_walls, self_walls)
+
 
 def seperate_walls(data, walls):
     snake_walls = walls[:]
@@ -155,6 +160,33 @@ def check_if_location_pass_between_walls(data, location, snake_walls, border_wal
     #passing between self and self ok
 
     return False
+
+def path_from_closest_snake_head_to_location(data, aStar, location):
+    shortest_path = None
+    snake_head = None
+
+    for i in range(len(data['board']['snakes'])):
+        p1_x = data['board']['snakes'][i]['body'][0]['x']
+        p1_y = data['board']['snakes'][i]['body'][0]['y']
+
+        #goal is current location
+        if ((p1_x, p1_y) == location):
+            return [location], (p1_x, p1_y)
+
+        #remove head from unreachable cells to allow for aStar to path from opponent head to location
+        aStar.reset_grid_and_remove_wall((p1_x, p1_y), location, (p1_x, p1_y))
+        path = aStar.solve()
+        aStar.add_wall((p1_x, p1_y))
+
+        if (path != None):
+            if (shortest_path == None or len(path) > len(shortest_path)):
+                shortest_path = path
+                snake_head = (p1_x,p1_y)
+
+    return shortest_path, snake_head
+
+def get_distance_between_points(self, point_1, point_2):
+    return abs(point_1[0] - point_2[0]) + abs(point_1[1] - point_2[1])
 
 def determine_if__snake_growing(data, snake_index):
     if (len(data['board']['snakes'][snake_index]) > 2):
