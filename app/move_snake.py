@@ -90,7 +90,7 @@ def get_move(data):
             return direction
 
         #go straight if possible
-        prev_directions =  get_directions(data['you']['body'][0][x], data['you']['body'][0][y], data['you']['body'][1][x], data['you']['body'][1][y])
+        prev_directions =  get_directions(data['you']['body'][0]['x'], data['you']['body'][0]['y'], data['you']['body'][1]['x'], data['you']['body'][1]['y'])
 
         if (prev_directions != None):
             inverse_directions = []
