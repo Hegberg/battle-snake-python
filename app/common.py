@@ -63,8 +63,7 @@ def check_if_path_in_between_walls(data, aStar, path, walls):
 
         if (path_between_walls):
             #path in between 2 opposing walls
-            return not check_if_cutoff_closer(data, aStar, (path[i][0], path[i][1]))
-
+            return check_if_cutoff_closer(data, aStar, (path[i][0], path[i][1]))
 
     return False
 
@@ -76,7 +75,7 @@ def check_if_direction_in_between_walls(data, aStar, walls, direction):
     snake_walls, border_walls, self_walls = seperate_walls(data,walls)
 
     if (check_if_location_pass_between_walls(data, location, snake_walls, border_walls, self_walls)):
-        return not check_if_cutoff_closer(data, aStar, location)
+        return check_if_cutoff_closer(data, aStar, location)
 
     return False
 
@@ -85,25 +84,28 @@ def check_if_location_in_between_walls(data, aStar, walls, location):
 
     if (check_if_location_pass_between_walls(data, location, snake_walls, border_walls, self_walls)):
         #if closer, returns true, so inverse to say false, not between walls
-        return not check_if_cutoff_closer(data, aStar, location)
+        return check_if_cutoff_closer(data, aStar, location)
     return False
 
+#returns true if opponent snake closer
 def check_if_cutoff_closer(data, aStar, location):
     short_path, snake_head_loc = path_from_closest_snake_head_to_location(data, aStar, location)
 
     if ((data['you']['body'][0]['x'], data['you']['body'][0]['y']) == location):
-        return True
+        return False
 
     aStar.reset_grid_and_start((data['you']['body'][0]['x'], data['you']['body'][0]['y']), location)
     own_path = aStar.solve()
 
     if (short_path != None and own_path != None):
         #if opposing snake can beat me to cutoff, don't use
-        if (len(own_path) > len(short_path)):
+        if (len(own_path) >= len(short_path)):
             return True
+        else:
+            return False
 
     elif (short_path != None):
-        return False
+        return True
 
     return False
 
@@ -168,6 +170,9 @@ def check_if_location_pass_between_walls(data, location, snake_walls, border_wal
         self_y_axis_walls += 1
     if ((location[0], location[1] - 1) in self_walls):
         self_y_axis_walls += 1
+
+    if (location[0] == 1 and location[0] == 5):
+        print("Between the walls: ")
 
     #passing between 2 snakes
     if (snake_x_axis_walls >= 2 or snake_y_axis_walls >= 2):

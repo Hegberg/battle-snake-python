@@ -272,7 +272,7 @@ def get_spacing_directions(data, aStar, walls, survival_directions, growing):
     spacing_directions, spacing_single_filter = single_lane_filter(spacing_directions)
 
     print("spacing direstions after merge and single lane filter: " + str(spacing_directions))
-    print(spacing_single_filter)
+    print("spacing filter: " + str(spacing_single_filter))
 
     if (len(spacing_directions) > 1):
         space_directions_before_single_lane = spacing_directions[:]

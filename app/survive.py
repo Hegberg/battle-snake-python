@@ -235,6 +235,7 @@ def flood_fill(data, walls, available_directions, aStar):
 def flood_fill_recursive(matrix, x, y, data, walls, aStar):
     if (matrix[x][y] == 0):
         between_walls = check_if_location_in_between_walls(data, aStar, walls, (x,y))
+        #if between walls, check if opposing snake is close enough to cut off from that point, if so, remove option from floodfill
         if(between_walls):
             return matrix
 
