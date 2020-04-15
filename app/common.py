@@ -100,11 +100,10 @@ def check_if_cutoff_closer(data, aStar, location):
 
     if (short_path != None and own_path != None):
         #if opposing snake can beat me to cutoff, don't use
-        if (len(own_path) >= len(short_path)):
+        if (len(own_path) > len(short_path)):
             return True
 
     elif (short_path != None):
-        anywhere_between_walls = True
         return True
 
     return False
