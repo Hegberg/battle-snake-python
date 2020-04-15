@@ -37,7 +37,7 @@ def attack_chase(data, aStar, walls, survival_directions):
             #check if path goes through single lane, if so mark as bad and None
             if (path != None):
                 #print("Attack Path is before wall check: " + str(path))
-                single_lane = check_if_path_in_between_walls(data, path, walls)
+                single_lane = check_if_path_in_between_walls(data, aStar, path, walls)
                 if (single_lane):
                     #print("Attack Path is between walls, ignore it: " + str(path))
                     path = None

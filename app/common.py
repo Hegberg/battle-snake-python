@@ -53,7 +53,7 @@ def add_to_dict(x, y, dict, val = 1):
         dict[(x,y)] += val
 
 #return true if path stuck between 2 walls
-def check_if_path_in_between_walls(data, path, walls):
+def check_if_path_in_between_walls(data, aStar, path, walls):
 
     snake_walls, border_walls, self_walls = seperate_walls(data,walls)
 
@@ -63,24 +63,51 @@ def check_if_path_in_between_walls(data, path, walls):
 
         if (path_between_walls):
             #path in between 2 opposing walls
-            return True
+            return check_if_cutoff_closer(data, aStar, (path[i][0], path[i][1]))
+
 
     return False
 
 
-def check_if_direction_in_between_walls(data, walls, direction):
+def check_if_direction_in_between_walls(data, aStar, walls, direction):
     
     location = get_location_from_direction(direction, data['you']['body'][0]['x'], data['you']['body'][0]['y'])
 
     snake_walls, border_walls, self_walls = seperate_walls(data,walls)
 
-    return check_if_location_pass_between_walls(data, location, snake_walls, border_walls, self_walls)
+    if (check_if_location_pass_between_walls(data, location, snake_walls, border_walls, self_walls)):
+        return check_if_cutoff_closer(data, aStar, location)
 
-def check_if_location_in_between_walls(data, walls, location):
+    return False
+
+def check_if_location_in_between_walls(data, aStar, walls, location):
     snake_walls, border_walls, self_walls = seperate_walls(data,walls)
 
-    return check_if_location_pass_between_walls(data, location, snake_walls, border_walls, self_walls)
+    if (check_if_location_pass_between_walls(data, location, snake_walls, border_walls, self_walls)):
+        print("location: " + str(location))
+        return check_if_cutoff_closer(data, aStar, location)
 
+    return False
+
+def check_if_cutoff_closer(data, aStar, location):
+    short_path, snake_head_loc = path_from_closest_snake_head_to_location(data, aStar, location)
+
+    if ((data['you']['body'][0]['x'], data['you']['body'][0]['y']) == location):
+        return True
+
+    aStar.reset_grid_and_start((data['you']['body'][0]['x'], data['you']['body'][0]['y']), location)
+    own_path = aStar.solve()
+
+    if (short_path != None and own_path != None):
+        #if opposing snake can beat me to cutoff, don't use
+        if (len(own_path) >= len(short_path)):
+            return True
+
+    elif (short_path != None):
+        anywhere_between_walls = True
+        return True
+
+    return False
 
 def seperate_walls(data, walls):
     snake_walls = walls[:]
@@ -179,7 +206,7 @@ def path_from_closest_snake_head_to_location(data, aStar, location):
         aStar.add_wall((p1_x, p1_y))
 
         if (path != None):
-            if (shortest_path == None or len(path) > len(shortest_path)):
+            if (shortest_path == None or len(path) < len(shortest_path)):
                 shortest_path = path
                 snake_head = (p1_x,p1_y)
 

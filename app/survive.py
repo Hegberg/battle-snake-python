@@ -232,11 +232,10 @@ def flood_fill(data, walls, available_directions, aStar):
 def flood_fill_recursive(matrix, x, y, data, walls, aStar):
     if (matrix[x][y] == 0):
         matrix[x][y] = 2
-        between_walls = check_if_location_in_between_walls(data, walls, (x,y))
+        between_walls = check_if_location_in_between_walls(data, aStar, walls, (x,y))
         #if between walls, check if opposing snake is close enough to cut off from that point, if so, remove option from floodfill
         if(between_walls):
-            #short_path, snake_head_loc = path_from_closest_snake_head_to_location(data, aStar, (x,y))
-            return matrix
+                return matrix
 
         if (x > 0):
             matrix = flood_fill_recursive(matrix, x-1, y, data, walls, aStar)
@@ -264,18 +263,14 @@ def get_flood_size(matrix):
     return flood_size, flood_area
 
 def path_single_lane_check(data, aStar, walls, path):
-    dist = None
     anywhere_between_walls = False
     for i in range(len(path)):
-        between_walls = check_if_location_in_between_walls(data, walls, path[i])
+        between_walls = check_if_location_in_between_walls(data, aStar, walls, path[i])
         if(between_walls):
             anywhere_between_walls = True
-            short_path, snake_head_loc = path_from_closest_snake_head_to_location(data, aStar, path[i])
-            #if path exists from opposing snake to single lane
-            if (short_path != None and (dist == None or len(short_path) < dist)):
-                dist = len(short_path)
+            break
 
-    return anywhere_between_walls, dist
+    return anywhere_between_walls
 
 #TODO
 #if space between head and tail
@@ -306,9 +301,9 @@ def find_own_tail_path(aStar, walls, data, growing):
                                     path[1][0], path[1][1])
 
         if (growing):
-            single_lane, dist = path_single_lane_check(data, aStar, new_walls, path)
+            single_lane = path_single_lane_check(data, aStar, new_walls, path)
         else:
-            single_lane, dist = path_single_lane_check(data, aStar, walls, path)
+            single_lane = path_single_lane_check(data, aStar, walls, path)
 
         for i in range(len(directions)):
             directions[i] = (directions[i], single_lane)
@@ -365,7 +360,7 @@ def find_other_snake_tail_path(data, aStar, walls):
                                     shortest_path[1][0], shortest_path[1][1])
 
 
-        single_lane, dist = path_single_lane_check(data, aStar, short_walls, shortest_path)
+        single_lane = path_single_lane_check(data, aStar, short_walls, shortest_path)
 
         for i in range(len(directions)):
             directions[i] = (directions[i], single_lane)
@@ -420,7 +415,7 @@ def traverse_longest_path(data, longest_path, closest_tail):
         if (path != None):
             print("Path to tail in blocked in area available: " + str(path))
 
-            between_walls, dist = path_single_lane_check(data, custom_aStar, walls, path)
+            between_walls = path_single_lane_check(data, custom_aStar, walls, path)
 
             #return if path is available, and if it is between walls
             return True, between_walls

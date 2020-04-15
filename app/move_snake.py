@@ -239,7 +239,7 @@ def get_spacing_directions(data, aStar, walls, survival_directions, growing):
     if (len(spacing_directions) > 1):
         space_directions_before_single_lane = spacing_directions[:]
         for direction in spacing_directions: #use spacing directions as in check so don't remove elemts while iterating through and missing some
-            if (check_if_direction_in_between_walls(data, walls, direction)):
+            if (check_if_direction_in_between_walls(data, aStar, walls, direction)):
                 space_directions_before_single_lane.remove(direction)
 
         #if directions still exist that are not of single path use new directions, 
