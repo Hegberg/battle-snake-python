@@ -169,6 +169,8 @@ def flood_fill(data, walls, available_directions, aStar):
     largest_flood_single_lane = False
     final_directions = []
 
+    tail_directions = []
+
     print("Flood directions before longest path: " + str(flood_directions))
 
     #for flood directions, go through small sizes and see if can survive in
@@ -188,6 +190,7 @@ def flood_fill(data, walls, available_directions, aStar):
                 path_availabe, single_lane = traverse_longest_path(data, longest_path, closest_tail)
                 if (path_availabe):
                     final_directions.append((flood_directions[i][0], single_lane))
+                    tail_directions.append((flood_directions[i][0], single_lane))
                     print("flood directions after longest path: " + str(final_directions))
         
         #check if largest flood area is less than body size, if so, go with direction that has longest path, 
@@ -223,19 +226,19 @@ def flood_fill(data, walls, available_directions, aStar):
         final_directions.append((largest_flood[0], largest_flood_single_lane))
         #no large enough area found
         #return directions with lane, and if floodable
-        return final_directions, False
+        return final_directions, False, tail_directions
 
     #Found a large enough area
     #return directions with lane, and if floodable
-    return final_directions, True
+    return final_directions, True, tail_directions
 
 def flood_fill_recursive(matrix, x, y, data, walls, aStar):
     if (matrix[x][y] == 0):
-        matrix[x][y] = 2
         between_walls = check_if_location_in_between_walls(data, aStar, walls, (x,y))
-        #if between walls, check if opposing snake is close enough to cut off from that point, if so, remove option from floodfill
         if(between_walls):
-                return matrix
+            return matrix
+
+        matrix[x][y] = 2
 
         if (x > 0):
             matrix = flood_fill_recursive(matrix, x-1, y, data, walls, aStar)

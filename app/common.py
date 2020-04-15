@@ -3,7 +3,7 @@
 def directions1_in_directions2(directions1, directions2):
     directions = []
     if (directions1 != None and len(directions1) > 0):
-        #if direction of food not in viable direction, remove option
+        #if direction in direction1 not in viable direction, remove option
         for direction in directions1:
             if (direction in directions2):
                 directions.append(direction)
@@ -63,7 +63,7 @@ def check_if_path_in_between_walls(data, aStar, path, walls):
 
         if (path_between_walls):
             #path in between 2 opposing walls
-            return check_if_cutoff_closer(data, aStar, (path[i][0], path[i][1]))
+            return not check_if_cutoff_closer(data, aStar, (path[i][0], path[i][1]))
 
 
     return False
@@ -76,7 +76,7 @@ def check_if_direction_in_between_walls(data, aStar, walls, direction):
     snake_walls, border_walls, self_walls = seperate_walls(data,walls)
 
     if (check_if_location_pass_between_walls(data, location, snake_walls, border_walls, self_walls)):
-        return check_if_cutoff_closer(data, aStar, location)
+        return not check_if_cutoff_closer(data, aStar, location)
 
     return False
 
@@ -84,9 +84,8 @@ def check_if_location_in_between_walls(data, aStar, walls, location):
     snake_walls, border_walls, self_walls = seperate_walls(data,walls)
 
     if (check_if_location_pass_between_walls(data, location, snake_walls, border_walls, self_walls)):
-        print("location: " + str(location))
-        return check_if_cutoff_closer(data, aStar, location)
-
+        #if closer, returns true, so inverse to say false, not between walls
+        return not check_if_cutoff_closer(data, aStar, location)
     return False
 
 def check_if_cutoff_closer(data, aStar, location):
@@ -104,7 +103,7 @@ def check_if_cutoff_closer(data, aStar, location):
             return True
 
     elif (short_path != None):
-        return True
+        return False
 
     return False
 
@@ -192,6 +191,9 @@ def path_from_closest_snake_head_to_location(data, aStar, location):
     snake_head = None
 
     for i in range(len(data['board']['snakes'])):
+        if (data['board']['snakes'][i]['id'] == data['you']['id']):
+            continue #skip self
+
         p1_x = data['board']['snakes'][i]['body'][0]['x']
         p1_y = data['board']['snakes'][i]['body'][0]['y']
 

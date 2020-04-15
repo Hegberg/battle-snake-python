@@ -30,7 +30,7 @@ def get_move(data):
     growing = determine_if_growing(data)
 
     #check spacing
-    spacing_directions, can_follow_tail = get_spacing_directions(data, aStar, walls, survival_directions, growing)
+    spacing_directions, can_follow_tail, tail_directions = get_spacing_directions(data, aStar, walls, survival_directions, growing)
 
     food_directions, nearest_food = consumption_choices(data, aStar, walls)
 
@@ -75,11 +75,47 @@ def get_move(data):
     elif(len(final_directions) <= 0):
         final_directions = ["up", "down", "left", "right"]
 
-    print("Final Directions before centered: " + str(final_directions))
+    print("Final Directions before last reform: " + str(final_directions))
 
-    if (len(final_directions) > 0):
+    #multiple good options
+    if (len(final_directions) > 1):
+
+        #follow tail if possible
+        pos_tail_directions = directions1_in_directions2(tail_directions, final_directions)
+
+        if (pos_tail_directions != None and len(pos_tail_directions) > 0):
+            final_directions = pos_tail_directions
+            print("Final Directions after tail: " + str(final_directions))
+            direction = random.choice(final_directions)
+            return direction
+
+        #go straight if possible
+        prev_directions =  get_directions(data['you']['body'][0][x], data['you']['body'][0][y], data['you']['body'][1][x], data['you']['body'][1][y])
+
+        if (prev_directions != None):
+            inverse_directions = []
+            for direction in prev_directions:
+                if (direction == "left"):
+                    inverse_directions.append("right")
+                elif (direction == "right"):
+                    inverse_directions.append("left")
+                elif (direction == "down"):
+                    inverse_directions.append("up")
+                elif (direction == "up"):
+                    inverse_directions.append("down")
+
+            forward_directions = directions1_in_directions2(inverse_directions, final_directions)
+
+            if (forward_directions != None and len(forward_directions) > 0):
+                final_directions = forward_directions
+                print("Final Directions after straight: " + str(final_directions))
+                direction = random.choice(final_directions)
+                return direction
+
+    direction = random.choice(final_directions)
+    return direction
+"""
         #multiple options, only get here if don't have paths to follow, so just head towards mid preferred
-
         if ((int(data['board']['width']/2), int(data['board']['height']/2)) == (data['you']['body'][0]['x'], data['you']['body'][0]['y'])):
             print("Center map same as you snake head")
             path = None
@@ -99,10 +135,7 @@ def get_move(data):
                 print("Final Directions after centered: " + str(center_final_directions))
                 direction = random.choice(center_final_directions)
                 return direction
-
-
-    direction = random.choice(final_directions)
-    return direction
+"""
 
 #TODO
 #change health check, to check for distance to nearest food, and if hunger left can get me there
@@ -135,6 +168,11 @@ def get_attack_directions(data, aStar, walls, survival_directions):
     for i in range(len(data['board']['snakes'])):
         if (data['board']['snakes'][i]['id'] == data['you']['id']):
             continue #skip self
+
+        #if lumtiple snakes, be 1 sizes larger than required_size_difference before attacking
+        if ((len(data['board']['snakes']) > 2) and 
+            len(data['you']['body']) < len(data['board']['snakes'][i]['body']) + required_size_difference + 1):
+            snake_size_larger = False
 
         if (len(data['you']['body']) < len(data['board']['snakes'][i]['body']) + required_size_difference):
             snake_size_larger = False
@@ -176,7 +214,7 @@ def determine_if_growing(data):
     return False
 
 def get_spacing_directions(data, aStar, walls, survival_directions, growing):
-    flood_directions_and_lane, can_follow_flood = flood_fill(data, walls, survival_directions, aStar)
+    flood_directions_and_lane, can_follow_flood, tail_flood_directions = flood_fill(data, walls, survival_directions, aStar)
     lane_filter_flood_directions, single_lane_flood = single_lane_filter(flood_directions_and_lane)
     flood_directions = lane_filter_flood_directions
 
@@ -249,7 +287,13 @@ def get_spacing_directions(data, aStar, walls, survival_directions, growing):
             spacing_directions = space_directions_before_single_lane
             print("Spacing directions after single lane filter: " + str(spacing_directions))
 
-    return spacing_directions, can_follow_tail
+    #add all tail paths together
+    if (len(tail_flood_directions) > 0):
+        for direction in tail_flood_directions:
+            if (not direction in tail_directions):
+                tail_directions.append(direction)
+
+    return spacing_directions, can_follow_tail, tail_directions
 
 def single_lane_filter(directions_and_single_lane):
     single_lane_directions = []

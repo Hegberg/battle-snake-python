@@ -556,6 +556,12 @@ def can_cutoff_head_and_tail_check(data, border_paths, blocked_off_cells, snake_
 
         print("Cutoff: " + str(can_cutoff))
 
+        #if path doesn't go through cutoff space, but snake is right beside border path (so in space, but path not in space since head on edge of space)
+        #check if larger, if so see if have less than or equal distance, if so, cutoff
+        if (not can_cutoff and len(path) == 2 and (len(data['you']['body']) > len(data['board']['snakes'][snake_cutoff_index]['body']))):
+            can_cutoff = True
+            print("Cutoff beside: " + str(can_cutoff))
+
         #if can cutoff, check if with cutoff path, have path too my tail, if so, don't cut off
         if (can_cutoff):
             snake_goal = (data['you']['body'][len(data['you']['body']) - 1]['x'], data['you']['body'][len(data['you']['body']) - 1]['y'])
