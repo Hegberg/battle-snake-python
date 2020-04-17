@@ -205,7 +205,6 @@ def flood_fill(data, walls, available_directions, aStar):
             longest_path, closest_tail = find_longest_path(data, get_location_from_direction(flood_directions[i][0],x,y), flood_areas[i])
             large_longest_path, large_closest_tail = find_longest_path(data, get_location_from_direction(largest_flood[0],x,y), large_flood_area)
 
-
             #if path longer, or path the same and distance to tail shorter
             if ((len(longest_path) > len(large_longest_path)) or 
                 ((len(longest_path) == len(large_longest_path) and len(longest_path) > 0 and len(large_longest_path) > 0)

@@ -242,11 +242,11 @@ def attack_cutoff(data, aStar, walls, survival_directions):
     snake_following_name = ''
     snake_cutoff_index = -1
 
+    """
     #for all snakes find closest with valid path to head
     for i in range(len(data['board']['snakes'])):
         if (data['board']['snakes'][i]['id'] == data['you']['id']):
             continue #skip self
-
 
         path = None
 
@@ -265,39 +265,46 @@ def attack_cutoff(data, aStar, walls, survival_directions):
     if (shortest_path == None):
         print("Attack Cutoff Shortest Path to head: " + str(shortest_path) + " of snake: " + str(snake_following_name))
         return cutoff_directions
+    """
+    for j in range(len(data['board']['snakes'])):
+        if (data['board']['snakes'][j]['id'] == data['you']['id']):
+            continue #skip self
 
-    #for all border directions, see if one cuts off closest snake
-    for i in range(len(border_directions)):
+        snake_cutoff_index = j
+        print("Attempting to cutoff snake: " + str(data['board']['snakes'][j]['name']))
 
-        too_much_free_space = rectangle_check(data, walls, border_directions[i], border_paths, snake_cutoff_index, i)
+        #for all border directions, see if one cuts off closest snake
+        for i in range(len(border_directions)):
 
-        #too much free space, don't cutoff
-        if (too_much_free_space):
-            print("Too much free space not cutting off in direction: " + str(border_directions[i]))
-            continue
-        
-        #see if path to tail is loger than cutoff path
-        snake_head_to_tail_path, snake_path_to_you_tail = get_snake_path_to_tail(data, walls, border_paths, snake_cutoff_index, i)
+            too_much_free_space = rectangle_check(data, walls, border_directions[i], border_paths, snake_cutoff_index, i)
 
-        #if path longer than cutoff path, proceed to cutoff
-        if (snake_head_to_tail_path != None and len(snake_head_to_tail_path) < len(border_paths[i])):
-            print("Path to tail to short for effective cutoff in direction: " + str(border_directions[i]))
-            continue
+            #too much free space, don't cutoff
+            if (too_much_free_space):
+                print("Too much free space not cutting off in direction: " + str(border_directions[i]))
+                continue
+            
+            #see if path to tail is loger than cutoff path
+            snake_head_to_tail_path, snake_path_to_you_tail = get_snake_path_to_tail(data, walls, border_paths, snake_cutoff_index, i)
 
-        if (snake_head_to_tail_path != None and len(snake_head_to_tail_path) >= len(border_paths[i])):
-            print("Path for snake to escape long enough to justify cutoff in direction: " + str(border_directions[i]))
-            cutoff_directions.append(border_directions[i])
-            continue
-
-        #if both paths don't exist, flood fill area too see if small enough (< body size) to trap snake
-        if (snake_head_to_tail_path == None and snake_path_to_you_tail == None):
-            if (flood_fill_snake(data, walls, aStar, snake_cutoff_index, border_paths[i])):
-                print("Too large of area to for snake to survive in, don't cutoff in direction: " + str(border_directions[i]))
+            #if path longer than cutoff path, proceed to cutoff
+            if (snake_head_to_tail_path != None and len(snake_head_to_tail_path) < len(border_paths[i])):
+                print("Path to tail to short for effective cutoff in direction: " + str(border_directions[i]))
                 continue
 
-            #cutoff
-            print("Too small area for snake to survive in, cutoff in direction: " + str(border_directions[i]))
-            cutoff_directions.append(border_directions[i])
+            if (snake_head_to_tail_path != None and len(snake_head_to_tail_path) >= len(border_paths[i])):
+                print("Path for snake to escape long enough to justify cutoff in direction: " + str(border_directions[i]))
+                cutoff_directions.append(border_directions[i])
+                continue
+
+            #if both paths don't exist, flood fill area too see if small enough (< body size) to trap snake
+            if (snake_head_to_tail_path == None and snake_path_to_you_tail == None):
+                if (flood_fill_snake(data, walls, aStar, snake_cutoff_index, border_paths[i])):
+                    print("Too large of area to for snake to survive in, don't cutoff in direction: " + str(border_directions[i]))
+                    continue
+
+                #cutoff
+                print("Too small area for snake to survive in, cutoff in direction: " + str(border_directions[i]))
+                cutoff_directions.append(border_directions[i])
 
     return cutoff_directions
 
@@ -482,7 +489,7 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                     for k in range(0, border_paths[i][0][1]):
                         if (not ((j,k) in walls)):
                             free_space += 1
-                            blocked_off_cells.append((k,j))
+                            blocked_off_cells.append((j,k))
 
                 print("Direction up border left/right")
                 """
@@ -502,7 +509,7 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                     for k in range(border_paths[i][0][1] + 1, data['board']['height']): # +1 to avoid using border wall in free space calc
                         if (not ((j,k) in walls)):
                             free_space += 1
-                            blocked_off_cells.append((k,j))
+                            blocked_off_cells.append((j,k))
 
                 print("Direction down border left/right")
                 """

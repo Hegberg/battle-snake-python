@@ -120,8 +120,8 @@ def seperate_walls(data, walls):
         if ((data['you']['body'][i]['x'], data['you']['body'][i]['y']) in snake_walls):
             snake_walls.remove((data['you']['body'][i]['x'], data['you']['body'][i]['y']))
 
-        #ignore start of own body
-        if (i >= 2):
+        #ignore start of own body, and tail
+        if (i >= 2 and i < len(data['you']['body']) - 1):
             self_walls.append((data['you']['body'][i]['x'], data['you']['body'][i]['y']))
 
     #add border to walls
@@ -171,9 +171,16 @@ def check_if_location_pass_between_walls(data, location, snake_walls, border_wal
     if ((location[0], location[1] - 1) in self_walls):
         self_y_axis_walls += 1
 
-    if (location[0] == 1 and location[0] == 5):
-        print("Between the walls: ")
-
+    """
+    if (location[0] == 7 and location[1] == 9):
+        print("between_walls check")
+        print(self_x_axis_walls)
+        print(self_y_axis_walls)
+        print(border_x_axis_walls)
+        print(border_y_axis_walls)
+        print(snake_x_axis_walls)
+        print(snake_y_axis_walls)
+    """
     #passing between 2 snakes
     if (snake_x_axis_walls >= 2 or snake_y_axis_walls >= 2):
         return True
