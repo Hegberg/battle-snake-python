@@ -49,6 +49,8 @@ def locate_food(x,y,data, aStar, walls):
 
             #if not single lane and path exists, see if opposing snake that is larger is closer, if so, don't go for food
             else:
+                continue
+                """
                 for j in range(len(data['board']['snakes'])):
                     if (data['board']['snakes'][j]['id'] == data['you']['id']):
                         continue #skip self
@@ -70,6 +72,7 @@ def locate_food(x,y,data, aStar, walls):
                             print("Can't eat food: " + str((food[i][0], food[i][1])) + " " + str(len(path)) + " " + str(len(opponent_path)))
                         path = None
                         break
+                """
 
         #if path is good and is horter than other food paths, choose
         if ((path != None) and ((shortest_path == None) or (len(path) < len(shortest_path)))):
