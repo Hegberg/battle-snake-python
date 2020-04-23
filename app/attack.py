@@ -4,6 +4,7 @@ from app.common import check_if_path_in_between_walls
 from app.common import get_straight_path_directions_to_border
 from app.common import determine_if__snake_growing
 from app.common import get_shortest_direction_to_border
+from app.common import DEBUG_LOGS
 
 from app.a_star import AStar
 from app.a_star import init_astar_with_custom_snake
@@ -50,7 +51,8 @@ def attack_chase(data, aStar, walls, survival_directions):
         chase_directions = get_directions(data['you']['body'][0]['x'],data['you']['body'][0]['y'], 
                                     shortest_path[1][0], shortest_path[1][1])
 
-        print("Path to chasing snake " + snake_following_name + " head direction = " + str(chase_directions) + " on path: " + str(shortest_path))
+        if (DEBUG_LOGS):
+            print("Path to chasing snake " + snake_following_name + " head direction = " + str(chase_directions) + " on path: " + str(shortest_path))
 
         return chase_directions
 
@@ -67,7 +69,8 @@ def attack_chase(data, aStar, walls, survival_directions):
     
     #if only 1 other snake
     if (len(data['board']['snakes']) > 2):
-        print("No path to chasing opposing snakes heads")
+        if (DEBUG_LOGS):
+            print("No path to chasing opposing snakes heads")
         return chase_directions
 
     opposing_snake = -1
@@ -76,15 +79,18 @@ def attack_chase(data, aStar, walls, survival_directions):
             opposing_snake = i
             break
 
-    print("Creating wall to block in snake")
+    if (DEBUG_LOGS):
+        print("Creating wall to block in snake")
     wall_in_directions = create_wall(data, aStar, walls, opposing_snake, survival_directions)
 
     if (len(wall_in_directions) > 0):
         chase_directions = wall_in_directions
-        print("Path to wall in snake " + snake_following_name + " head direction = " + str(chase_directions) + " on path: " + str(shortest_path))
+        if (DEBUG_LOGS):
+            print("Path to wall in snake " + snake_following_name + " head direction = " + str(chase_directions) + " on path: " + str(shortest_path))
         return chase_directions
 
-    print("No path to chasing opposing snakes heads")
+    if (DEBUG_LOGS):
+        print("No path to chasing opposing snakes heads")
 
     return chase_directions
 
@@ -97,7 +103,8 @@ def create_wall(data, aStar, walls, opposing_snake, survival_directions):
     block_head_directions = block_head(data, aStar, walls, opposing_snake, survival_directions)
 
     if (block_head_directions != None and len(block_head_directions) > 0):
-        print("Blocking off head of opponent in directions: " + str(block_head_directions))
+        if (DEBUG_LOGS):
+            print("Blocking off head of opponent in directions: " + str(block_head_directions))
         return block_head_directions
 
     #fill in wall
@@ -106,7 +113,8 @@ def create_wall(data, aStar, walls, opposing_snake, survival_directions):
     block_body_directions = block_body(data, aStar, walls, opposing_snake, survival_directions)
 
     if (block_body_directions != None and len(block_body_directions) > 0):
-        print("Blocking off body of opponent in directions: " + str(block_body_directions))
+        if (DEBUG_LOGS):
+            print("Blocking off body of opponent in directions: " + str(block_body_directions))
         return block_body_directions
 
     #if no paths to it's body, follow tail
@@ -118,7 +126,8 @@ def create_wall(data, aStar, walls, opposing_snake, survival_directions):
     #choose path that keeps snake closest to cuting off opposing snake, to keep more area control, even if can't cutoff
 
     if (maintian_block_directions != None and len(maintian_block_directions) > 0):
-        print("Maintaining blocking off opponent in directions: " + str(maintian_block_directions))
+        if (DEBUG_LOGS):
+            print("Maintaining blocking off opponent in directions: " + str(maintian_block_directions))
         return maintian_block_directions
 
     return []
@@ -138,10 +147,12 @@ def block_head(data, aStar, walls, opposing_snake, survival_directions):
             shortest_path = path
 
     if (shortest_path == None):
-        print("No viable path to opposing snake " + str(data['board']['snakes'][opposing_snake]['name']) + " head to block")
+        if (DEBUG_LOGS):
+            print("No viable path to opposing snake " + str(data['board']['snakes'][opposing_snake]['name']) + " head to block")
         return None
 
-    print("Shortest path to opposing snakes " + str(data['board']['snakes'][opposing_snake]['name']) + "head on path: " + str(shortest_path))
+    if (DEBUG_LOGS):
+        print("Shortest path to opposing snakes " + str(data['board']['snakes'][opposing_snake]['name']) + "head on path: " + str(shortest_path))
 
     self_body = []
 
@@ -165,14 +176,16 @@ def block_head(data, aStar, walls, opposing_snake, survival_directions):
             break
 
     #from last place in path, find closest border to go to to block off
-    print("Space blocking off head from: " + str(shortest_path[body_adjacent_index]))
+    if (DEBUG_LOGS):
+        print("Space blocking off head from: " + str(shortest_path[body_adjacent_index]))
 
     #TODO
     #shortest path isn't necessarily the one that blocks off snake, use one that is relative to snake directions as well
     direction_to_border, path_to_border = get_shortest_direction_to_border(data, walls, shortest_path[body_adjacent_index])
 
     if (direction_to_border == None or path_to_border == None):
-        print("No path to head of snake and too border")
+        if (DEBUG_LOGS):
+            print("No path to head of snake and too border")
         return None
 
     #get flood fill of now blocked off area from perspective of opponent snake, if small enough, than do cutoff
@@ -181,13 +194,15 @@ def block_head(data, aStar, walls, opposing_snake, survival_directions):
     if (not (flood_fill_snake(data, walls, aStar, opposing_snake, path_to_border))):
         #small enough area to trap snake
         block_head_directions = get_directions(data['you']['body'][0]['x'], data['you']['body'][0]['y'], shortest_path[0][0], shortest_path[0][1]) 
-        print("Blocking path: " + str(shortest_path) + " and to border path: " + str(path_to_border) + " in direction: " + str(block_head_directions) + " will trap opposing snake")
+        if (DEBUG_LOGS):
+            print("Blocking path: " + str(shortest_path) + " and to border path: " + str(path_to_border) + " in direction: " + str(block_head_directions) + " will trap opposing snake")
         return block_head_directions
 
     #TODO
     #even if floodfill too large, still keep them stuck in smaller area
 
-    print("Unable to block off head in 1v1")
+    if (DEBUG_LOGS):
+        print("Unable to block off head in 1v1")
     return None
 
 def block_body(data, aStar, walls, opposing_snake, survival_directions):
@@ -271,7 +286,8 @@ def attack_cutoff(data, aStar, walls, survival_directions):
             continue #skip self
 
         snake_cutoff_index = j
-        print("Attempting to cutoff snake: " + str(data['board']['snakes'][j]['name']))
+        if (DEBUG_LOGS):
+            print("Attempting to cutoff snake: " + str(data['board']['snakes'][j]['name']))
 
         #for all border directions, see if one cuts off closest snake
         for i in range(len(border_directions)):
@@ -280,7 +296,8 @@ def attack_cutoff(data, aStar, walls, survival_directions):
 
             #too much free space, don't cutoff
             if (too_much_free_space):
-                print("Too much free space not cutting off in direction: " + str(border_directions[i]))
+                if (DEBUG_LOGS):
+                    print("Too much free space not cutting off in direction: " + str(border_directions[i]))
                 continue
             
             #see if path to tail is loger than cutoff path
@@ -288,22 +305,26 @@ def attack_cutoff(data, aStar, walls, survival_directions):
 
             #if path longer than cutoff path, proceed to cutoff
             if (snake_head_to_tail_path != None and len(snake_head_to_tail_path) < len(border_paths[i])):
-                print("Path to tail to short for effective cutoff in direction: " + str(border_directions[i]))
+                if (DEBUG_LOGS):
+                    print("Path to tail to short for effective cutoff in direction: " + str(border_directions[i]))
                 continue
 
             if (snake_head_to_tail_path != None and len(snake_head_to_tail_path) >= len(border_paths[i])):
-                print("Path for snake to escape long enough to justify cutoff in direction: " + str(border_directions[i]))
+                if (DEBUG_LOGS):
+                    print("Path for snake to escape long enough to justify cutoff in direction: " + str(border_directions[i]))
                 cutoff_directions.append(border_directions[i])
                 continue
 
             #if both paths don't exist, flood fill area too see if small enough (< body size) to trap snake
             if (snake_head_to_tail_path == None and snake_path_to_you_tail == None):
                 if (flood_fill_snake(data, walls, aStar, snake_cutoff_index, border_paths[i])):
-                    print("Too large of area to for snake to survive in, don't cutoff in direction: " + str(border_directions[i]))
+                    if (DEBUG_LOGS):
+                        print("Too large of area to for snake to survive in, don't cutoff in direction: " + str(border_directions[i]))
                     continue
 
                 #cutoff
-                print("Too small area for snake to survive in, cutoff in direction: " + str(border_directions[i]))
+                if (DEBUG_LOGS):
+                    print("Too small area for snake to survive in, cutoff in direction: " + str(border_directions[i]))
                 cutoff_directions.append(border_directions[i])
 
     return cutoff_directions
@@ -341,7 +362,8 @@ def get_collide_directions(data, walls, survival_directions):
                     if (not (direction in collide_directions)):
                         collide_directions.append(direction)
 
-    print("Collision directions and larger: " + str(collide_directions))
+    if (DEBUG_LOGS):
+        print("Collision directions and larger: " + str(collide_directions))
     return collide_directions
 
 #return list of possible x,y locations for opposing snake to move to
@@ -414,7 +436,8 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                             free_space += 1
                             blocked_off_cells.append((k,j))
 
-                print("Direction left border up/down")
+                if (DEBUG_LOGS):
+                    print("Direction left border up/down")
                 """
                 for j in range(j_start, j_stop, step):
                     for k in range(0, border_paths[i][0][0]):
@@ -435,7 +458,8 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                             free_space += 1
                             blocked_off_cells.append((k,j))
 
-                print("Direction right border up/down")
+                if (DEBUG_LOGS):
+                    print("Direction right border up/down")
                 """
                 for j in range(j_start, j_stop, step):
                     for k in range(border_paths[i][0][0] + 1, data['board']['width']):
@@ -450,8 +474,9 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
             else:
                 continue
 
-            print("Free space calculated: " + str(free_space) + " in direction: " + str(direction) + " border_direction: " + border_direction)
-            print("Border path used: " + str(border_paths[i]))
+            if (DEBUG_LOGS):
+                print("Free space calculated: " + str(free_space) + " in direction: " + str(direction) + " border_direction: " + border_direction)
+                print("Border path used: " + str(border_paths[i]))
             #if too much free space, don't cutoff
             if (free_space >= len(data['board']['snakes'][snake_cutoff_index]['body'])):
                 return True
@@ -491,7 +516,8 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                             free_space += 1
                             blocked_off_cells.append((j,k))
 
-                print("Direction up border left/right")
+                if (DEBUG_LOGS):
+                    print("Direction up border left/right")
                 """
                 for k in range(0, border_paths[i][0][1]):
                     for j in range(j_start, j_stop, step):
@@ -511,7 +537,8 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                             free_space += 1
                             blocked_off_cells.append((j,k))
 
-                print("Direction down border left/right")
+                if (DEBUG_LOGS):
+                    print("Direction down border left/right")
                 """
                 for k in range(border_paths[i][0][1] + 1, data['board']['height']):
                     for j in range(j_start, j_stop, step):
@@ -526,8 +553,9 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
             else:
                 continue
 
-            print("Free space calculated: " + str(free_space) + " in direction: " + str(direction) + " border_direction: " + border_direction)
-            print("Border path used: " + str(border_paths[i]))
+            if (DEBUG_LOGS):
+                print("Free space calculated: " + str(free_space) + " in direction: " + str(direction) + " border_direction: " + border_direction)
+                print("Border path used: " + str(border_paths[i]))
             #if too much free space, don't cutoff
             if (free_space >= len(data['board']['snakes'][snake_cutoff_index]['body'])):
                 return True
@@ -545,13 +573,15 @@ def can_cutoff_head_and_tail_check(data, border_paths, blocked_off_cells, snake_
     snake_body = copy.deepcopy(data['board']['snakes'][snake_cutoff_index]['body'][:])
     snake_goal =  (border_paths[i][0][0], border_paths[i][0][1])
     if (snake_goal == (snake_body[0]['x'], snake_body[0]['y'])):
-        print("Snake goal same as snake head: " + str(snake_goal))
+        if (DEBUG_LOGS):
+            print("Snake goal same as snake head: " + str(snake_goal))
         return False
 
     custom_aStar, walls = init_astar_with_custom_snake(data, snake_body, data['board']['snakes'][snake_cutoff_index]['id'], snake_goal)
     path = custom_aStar.solve()
 
-    print("Cutoff path to start of cutoff: " + str(path))
+    if (DEBUG_LOGS):
+        print("Cutoff path to start of cutoff: " + str(path))
 
     if (path != None):
         can_cutoff = False
@@ -561,13 +591,15 @@ def can_cutoff_head_and_tail_check(data, border_paths, blocked_off_cells, snake_
                 can_cutoff = True
                 break
 
-        print("Cutoff: " + str(can_cutoff))
+        if (DEBUG_LOGS):
+            print("Cutoff: " + str(can_cutoff))
 
         #if path doesn't go through cutoff space, but snake is right beside border path (so in space, but path not in space since head on edge of space)
         #check if larger, if so see if have less than or equal distance, if so, cutoff
         if (not can_cutoff and len(path) == 2 and (len(data['you']['body']) > len(data['board']['snakes'][snake_cutoff_index]['body']))):
             can_cutoff = True
-            print("Cutoff beside: " + str(can_cutoff))
+            if (DEBUG_LOGS):
+                print("Cutoff beside: " + str(can_cutoff))
 
         #if can cutoff, check if with cutoff path, have path too my tail, if so, don't cut off
         if (can_cutoff):
@@ -575,10 +607,12 @@ def can_cutoff_head_and_tail_check(data, border_paths, blocked_off_cells, snake_
             custom_aStar, walls = init_astar_with_custom_snake(data, snake_body, data['board']['snakes'][snake_cutoff_index]['id'], snake_goal, border_paths[i])
             path = custom_aStar.solve()
 
-            print("Cutoff path to my tail: " + str(path))
+            if (DEBUG_LOGS):
+                print("Cutoff path to my tail: " + str(path))
 
             if (path != None):
-                print("Cutoff path to my tail valid: " + str(path))
+                if (DEBUG_LOGS):
+                    print("Cutoff path to my tail valid: " + str(path))
                 can_cutoff = False
 
             #check if can also reach its own tail, if it can, don't cutoff, otherwise, do
@@ -589,7 +623,8 @@ def can_cutoff_head_and_tail_check(data, border_paths, blocked_off_cells, snake_
                 path = custom_aStar.solve()
 
                 if (path != None):
-                    print("Cutoff path to snakes own tail valid: " + str(path))
+                    if (DEBUG_LOGS):
+                        print("Cutoff path to snakes own tail valid: " + str(path))
                     can_cutoff = False
 
 
@@ -681,7 +716,8 @@ def flood_fill_snake(data, walls, aStar, snake_index, cutoff_path):
         for k in range(len(matrix[j])):
             if (matrix[j][k] == 2):
                 flood_size += 1
-    print("Cutoff flood size: ", flood_size)
+    if (DEBUG_LOGS):
+        print("Cutoff flood size: ", flood_size)
     """
     for j in range(len(flood_matrix[0])):
         print("Flood Matrix Cutoff: ", end='')

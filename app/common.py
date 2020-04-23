@@ -1,4 +1,4 @@
-
+DEBUG_LOGS = False
 
 def directions1_in_directions2(directions1, directions2):
     directions = []
@@ -98,8 +98,8 @@ def check_if_cutoff_closer(data, aStar, location):
     own_path = aStar.solve()
 
     if (short_path != None and own_path != None):
-        #if opposing snake can beat me to cutoff, don't use
-        if (len(own_path) >= len(short_path)):
+        #if opposing snake can beat me to cutoff, don't use, + 2 to account for actually escaping cutoff
+        if (len(own_path) >= (len(short_path) - 2)):
             return True
         else:
             return False
@@ -342,8 +342,9 @@ def get_straight_path_directions_to_border(data, walls, moveable_directions):
         if (len(straight_path) > 0):
             straight_paths.append(straight_path)
 
-    print("Possible border directions: " + str(border_directions))
-    print("Possible border paths: " + str(straight_paths))
+    if (DEBUG_LOGS):
+        print("Possible border directions: " + str(border_directions))
+        print("Possible border paths: " + str(straight_paths))
 
 
     return border_directions, straight_paths
@@ -442,8 +443,9 @@ def get_shortest_direction_to_border(data, walls, location):
     else:
         straight_path = []
 
-    print("Possible block border directions: " + str(border_directions))
-    print("Possible block border paths: " + str(straight_paths))
+    if (DEBUG_LOGS):
+        print("Possible block border directions: " + str(border_directions))
+        print("Possible block border paths: " + str(straight_paths))
 
     if (len(straight_paths) == 0):
         return None, None
@@ -455,7 +457,8 @@ def get_shortest_direction_to_border(data, walls, location):
             short_path = straight_paths[i]
             short_direction = border_directions[i]
 
-    print("Block border direction: " + str(short_direction))
-    print("Block border path: " + str(short_path))
+    if (DEBUG_LOGS):
+        print("Block border direction: " + str(short_direction))
+        print("Block border path: " + str(short_path))
 
     return short_direction, short_path

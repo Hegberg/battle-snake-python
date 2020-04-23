@@ -57,20 +57,20 @@ class LongestPath(object):
 		longest_path_addition = []
 
 		#get longest path from among neighbours
-		new_matrix = matrix.copy()
-		path_addition = self.depth_first_search(new_matrix, (location[0] + 1, location[1]))
+		#new_matrix = matrix.copy()
+		path_addition = self.depth_first_search(matrix, (location[0] + 1, location[1]))
 		longest_path_addition = self.check_new_path(path_addition, longest_path_addition)
 
-		new_matrix = matrix.copy()
-		path_addition = self.depth_first_search(new_matrix, (location[0] - 1, location[1]))
+		#new_matrix = matrix.copy()
+		path_addition = self.depth_first_search(matrix, (location[0] - 1, location[1]))
 		longest_path_addition = self.check_new_path(path_addition, longest_path_addition)
 
-		new_matrix = matrix.copy()
-		path_addition = self.depth_first_search(new_matrix, (location[0], location[1] + 1))
+		#new_matrix = matrix.copy()
+		path_addition = self.depth_first_search(matrix, (location[0], location[1] + 1))
 		longest_path_addition = self.check_new_path(path_addition, longest_path_addition)
 
-		new_matrix = matrix.copy()
-		path_addition = self.depth_first_search(new_matrix, (location[0], location[1] - 1))
+		#new_matrix = matrix.copy()
+		path_addition = self.depth_first_search(matrix, (location[0], location[1] - 1))
 		longest_path_addition = self.check_new_path(path_addition, longest_path_addition)
 
 		#attach current location onto front of path, return

@@ -1,4 +1,5 @@
 from app.common import add_to_dict
+from app.common import DEBUG_LOGS
 
 def avoid_death_collisions(data, walls, survival_directions):
     #get list of heads of other snakes that are equal or larger to me in size
@@ -82,7 +83,8 @@ def avoid_death_collisions(data, walls, survival_directions):
             if ((pos_x - 1, pos_y) in food_spots):
                 collision_spots['left'] += food_collision_modifier
 
-    print("Collision directions: " + str(collision_spots))
+    if (DEBUG_LOGS):
+        print("Collision directions: " + str(collision_spots))
 
     #for spaces i can move to that have collisions, 
     #avoid highest possible collisions first, than lower secend etc
@@ -96,7 +98,8 @@ def avoid_death_collisions(data, walls, survival_directions):
                 directions.remove(survival_directions_copy[j])
                 break
 
-    print("Collision directions after removing collisions: " + str(directions))
+    if (DEBUG_LOGS):
+        print("Collision directions after removing collisions: " + str(directions))
 
     #if no directions without collision, choose collision with least number
     if (len(directions) == 0 and len(collision_spots) > 0):
@@ -112,6 +115,7 @@ def avoid_death_collisions(data, walls, survival_directions):
 
         #min_value = min(collision_spots.keys(), key=(lambda k: collision_spots[k]))
         #directions.append(min_value)
-        print("Collision directions after adding min collisions: " + str(directions))
+        if (DEBUG_LOGS):
+            print("Collision directions after adding min collisions: " + str(directions))
 
     return directions

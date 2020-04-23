@@ -4,6 +4,7 @@ from app.common import get_location_from_direction
 from app.common import check_if_location_in_between_walls
 from app.common import path_from_closest_snake_head_to_location
 from app.common import get_distance_between_points
+from app.common import DEBUG_LOGS
 
 from app.a_star import init_astar
 from app.a_star import init_astar_with_custom_snake
@@ -15,11 +16,14 @@ import copy
 def survival_choices(data, walls, aStar):
     directions = check_bounds(data)
 
-    print("Check Bounds After: ", directions)
+    if (DEBUG_LOGS):
+        print("Check Bounds After: ", directions)
     directions = check_self_collisions(directions, data)
-    print("Check Self After: ", directions)
+    if (DEBUG_LOGS):
+        print("Check Self After: ", directions)
     directions = check_snake_collisions(directions, data)
-    print("Check Snakes After: ", directions)
+    if (DEBUG_LOGS):
+        print("Check Snakes After: ", directions)
 
     return directions
 
@@ -63,7 +67,8 @@ def check_snake_collisions(directions, data):
     x = data['you']['body'][0]['x']
     y = data['you']['body'][0]['y']
 
-    print("Amount of opponents: ", len(data['board']['snakes']))
+    if (DEBUG_LOGS):
+        print("Amount of opponents: ", len(data['board']['snakes']))
     
     for j in range(len(data['board']['snakes'])):
         #if snake is self, ignore
@@ -132,7 +137,8 @@ def flood_fill(data, walls, available_directions, aStar):
             flood_matrix = flood_fill_recursive(matrix, x, y-1, data, walls, aStar)
             flood_size, flood_area = get_flood_size(matrix)
 
-            print("Up flood size: ", flood_size)
+            if (DEBUG_LOGS):
+                print("Up flood size: ", flood_size)
 
             flood_directions.append(('up', flood_size, False))
             flood_areas.append(flood_area)
@@ -141,7 +147,8 @@ def flood_fill(data, walls, available_directions, aStar):
             flood_matrix = flood_fill_recursive(matrix, x, y+1, data, walls, aStar)
             flood_size, flood_area = get_flood_size(matrix)
 
-            print("Down flood size: ", flood_size)
+            if (DEBUG_LOGS):
+                print("Down flood size: ", flood_size)
 
             flood_directions.append(('down', flood_size, False))
             flood_areas.append(flood_area)
@@ -150,7 +157,8 @@ def flood_fill(data, walls, available_directions, aStar):
             flood_matrix = flood_fill_recursive(matrix, x-1, y, data, walls, aStar)
             flood_size, flood_area = get_flood_size(matrix)
 
-            print("Left flood size: ", flood_size)
+            if (DEBUG_LOGS):
+                print("Left flood size: ", flood_size)
             flood_directions.append(('left', flood_size, False))
             flood_areas.append(flood_area)
 
@@ -158,7 +166,8 @@ def flood_fill(data, walls, available_directions, aStar):
             flood_matrix = flood_fill_recursive(matrix, x+1, y, data, walls, aStar)
             flood_size, flood_area = get_flood_size(matrix)
 
-            print("Right flood size: ", flood_size)
+            if (DEBUG_LOGS):
+                print("Right flood size: ", flood_size)
             flood_directions.append(('right', flood_size, False))
             flood_areas.append(flood_area)
 
@@ -171,7 +180,8 @@ def flood_fill(data, walls, available_directions, aStar):
 
     tail_directions = []
 
-    print("Flood directions before longest path: " + str(flood_directions))
+    if (DEBUG_LOGS):
+        print("Flood directions before longest path: " + str(flood_directions))
 
     #for flood directions, go through small sizes and see if can survive in
     for i in range(len(flood_directions)):
@@ -183,7 +193,8 @@ def flood_fill(data, walls, available_directions, aStar):
         #If snake goes to area smaller than itself, start moving through and occuping space and see if space opens up, or path to tail open
         else:
             longest_path, closest_tail = find_longest_path(data, get_location_from_direction(flood_directions[i][0],x,y), flood_areas[i])
-            print("longest chosen path: " + str(longest_path))
+            if (DEBUG_LOGS):
+                print("longest chosen path: " + str(longest_path))
 
             #traverse longest path, and see if path to tail opens up during path traversal, if so, area is viable to go through
             if (len(longest_path) > 0):
@@ -191,7 +202,8 @@ def flood_fill(data, walls, available_directions, aStar):
                 if (path_availabe):
                     final_directions.append((flood_directions[i][0], single_lane))
                     tail_directions.append((flood_directions[i][0], single_lane))
-                    print("flood directions after longest path: " + str(final_directions))
+                    if (DEBUG_LOGS):
+                        print("flood directions after longest path: " + str(final_directions))
         
         #check if largest flood area is less than body size, if so, go with direction that has longest path, 
         #not just direction with largest flood that may or may not have same flood size as other direction
@@ -287,7 +299,8 @@ def find_own_tail_path(aStar, walls, data, growing):
     #if head and tail are the same space, ie starting turn
     if ((tail_x == data['you']['body'][0]['x']) and (tail_y == data['you']['body'][0]['y'])):
         directions = []
-        print("Tail and head are on the same tile: " + str(tail_x) + " " + str(tail_y))
+        if (DEBUG_LOGS):
+            print("Tail and head are on the same tile: " + str(tail_x) + " " + str(tail_y))
         return directions
 
     #if growing, need to find path to space before tail and solid tail
@@ -311,11 +324,13 @@ def find_own_tail_path(aStar, walls, data, growing):
         for i in range(len(directions)):
             directions[i] = (directions[i], single_lane)
 
-        print("Path to tail direction = " + str(directions))
+        if (DEBUG_LOGS):
+            print("Path to tail direction = " + str(directions))
 
         return directions
 
-    print("No path to tail")
+    if (DEBUG_LOGS):
+        print("No path to tail")
 
     return [(None, False)]
 
@@ -334,7 +349,8 @@ def find_other_snake_tail_path(data, aStar, walls):
         #if head and tail are the same space, ie starting turn
         if ((tail_x == data['board']['snakes'][i]['body'][0]['x']) and (tail_y == data['board']['snakes'][i]['body'][0]['y'])):
             directions = []
-            print("Tail and head of snake " + str(data['board']['snakes'][i]['name']) + " are on the same tile: " + str(tail_x) + " " + str(tail_y))
+            if (DEBUG_LOGS):
+                print("Tail and head of snake " + str(data['board']['snakes'][i]['name']) + " are on the same tile: " + str(tail_x) + " " + str(tail_y))
             return directions
 
         growing = determine_if__snake_growing(data, i)
@@ -368,11 +384,13 @@ def find_other_snake_tail_path(data, aStar, walls):
         for i in range(len(directions)):
             directions[i] = (directions[i], single_lane)
 
-        print("Path to snake " + snake_following_name + " tail direction = " + str(directions))
+        if (DEBUG_LOGS):
+            print("Path to snake " + snake_following_name + " tail direction = " + str(directions))
 
         return directions
 
-    print("No path to snake opposing snakes tails")
+    if (DEBUG_LOGS):
+        print("No path to snake opposing snakes tails")
 
     return [(None, False)]
 
@@ -392,12 +410,27 @@ def traverse_longest_path(data, longest_path, closest_tail):
 
     for i in range(len(longest_path)):
 
-        for j in range(len(snake_body) - 1, 0, - 1):
-            snake_body[j]['x'] = snake_body[j - 1]['x']
-            snake_body[j]['y'] = snake_body[j - 1]['y']
+        growing = False
+        #check if going over food
+        for j in range(len(data['board']['food'])):
+            #if picking up food on this square
+            if ((data['board']['food'][j]['x'], data['board']['food'][j]['y']) == (longest_path[i][0], longest_path[i][1])):
+                growing = True
+                break
 
-        snake_body[0]['x'] = longest_path[i][0]
-        snake_body[0]['y'] = longest_path[i][1]
+        if (not growing):
+
+            for j in range(len(snake_body) - 1, 0, - 1):
+                snake_body[j]['x'] = snake_body[j - 1]['x']
+                snake_body[j]['y'] = snake_body[j - 1]['y']
+
+            snake_body[0]['x'] = longest_path[i][0]
+            snake_body[0]['y'] = longest_path[i][1]
+
+        else:
+            if (DEBUG_LOGS):
+                print(snake_body[0])
+            snake_body.insert(0, {'x': longest_path[i][0], 'y': longest_path[i][1]})
 
         head_x = snake_body[0]['x']
         head_y = snake_body[0]['y']
@@ -409,14 +442,16 @@ def traverse_longest_path(data, longest_path, closest_tail):
             tail_y = snake_body[len(snake_body) - 1]['y']
 
         if ((tail_x, tail_y) == (head_x, head_y)):
-            print("Path to tail (0 distance) in blocked in area available: " + str((tail_x, tail_y)))
+            if (DEBUG_LOGS):
+                print("Path to tail (0 distance) in blocked in area available: " + str((tail_x, tail_y)))
             return True
 
         custom_aStar, walls = init_astar_with_custom_snake(data, snake_body, data['you']['id'], (tail_x, tail_y))
         path = custom_aStar.solve()
 
         if (path != None):
-            print("Path to tail in blocked in area available: " + str(path))
+            if (DEBUG_LOGS):
+                print("Path to tail in blocked in area available: " + str(path))
 
             between_walls = path_single_lane_check(data, custom_aStar, walls, path)
 

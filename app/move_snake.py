@@ -18,6 +18,7 @@ from app.a_star import init_astar
 from app.common import directions1_in_directions2
 from app.common import check_if_direction_in_between_walls
 from app.common import check_if_path_in_between_walls
+from app.common import DEBUG_LOGS
 
 from app.collision_avoidance import avoid_death_collisions
 
@@ -36,7 +37,8 @@ def get_move(data):
     food_directions, nearest_food = consumption_choices(data, aStar, walls)
 
     consumption_directions = directions1_in_directions2(food_directions, survival_directions) 
-    print("Food move after survival direction clear: ", consumption_directions)
+    if (DEBUG_LOGS):
+        print("Food move after survival direction clear: ", consumption_directions)
 
     #check to see if can attack snake
     attack_directions = get_attack_directions(data, aStar, walls, survival_directions)
@@ -59,7 +61,8 @@ def get_move(data):
             for direction in food_tail_directions:
                 if (direction in survival_directions and not(direction in spacing_directions)):
                     spacing_directions.append(direction)
-            print("Other snake tail follow and spacing after survival direction clear: ", spacing_directions)
+            if (DEBUG_LOGS):
+                print("Other snake tail follow and spacing after survival direction clear: ", spacing_directions)
 
     #if viable path to opponent tail, and a viable path to food, see if viable path from head -> food -> opponent tail
     food_opponent_tail_directions = None
@@ -69,7 +72,8 @@ def get_move(data):
             for direction in food_opponent_tail_directions:
                 if (direction in survival_directions and not(direction in spacing_directions)):
                     spacing_directions.append(direction)
-            print("Other snake tail follow and spacing after survival direction clear: ", spacing_directions)
+            if (DEBUG_LOGS):
+                print("Other snake tail follow and spacing after survival direction clear: ", spacing_directions)
 
     #temp until add collision avoidance
     no_head_collisions_directions = avoid_death_collisions(data, walls, survival_directions)
@@ -91,7 +95,8 @@ def get_move(data):
     elif(len(final_directions) <= 0):
         final_directions = ["up", "down", "left", "right"]
 
-    print("Final Directions before last reform: " + str(final_directions))
+    if (DEBUG_LOGS):
+        print("Final Directions before last reform: " + str(final_directions))
 
     #multiple good options
     if (len(final_directions) > 1):
@@ -101,7 +106,8 @@ def get_move(data):
 
         if (pos_tail_directions != None and len(pos_tail_directions) > 0):
             final_directions = pos_tail_directions
-            print("Final Directions after tail: " + str(final_directions))
+            if (DEBUG_LOGS):
+                print("Final Directions after tail: " + str(final_directions))
             direction = random.choice(final_directions)
             return direction
 
@@ -110,7 +116,8 @@ def get_move(data):
 
         if (pos_tail_directions != None and len(pos_tail_directions) > 0):
             final_directions = pos_tail_directions
-            print("Final Directions after opponent tail: " + str(final_directions))
+            if (DEBUG_LOGS):
+                print("Final Directions after opponent tail: " + str(final_directions))
             direction = random.choice(final_directions)
             return direction
 
@@ -133,7 +140,8 @@ def get_move(data):
 
             if (forward_directions != None and len(forward_directions) > 0):
                 final_directions = forward_directions
-                print("Final Directions after straight: " + str(final_directions))
+                if (DEBUG_LOGS):
+                    print("Final Directions after straight: " + str(final_directions))
                 direction = random.choice(final_directions)
                 return direction
 
@@ -194,7 +202,7 @@ def get_attack_directions(data, aStar, walls, survival_directions):
         if (data['board']['snakes'][i]['id'] == data['you']['id']):
             continue #skip self
 
-        #if lumtiple snakes, be 1 sizes larger than required_size_difference before attacking
+        #if multiple snakes, be 1 sizes larger than required_size_difference before attacking
         if ((len(data['board']['snakes']) > 2) and 
             len(data['you']['body']) < len(data['board']['snakes'][i]['body']) + required_size_difference + 1):
             snake_size_larger = False
@@ -251,9 +259,10 @@ def get_spacing_directions(data, aStar, walls, survival_directions, growing):
     lane_filter_other_snake_tail_directions, single_lane_other_tail = single_lane_filter(other_snake_tail_directions_and_lane)
     other_snake_tail_directions = lane_filter_other_snake_tail_directions
 
-    print("Flood: " + str(flood_directions))
-    print("My Tail: " + str(tail_directions))
-    print("Other snake tail: " + str(other_snake_tail_directions))
+    if (DEBUG_LOGS):
+        print("Flood: " + str(flood_directions))
+        print("My Tail: " + str(tail_directions))
+        print("Other snake tail: " + str(other_snake_tail_directions))
 
     can_follow_tail = False
     can_follow_other_snake_tail = False
@@ -272,28 +281,32 @@ def get_spacing_directions(data, aStar, walls, survival_directions, growing):
         for direction in flood_directions:
             if (direction in survival_directions):
                 spacing_directions.append((direction, single_lane_flood))
-        print("Area Flood after survival direction clear: ", spacing_directions)
+        if (DEBUG_LOGS):
+            print("Area Flood after survival direction clear: ", spacing_directions)
 
     #can follow tail, add direction to spacing directions
     if (can_follow_tail):
         for direction in tail_directions:
             if (direction in survival_directions and not((direction, single_lane_tail) in spacing_directions)):
                 spacing_directions.append((direction, single_lane_tail))
-        print("Head->Food->Tail and Flood after survival direction clear: ", spacing_directions)
+        if (DEBUG_LOGS):
+            print("Head->Food->Tail and Flood after survival direction clear: ", spacing_directions)
     
     #if can follow opponent tail, add direction to spacing directions
     if (can_follow_other_snake_tail):
         for direction in other_snake_tail_directions:
             if (direction in survival_directions and not((direction, single_lane_other_tail) in spacing_directions)):
                 spacing_directions.append((direction, single_lane_other_tail))
-        print("Other snake tail follow and spacing after survival direction clear: ", spacing_directions)
+        if (DEBUG_LOGS):
+            print("Other snake tail follow and spacing after survival direction clear: ", spacing_directions)
 
     #if can't follow tail, and no area large enough, and can't follow opponent tail, go with largest area
     if (not can_follow_flood and not can_follow_tail and not can_follow_other_snake_tail):
         for direction in flood_directions:
             if (direction in survival_directions):
                 spacing_directions.append((direction, single_lane_flood))
-        print("Area Flood after normal flood and tail follow fail: ", spacing_directions)
+        if (DEBUG_LOGS):
+            print("Area Flood after normal flood and tail follow fail: ", spacing_directions)
 
 
 
@@ -302,8 +315,9 @@ def get_spacing_directions(data, aStar, walls, survival_directions, growing):
 
     spacing_directions, spacing_single_filter = single_lane_filter(spacing_directions)
 
-    print("spacing direstions after merge and single lane filter: " + str(spacing_directions))
-    print("spacing filter: " + str(spacing_single_filter))
+    if (DEBUG_LOGS):
+        print("spacing direstions after merge and single lane filter: " + str(spacing_directions))
+        print("spacing filter: " + str(spacing_single_filter))
 
     if (len(spacing_directions) > 1):
         space_directions_before_single_lane = spacing_directions[:]
@@ -313,10 +327,12 @@ def get_spacing_directions(data, aStar, walls, survival_directions, growing):
 
         #if directions still exist that are not of single path use new directions, 
         #otherwise use directions before check
-        print("Spaces not part of single lane: " + str(space_directions_before_single_lane))
+        if (DEBUG_LOGS):
+            print("Spaces not part of single lane: " + str(space_directions_before_single_lane))
         if (len(space_directions_before_single_lane) > 0):
             spacing_directions = space_directions_before_single_lane
-            print("Spacing directions after single lane filter: " + str(spacing_directions))
+            if (DEBUG_LOGS):
+                print("Spacing directions after single lane filter: " + str(spacing_directions))
 
     #add all tail paths together
     if (len(tail_flood_directions) > 0):
@@ -357,33 +373,39 @@ def get_directions_through_food_space_collision(consumption_directions, spacing_
     elif(spacing_directions != None and len(spacing_directions) > 0):
         spacing_and_consumption_directions = spacing_directions
 
-    print("Directions after space and food merge: " + str(spacing_and_consumption_directions))
+    if (DEBUG_LOGS):
+        print("Directions after space and food merge: " + str(spacing_and_consumption_directions))
 
     return spacing_and_consumption_directions
 
 def get_directions_with_space_and_collision_merge(preferred_directions, spacing_directions, no_head_collisions_directions, survival_directions):
 #survival, spacing, avoid_head_on, preffered
-    print("Prefferred directions: " + str(preferred_directions))
-    print("Spacing directions: " + str(spacing_directions))
-    print("No Head Collision directions: " + str(no_head_collisions_directions))
-    print("Survival directions: " + str(survival_directions))
+    if (DEBUG_LOGS):
+        print("Prefferred directions: " + str(preferred_directions))
+        print("Spacing directions: " + str(spacing_directions))
+        print("No Head Collision directions: " + str(no_head_collisions_directions))
+        print("Survival directions: " + str(survival_directions))
 
     preffered_and_spacing_directions = []
     #prefered directions viable after taking into account collisions
     if (len(preferred_directions) > 0 and len(spacing_directions) > 0):
         preffered_and_spacing_directions = directions1_in_directions2(preferred_directions, spacing_directions)
-        print("Directions after space and prefferred direction merge 1: " + str(preffered_and_spacing_directions))
+        if (DEBUG_LOGS):
+            print("Directions after space and prefferred direction merge 1: " + str(preffered_and_spacing_directions))
     elif (len(spacing_directions) > 0):
         preffered_and_spacing_directions = spacing_directions
-        print("Directions after space and prefferred direction merge 2: " + str(preffered_and_spacing_directions))
+        if (DEBUG_LOGS):
+            print("Directions after space and prefferred direction merge 2: " + str(preffered_and_spacing_directions))
     else:
         preffered_and_spacing_directions = preferred_directions
-        print("Directions after space and prefferred direction merge 3: " + str(preffered_and_spacing_directions))
+        if (DEBUG_LOGS):
+            print("Directions after space and prefferred direction merge 3: " + str(preffered_and_spacing_directions))
 
     #if no valid merge between the collision and preffered, and collision has options, use that as collision and preffered directions
     if (len(preffered_and_spacing_directions) == 0 and len(spacing_directions) > 0):
         preffered_and_spacing_directions = spacing_directions
-        print("Directions after no collision and prefferred direction merge 4: " + str(spacing_directions))
+        if (DEBUG_LOGS):
+            print("Directions after no collision and prefferred direction merge 4: " + str(spacing_directions))
 
     no_head_collision_and_preffered_directions = []
     #(head on and preffered) taking into account spacing
@@ -393,7 +415,8 @@ def get_directions_with_space_and_collision_merge(preferred_directions, spacing_
     #if no valid merge between the preferred_spacing and collision, and spacing has options, use that as spacing and collision directions
     if (len(no_head_collision_and_preffered_directions) == 0 and len(spacing_directions) > 0):
         preffered_and_spacing_directions = spacing_directions
-        print("Directions after no collision and prefferred direction merge 8: " + str(preffered_and_spacing_directions))
+        if (DEBUG_LOGS):
+            print("Directions after no collision and prefferred direction merge 8: " + str(preffered_and_spacing_directions))
 
         #preform spacing and no_head_collision_merge, again, but now with just spacing instead of preferred spacing
         no_head_collision_and_preffered_directions = spacing_and_no_head_collision_merge(no_head_collisions_directions, preffered_and_spacing_directions)
@@ -401,54 +424,64 @@ def get_directions_with_space_and_collision_merge(preferred_directions, spacing_
     #if no valid merge between the spacing and collision, and spacing has options, use that as spacing and collision directions
     if (len(no_head_collision_and_preffered_directions) == 0 and len(no_head_collisions_directions) > 0):
         no_head_collision_and_preffered_directions = no_head_collisions_directions
-        print("Directions after no collision and prefferred direction merge 9: " + str(no_head_collision_and_preffered_directions))
+        if (DEBUG_LOGS):
+            print("Directions after no collision and prefferred direction merge 9: " + str(no_head_collision_and_preffered_directions))
 
 
     survival_and_spacing_directions = []
     #if no viable spaces that give good space and avoid head on collisions, try to get to open space first
     if (len(no_head_collision_and_preffered_directions) > 0 and len(survival_directions) > 0):
         survival_and_spacing_directions = directions1_in_directions2(no_head_collision_and_preffered_directions, survival_directions)
-        print("Directions after space and survival direction merge 10: " + str(survival_and_spacing_directions))
+        if (DEBUG_LOGS):
+            print("Directions after space and survival direction merge 10: " + str(survival_and_spacing_directions))
     
     #no valid merge between spacing and survival, use survival
     if (len(survival_and_spacing_directions) == 0):
         survival_and_spacing_directions = survival_directions
-        print("Directions after space and survival direction merge 11: " + str(survival_and_spacing_directions))
+        if (DEBUG_LOGS):
+            print("Directions after space and survival direction merge 11: " + str(survival_and_spacing_directions))
 
     return survival_and_spacing_directions
 
 def spacing_and_no_head_collision_merge(no_head_collisions_directions, preffered_and_spacing_directions):
     if ((len(no_head_collisions_directions) > 0) and len(preffered_and_spacing_directions) > 0):
         no_head_collision_and_preffered_directions = directions1_in_directions2(no_head_collisions_directions, preffered_and_spacing_directions)
-        print("Directions after no collision and prefferred direction merge 5: " + str(no_head_collision_and_preffered_directions))
+        if (DEBUG_LOGS):
+            print("Directions after no collision and prefferred direction merge 5: " + str(no_head_collision_and_preffered_directions))
     elif (len(no_head_collisions_directions) > 0):
         no_head_collision_and_preffered_directions = no_head_collisions_directions
-        print("Directions after no collision and prefferred direction merge 6: " + str(no_head_collision_and_preffered_directions))
+        if (DEBUG_LOGS):
+            print("Directions after no collision and prefferred direction merge 6: " + str(no_head_collision_and_preffered_directions))
     else:
         no_head_collision_and_preffered_directions = preffered_and_spacing_directions
-        print("Directions after no collision and prefferred direction merge 7: " + str(no_head_collision_and_preffered_directions))
+        if (DEBUG_LOGS):
+            print("Directions after no collision and prefferred direction merge 7: " + str(no_head_collision_and_preffered_directions))
     return no_head_collision_and_preffered_directions
 
 #returns directions that give space and food, if no overlap, gives space directions back
 def get_spacing_and_consumption_directions(consumption_directions, spacing_directions, food_tail_directions, food_opponent_tail_directions):
     #food directions viable after spacing taken into account
     spacing_and_consumption_directions = directions1_in_directions2(consumption_directions, spacing_directions)
-    print("Food move after spacing merge: ", spacing_and_consumption_directions)
+    if (DEBUG_LOGS):
+        print("Food move after spacing merge: ", spacing_and_consumption_directions)
 
     #if spacing and food not compatible, try head->food->tail if viable path exists for that
     if (len(spacing_and_consumption_directions) == 0 and food_tail_directions != None):
         spacing_and_consumption_directions = food_tail_directions
-        print("Food move after food_tail merge: ", spacing_and_consumption_directions)
+        if (DEBUG_LOGS):
+            print("Food move after food_tail merge: ", spacing_and_consumption_directions)
 
     #if head->food->tail not compatible, try head->food->opponent_tail if viable path exists for that
     if (len(spacing_and_consumption_directions) == 0 and food_opponent_tail_directions != None):
         spacing_and_consumption_directions = food_opponent_tail_directions
-        print("Food move after opponent_food_tail merge: ", spacing_and_consumption_directions)
+        if (DEBUG_LOGS):
+            print("Food move after opponent_food_tail merge: ", spacing_and_consumption_directions)
 
     #if spacing and consumption directions have no entries, can't eat so ignore food
     if (len(spacing_and_consumption_directions) == 0):
         spacing_and_consumption_directions = spacing_directions
-        print("Spacing after failed to merge with food: ", spacing_and_consumption_directions)
+        if (DEBUG_LOGS):
+            print("Spacing after failed to merge with food: ", spacing_and_consumption_directions)
 
     return spacing_and_consumption_directions
 
@@ -489,7 +522,8 @@ def head_to_food_to_tail_direction(data, aStar, nearest_food, survival_direction
                 if (direction in survival_directions):
                     revised_path_directions.append(direction)
 
-            print("To Food to Tail direction : ", revised_path_directions)
+            if (DEBUG_LOGS):
+                print("To Food to Tail direction : ", revised_path_directions)
             if (len(revised_path_directions) > 0):
                 return revised_path_directions
 
@@ -536,7 +570,8 @@ def head_to_food_to_opponent_tail_direction(data, aStar, nearest_food, survival_
                     if (direction in survival_directions):
                         revised_path_directions.append(direction)
 
-        print("To Food to Opponent Tail direction : ", revised_path_directions)
+        if (DEBUG_LOGS):
+            print("To Food to Opponent Tail direction : ", revised_path_directions)
         if (len(revised_path_directions) > 0):
             return revised_path_directions
 
