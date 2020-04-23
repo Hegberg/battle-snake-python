@@ -48,31 +48,33 @@ def locate_food(x,y,data, aStar, walls):
                 path = None
 
             #if not single lane and path exists, see if opposing snake that is larger is closer, if so, don't go for food
+            """
             else:
-                continue
-                """
-                for j in range(len(data['board']['snakes'])):
-                    if (data['board']['snakes'][j]['id'] == data['you']['id']):
-                        continue #skip self
+                #if health high enough, go for food away from other snakes
+                if (data['you']['health'] >= 50):
 
-                    p1_x = data['board']['snakes'][j]['body'][0]['x']
-                    p1_y = data['board']['snakes'][j]['body'][0]['y']
+                    for j in range(len(data['board']['snakes'])):
+                        if (data['board']['snakes'][j]['id'] == data['you']['id']):
+                            continue #skip self
 
-                    #goal is current location
-                    if ((p1_x, p1_y) == (food[i][0], food[i][1])):
-                        continue
+                        p1_x = data['board']['snakes'][j]['body'][0]['x']
+                        p1_y = data['board']['snakes'][j]['body'][0]['y']
 
-                    #remove head from unreachable cells to allow for aStar to path from opponent head to location
-                    aStar.reset_grid_and_remove_wall((p1_x, p1_y), (food[i][0], food[i][1]), (p1_x, p1_y))
-                    opponent_path = aStar.solve()
-                    aStar.add_wall((p1_x, p1_y))
+                        #goal is current location
+                        if ((p1_x, p1_y) == (food[i][0], food[i][1])):
+                            continue
 
-                    if (opponent_path != None and (len(path) > len(opponent_path))):
-                        if (DEBUG_LOGS):
-                            print("Can't eat food: " + str((food[i][0], food[i][1])) + " " + str(len(path)) + " " + str(len(opponent_path)))
-                        path = None
-                        break
-                """
+                        #remove head from unreachable cells to allow for aStar to path from opponent head to location
+                        aStar.reset_grid_and_remove_wall((p1_x, p1_y), (food[i][0], food[i][1]), (p1_x, p1_y))
+                        opponent_path = aStar.solve()
+                        aStar.add_wall((p1_x, p1_y))
+
+                        if (opponent_path != None and (len(path) > len(opponent_path))):
+                            if (DEBUG_LOGS):
+                                print("Can't eat food: " + str((food[i][0], food[i][1])) + " " + str(len(path)) + " " + str(len(opponent_path)))
+                            path = None
+                            break
+            """
 
         #if path is good and is horter than other food paths, choose
         if ((path != None) and ((shortest_path == None) or (len(path) < len(shortest_path)))):
