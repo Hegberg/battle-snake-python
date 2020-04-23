@@ -52,13 +52,6 @@ def locate_food(x,y,data, aStar, walls):
                 for j in range(len(data['board']['snakes'])):
                     if (data['board']['snakes'][j]['id'] == data['you']['id']):
                         continue #skip self
-                    
-                    #if opponent snake is larger
-                    """
-                    if (len(data['board']['snakes'][j]['body']) > len(data['you']['body'])):
-                        path = None
-                        break
-                    """
 
                     p1_x = data['board']['snakes'][j]['body'][0]['x']
                     p1_y = data['board']['snakes'][j]['body'][0]['y']
