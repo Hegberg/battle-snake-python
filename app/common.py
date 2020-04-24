@@ -55,7 +55,7 @@ def add_to_dict(x, y, dict, val = 1):
 #return true if path stuck between 2 walls
 def check_if_path_in_between_walls(data, aStar, path, walls):
 
-    snake_walls, border_walls, self_walls = seperate_walls(data,walls)
+    snake_walls, border_walls, self_walls = seperate_walls(data, walls)
 
     for i in range(1, len(path)):
 
@@ -63,7 +63,10 @@ def check_if_path_in_between_walls(data, aStar, path, walls):
 
         if (path_between_walls):
             #path in between 2 opposing walls
-            return check_if_cutoff_closer(data, aStar, (path[i][0], path[i][1]))
+            #if can be cutoff, return true, otherwise continue searching through path
+            close_cutoff = check_if_cutoff_closer(data, aStar, (path[i][0], path[i][1]))
+            if (close_cutoff):
+                return close_cutoff
 
     return False
 
@@ -170,17 +173,7 @@ def check_if_location_pass_between_walls(data, location, snake_walls, border_wal
         self_y_axis_walls += 1
     if ((location[0], location[1] - 1) in self_walls):
         self_y_axis_walls += 1
-
-    """
-    if (location[0] == 7 and location[1] == 9):
-        print("between_walls check")
-        print(self_x_axis_walls)
-        print(self_y_axis_walls)
-        print(border_x_axis_walls)
-        print(border_y_axis_walls)
-        print(snake_x_axis_walls)
-        print(snake_y_axis_walls)
-    """
+    
     #passing between 2 snakes
     if (snake_x_axis_walls >= 2 or snake_y_axis_walls >= 2):
         return True

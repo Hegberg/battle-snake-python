@@ -34,6 +34,9 @@ def get_move(data):
     #check spacing
     spacing_directions, tail_directions, other_snake_tail_directions, can_follow_tail, can_follow_other_snake_tail  = get_spacing_directions(data, aStar, walls, survival_directions, growing)
 
+    if (DEBUG_LOGS):
+        print("Final spacing directions: " + str(spacing_directions))
+
     food_directions, nearest_food = consumption_choices(data, aStar, walls)
 
     consumption_directions = directions1_in_directions2(food_directions, survival_directions) 
@@ -56,18 +59,18 @@ def get_move(data):
     #if viable path to tail, and a viable path to food, see if viable path from head -> food -> tail
     food_tail_directions = None
     if (can_follow_tail and consumption_directions != None and len(consumption_directions) > 0):
-        food_tail_directions = head_to_food_to_tail_direction(data, aStar, nearest_food, survival_directions)
+        food_tail_directions = head_to_food_to_tail_direction(data, aStar, walls, nearest_food, survival_directions)
         if (food_tail_directions != None):
             for direction in food_tail_directions:
                 if (direction in survival_directions and not(direction in spacing_directions)):
                     spacing_directions.append(direction)
             if (DEBUG_LOGS):
-                print("Other snake tail follow and spacing after survival direction clear: ", spacing_directions)
+                print("Own snake tail follow and spacing after survival direction clear: ", spacing_directions)
 
     #if viable path to opponent tail, and a viable path to food, see if viable path from head -> food -> opponent tail
     food_opponent_tail_directions = None
     if (can_follow_other_snake_tail and consumption_directions != None and len(consumption_directions) > 0):
-        food_opponent_tail_directions = head_to_food_to_opponent_tail_direction(data, aStar, nearest_food, survival_directions)
+        food_opponent_tail_directions = head_to_food_to_opponent_tail_direction(data, aStar, walls, nearest_food, survival_directions)
         if (food_opponent_tail_directions != None):
             for direction in food_opponent_tail_directions:
                 if (direction in survival_directions and not(direction in spacing_directions)):
@@ -487,13 +490,19 @@ def get_spacing_and_consumption_directions(consumption_directions, spacing_direc
 
 #TODO
 #if tail <- food <- food <- head, don't eat food and follow tail since will die
-def head_to_food_to_tail_direction(data, aStar, nearest_food, survival_directions):
+def head_to_food_to_tail_direction(data, aStar, walls, nearest_food, survival_directions):
     
     you_x = data['you']['body'][0]['x']
     you_y = data['you']['body'][0]['y']
     aStar.reset_grid_and_start((you_x, you_y), (nearest_food[0], nearest_food[1]))
 
     to_food_path = aStar.solve()
+
+    single_lane = check_if_path_in_between_walls(data, aStar, to_food_path, walls)
+    if (single_lane):
+        #print("Attack Path is between walls, ignore it: " + str(path))
+        to_food_path = None
+        return None
 
     #can get to food
     if (to_food_path != None):
@@ -529,13 +538,19 @@ def head_to_food_to_tail_direction(data, aStar, nearest_food, survival_direction
 
     return None
 
-def head_to_food_to_opponent_tail_direction(data, aStar, nearest_food, survival_directions):
+def head_to_food_to_opponent_tail_direction(data, aStar, walls, nearest_food, survival_directions):
     
     you_x = data['you']['body'][0]['x']
     you_y = data['you']['body'][0]['y']
     aStar.reset_grid_and_start((you_x, you_y), (nearest_food[0], nearest_food[1]))
 
     to_food_path = aStar.solve()
+
+    single_lane = check_if_path_in_between_walls(data, aStar, to_food_path, walls)
+    if (single_lane):
+        #print("Attack Path is between walls, ignore it: " + str(path))
+        to_food_path = None
+        return None
 
     #can get to food
     if (to_food_path != None):
