@@ -13,6 +13,8 @@ from app.survive import flood_fill_recursive
 
 import copy
 
+CUTOFF_LOGS = False
+
 #TODO
 #if path too tail too long, longer than own body size???
 #or wraps around my own body or something
@@ -286,7 +288,7 @@ def attack_cutoff(data, aStar, walls, survival_directions):
             continue #skip self
 
         snake_cutoff_index = j
-        if (DEBUG_LOGS):
+        if (DEBUG_LOGS and CUTOFF_LOGS):
             print("Attempting to cutoff snake: " + str(data['board']['snakes'][j]['name']))
 
         #for all border directions, see if one cuts off closest snake
@@ -296,7 +298,7 @@ def attack_cutoff(data, aStar, walls, survival_directions):
 
             #too much free space, don't cutoff
             if (too_much_free_space):
-                if (DEBUG_LOGS):
+                if (DEBUG_LOGS and CUTOFF_LOGS):
                     print("Too much free space not cutting off in direction: " + str(border_directions[i]))
                 continue
             
@@ -305,12 +307,12 @@ def attack_cutoff(data, aStar, walls, survival_directions):
 
             #if path longer than cutoff path, proceed to cutoff
             if (snake_head_to_tail_path != None and len(snake_head_to_tail_path) < len(border_paths[i])):
-                if (DEBUG_LOGS):
+                if (DEBUG_LOGS and CUTOFF_LOGS):
                     print("Path to tail to short for effective cutoff in direction: " + str(border_directions[i]))
                 continue
 
             if (snake_head_to_tail_path != None and len(snake_head_to_tail_path) >= len(border_paths[i])):
-                if (DEBUG_LOGS):
+                if (DEBUG_LOGS and CUTOFF_LOGS):
                     print("Path for snake to escape long enough to justify cutoff in direction: " + str(border_directions[i]))
                 cutoff_directions.append(border_directions[i])
                 continue
@@ -318,12 +320,12 @@ def attack_cutoff(data, aStar, walls, survival_directions):
             #if both paths don't exist, flood fill area too see if small enough (< body size) to trap snake
             if (snake_head_to_tail_path == None and snake_path_to_you_tail == None):
                 if (flood_fill_snake(data, walls, aStar, snake_cutoff_index, border_paths[i])):
-                    if (DEBUG_LOGS):
+                    if (DEBUG_LOGS and CUTOFF_LOGS):
                         print("Too large of area to for snake to survive in, don't cutoff in direction: " + str(border_directions[i]))
                     continue
 
                 #cutoff
-                if (DEBUG_LOGS):
+                if (DEBUG_LOGS and CUTOFF_LOGS):
                     print("Too small area for snake to survive in, cutoff in direction: " + str(border_directions[i]))
                 cutoff_directions.append(border_directions[i])
 
@@ -436,7 +438,7 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                             free_space += 1
                             blocked_off_cells.append((k,j))
 
-                if (DEBUG_LOGS):
+                if (DEBUG_LOGS and CUTOFF_LOGS):
                     print("Direction left border up/down")
                 """
                 for j in range(j_start, j_stop, step):
@@ -458,7 +460,7 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                             free_space += 1
                             blocked_off_cells.append((k,j))
 
-                if (DEBUG_LOGS):
+                if (DEBUG_LOGS and CUTOFF_LOGS):
                     print("Direction right border up/down")
                 """
                 for j in range(j_start, j_stop, step):
@@ -474,7 +476,7 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
             else:
                 continue
 
-            if (DEBUG_LOGS):
+            if (DEBUG_LOGS and CUTOFF_LOGS):
                 print("Free space calculated: " + str(free_space) + " in direction: " + str(direction) + " border_direction: " + border_direction)
                 print("Border path used: " + str(border_paths[i]))
             #if too much free space, don't cutoff
@@ -516,7 +518,7 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                             free_space += 1
                             blocked_off_cells.append((j,k))
 
-                if (DEBUG_LOGS):
+                if (DEBUG_LOGS and CUTOFF_LOGS):
                     print("Direction up border left/right")
                 """
                 for k in range(0, border_paths[i][0][1]):
@@ -537,7 +539,7 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
                             free_space += 1
                             blocked_off_cells.append((j,k))
 
-                if (DEBUG_LOGS):
+                if (DEBUG_LOGS and CUTOFF_LOGS):
                     print("Direction down border left/right")
                 """
                 for k in range(border_paths[i][0][1] + 1, data['board']['height']):
@@ -553,7 +555,7 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
             else:
                 continue
 
-            if (DEBUG_LOGS):
+            if (DEBUG_LOGS and CUTOFF_LOGS):
                 print("Free space calculated: " + str(free_space) + " in direction: " + str(direction) + " border_direction: " + border_direction)
                 print("Border path used: " + str(border_paths[i]))
             #if too much free space, don't cutoff
@@ -573,14 +575,14 @@ def can_cutoff_head_and_tail_check(data, border_paths, blocked_off_cells, snake_
     snake_body = copy.deepcopy(data['board']['snakes'][snake_cutoff_index]['body'][:])
     snake_goal =  (border_paths[i][0][0], border_paths[i][0][1])
     if (snake_goal == (snake_body[0]['x'], snake_body[0]['y'])):
-        if (DEBUG_LOGS):
+        if (DEBUG_LOGS and CUTOFF_LOGS):
             print("Snake goal same as snake head: " + str(snake_goal))
         return False
 
     custom_aStar, walls = init_astar_with_custom_snake(data, snake_body, data['board']['snakes'][snake_cutoff_index]['id'], snake_goal)
     path = custom_aStar.solve()
 
-    if (DEBUG_LOGS):
+    if (DEBUG_LOGS and CUTOFF_LOGS):
         print("Cutoff path to start of cutoff: " + str(path))
 
     if (path != None):
@@ -591,14 +593,14 @@ def can_cutoff_head_and_tail_check(data, border_paths, blocked_off_cells, snake_
                 can_cutoff = True
                 break
 
-        if (DEBUG_LOGS):
+        if (DEBUG_LOGS and CUTOFF_LOGS):
             print("Cutoff: " + str(can_cutoff))
 
         #if path doesn't go through cutoff space, but snake is right beside border path (so in space, but path not in space since head on edge of space)
         #check if larger, if so see if have less than or equal distance, if so, cutoff
         if (not can_cutoff and len(path) == 2 and (len(data['you']['body']) > len(data['board']['snakes'][snake_cutoff_index]['body']))):
             can_cutoff = True
-            if (DEBUG_LOGS):
+            if (DEBUG_LOGS and CUTOFF_LOGS):
                 print("Cutoff beside: " + str(can_cutoff))
 
         #if can cutoff, check if with cutoff path, have path too my tail, if so, don't cut off
@@ -607,11 +609,11 @@ def can_cutoff_head_and_tail_check(data, border_paths, blocked_off_cells, snake_
             custom_aStar, walls = init_astar_with_custom_snake(data, snake_body, data['board']['snakes'][snake_cutoff_index]['id'], snake_goal, border_paths[i])
             path = custom_aStar.solve()
 
-            if (DEBUG_LOGS):
+            if (DEBUG_LOGS and CUTOFF_LOGS):
                 print("Cutoff path to my tail: " + str(path))
 
             if (path != None):
-                if (DEBUG_LOGS):
+                if (DEBUG_LOGS and CUTOFF_LOGS):
                     print("Cutoff path to my tail valid: " + str(path))
                 can_cutoff = False
 
@@ -623,7 +625,7 @@ def can_cutoff_head_and_tail_check(data, border_paths, blocked_off_cells, snake_
                 path = custom_aStar.solve()
 
                 if (path != None):
-                    if (DEBUG_LOGS):
+                    if (DEBUG_LOGS and CUTOFF_LOGS):
                         print("Cutoff path to snakes own tail valid: " + str(path))
                     can_cutoff = False
 

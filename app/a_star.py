@@ -204,6 +204,8 @@ def init_astar(data, with_own_head_blocking = False, growing = False, snake_grow
     
     walls = []
 
+    large_size_head_list = []
+
     start_point = 1
     if (with_own_head_blocking):
         start_point = 0

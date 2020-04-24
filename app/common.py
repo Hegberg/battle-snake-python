@@ -1,4 +1,4 @@
-DEBUG_LOGS = False
+DEBUG_LOGS = True
 
 def directions1_in_directions2(directions1, directions2):
     directions = []
@@ -455,3 +455,39 @@ def get_shortest_direction_to_border(data, walls, location):
         print("Block border path: " + str(short_path))
 
     return short_direction, short_path
+
+def get_opponent_move_walls(data, aStar, walls):
+    new_walls = []
+    for i in range(len(data['board']['snakes'])):
+        if (data['board']['snakes'][i]['id'] == data['you']['id']):
+            continue #skip self
+        #get opponent snakes that are larger head positions
+        if (len(data['board']['snakes'][i]['body']) > len(data['you']['body'])):
+            #add larger opponent snakes possible moves to walls
+            x = data['board']['snakes'][i]['body'][0]['x']
+            y = data['board']['snakes'][i]['body'][0]['y']
+            if (x > 0):
+                if ((x - 1, y) not in walls):
+                    new_walls.append((x - 1, y))
+            if (x < data['board']['width'] - 1):
+                if ((x + 1, y) not in walls):
+                    new_walls.append((x + 1, y))
+            if (y > 0):
+                if ((x, y - 1) not in walls):
+                    new_walls.append((x, y - 1))
+            if (y < data['board']['height'] - 1):
+                if ((x, y + 1) not in walls):
+                    new_walls.append((x, y + 1))
+    return new_walls
+
+def add_opponent_move_walls(data, aStar, walls):
+    opponent_move_walls = get_opponent_move_walls(data, aStar, walls)
+
+    for i in range(len(opponent_move_walls)):
+        aStar.add_wall_x_y(opponent_move_walls[i][0], opponent_move_walls[i][1])
+
+def remove_opponent_move_walls(data, aStar, walls):
+    opponent_move_walls = get_opponent_move_walls(data, aStar, walls)
+
+    for i in range(len(opponent_move_walls)):
+        aStar.remove_wall(opponent_move_walls[i][0], opponent_move_walls[i][1])
