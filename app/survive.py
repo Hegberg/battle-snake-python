@@ -237,9 +237,12 @@ def flood_fill(data, walls, available_directions, aStar):
                 largest_flood[1] = flood_directions[i][1]
                 large_flood_area = flood_areas[i]
                 largest_flood_single_lane = flood_directions[i][2]
+
     
     if (len(final_directions) == 0):
-        final_directions.append((largest_flood[0], largest_flood_single_lane))
+        #if largest flood was actually replaced with a direction
+        if (largest_flood[0] != ''):
+            final_directions.append((largest_flood[0], largest_flood_single_lane))
         #no large enough area found
         #return directions with lane, and if floodable
         return final_directions, False, tail_directions

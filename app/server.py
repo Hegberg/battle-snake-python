@@ -1,7 +1,6 @@
 import json
 import os
 import random
-import time
 
 import bottle
 from bottle import HTTPResponse
@@ -42,7 +41,6 @@ def start():
 @bottle.post("/move")
 def move():
 
-    start = time.time()
     """
     Called when the Battlesnake Engine needs to know your next move.
     The data parameter will contain information about the board.
@@ -61,12 +59,6 @@ def move():
     #shout = "I am a python snake!"
     shout = "I like em big... I like em Chunky!"
 
-    end = time.time()
-
-    elapsed_time = end - start
-
-    print("Time elsapsed: " + str(elapsed_time))
-
     response = {"move": move, "shout": shout}
     print("MOVE RESPONSE:", response)
     return HTTPResponse(
@@ -75,11 +67,6 @@ def move():
         body=json.dumps(response),
     )
 
-    end = time.time()
-
-    elapsed_time = end - start
-
-    print("Time elsapsed: " + str(elapsed_time))
 
 
 @bottle.post("/end")
