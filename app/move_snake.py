@@ -45,7 +45,9 @@ def get_move(data):
 
     #check to see if can attack snake
     attack_directions = get_attack_directions(data, aStar, walls, survival_directions)
-    
+
+    if (DEBUG_LOGS):
+        print("Attack Directions: " + str(attack_directions))
 
     """priority, survive, avoid_collisions, space, attack, food
     all directions already filtered thorugh survival directions

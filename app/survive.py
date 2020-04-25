@@ -4,6 +4,7 @@ from app.common import get_location_from_direction
 from app.common import check_if_location_in_between_walls
 from app.common import path_from_closest_snake_head_to_location
 from app.common import get_distance_between_points
+from app.common import get_opponent_move_walls
 from app.common import DEBUG_LOGS
 
 from app.a_star import init_astar
@@ -116,6 +117,8 @@ def flood_fill(data, walls, available_directions, aStar):
     #add head as wall
     walls.append((x,y))
 
+    big_move_walls = get_opponent_move_walls(data, aStar, walls)
+
     flood_directions = []
     single_lane_flood_directions = []
     flood_areas = []
@@ -123,53 +126,53 @@ def flood_fill(data, walls, available_directions, aStar):
 
     for i in range(len(available_directions)):
         matrix = []
+        tile_order_queue = []
+        for j in range(len(big_move_walls)):
+            tile_order_queue.append((big_move_walls[j][0],big_move_walls[j][1],3))
+
         for j in range(data['board']['width']):
             row = []
             for k in range(data['board']['height']):
                 row.append(0)
             matrix.append(row)
-                
+
         for j in range(len(walls)):
             #access by column, row
             matrix[walls[j][0]][walls[j][1]] = 1
 
         if (available_directions[i] == 'up'):
-            flood_matrix = flood_fill_recursive(matrix, x, y-1, data, walls, aStar)
+            tile_order_queue.append((x, y-1))
+            flood_matrix = flood_fill_recursive(matrix, data, walls, aStar, tile_order_queue)
             flood_size, flood_area = get_flood_size(matrix)
-
-            if (DEBUG_LOGS):
-                print("Up flood size: ", flood_size)
 
             flood_directions.append(('up', flood_size, False))
             flood_areas.append(flood_area)
 
         elif (available_directions[i] == 'down'):
-            flood_matrix = flood_fill_recursive(matrix, x, y+1, data, walls, aStar)
+            tile_order_queue.append((x, y+1))
+            flood_matrix = flood_fill_recursive(matrix, data, walls, aStar, tile_order_queue)
             flood_size, flood_area = get_flood_size(matrix)
-
-            if (DEBUG_LOGS):
-                print("Down flood size: ", flood_size)
 
             flood_directions.append(('down', flood_size, False))
             flood_areas.append(flood_area)
         
         elif (available_directions[i] == 'left'):
-            flood_matrix = flood_fill_recursive(matrix, x-1, y, data, walls, aStar)
+            tile_order_queue.append((x-1, y))
+            flood_matrix = flood_fill_recursive(matrix, data, walls, aStar, tile_order_queue)
             flood_size, flood_area = get_flood_size(matrix)
 
-            if (DEBUG_LOGS):
-                print("Left flood size: ", flood_size)
             flood_directions.append(('left', flood_size, False))
             flood_areas.append(flood_area)
 
         elif (available_directions[i] == 'right'):
-            flood_matrix = flood_fill_recursive(matrix, x+1, y, data, walls, aStar)
+            tile_order_queue.append((x+1, y))
+            flood_matrix = flood_fill_recursive(matrix, data, walls, aStar, tile_order_queue)
             flood_size, flood_area = get_flood_size(matrix)
 
-            if (DEBUG_LOGS):
-                print("Right flood size: ", flood_size)
             flood_directions.append(('right', flood_size, False))
             flood_areas.append(flood_area)
+
+    walls.remove((x,y))
 
     #check to include any single lane flood fill in flood directions
 
@@ -217,6 +220,8 @@ def flood_fill(data, walls, available_directions, aStar):
             longest_path, closest_tail = find_longest_path(data, get_location_from_direction(flood_directions[i][0],x,y), flood_areas[i])
             large_longest_path, large_closest_tail = find_longest_path(data, get_location_from_direction(largest_flood[0],x,y), large_flood_area)
 
+            print("Fnding longest path")
+
             #if path longer, or path the same and distance to tail shorter
             if ((len(longest_path) > len(large_longest_path)) or 
                 ((len(longest_path) == len(large_longest_path) and len(longest_path) > 0 and len(large_longest_path) > 0)
@@ -243,23 +248,44 @@ def flood_fill(data, walls, available_directions, aStar):
     #return directions with lane, and if floodable
     return final_directions, True, tail_directions
 
-def flood_fill_recursive(matrix, x, y, data, walls, aStar):
-    if (matrix[x][y] == 0):
-        between_walls = check_if_location_in_between_walls(data, aStar, walls, (x,y))
-        #if between walls, check if opposing snake is close enough to cut off from that point, if so, remove option from floodfill
-        if(between_walls):
-            return matrix
+#tile_order_queue((x,y),(x,y),(x,y)...)
+#or for multi snakes
+#tile_order_queue((x,y,number_fill),(x,y,number_fill),(x,y,number_fill)...)
+#1 for wall, 2 for current snake, 3 for opposing
+def flood_fill_recursive(matrix, data, walls, aStar, tile_order_queue):
+    while (len(tile_order_queue) > 0):
+        matrix = flood_fill_tile_check(matrix, data, walls, aStar, tile_order_queue)
 
-        matrix[x][y] = 2
+    return matrix
+
+def flood_fill_tile_check(matrix, data, walls, aStar, tile_order_queue):
+    x = tile_order_queue[0][0]
+    y = tile_order_queue[0][1]
+
+    if (len(tile_order_queue[0]) > 2):
+        number_fill = tile_order_queue[0][2]
+    else:
+        number_fill = 2
+
+    tile_order_queue.pop(0)
+
+    if (matrix[x][y] == 0):
+        if (number_fill == 2):
+            between_walls = check_if_location_in_between_walls(data, aStar, walls, (x,y))
+            #if between walls, check if opposing snake is close enough to cut off from that point, if so, remove option from floodfill
+            if(between_walls):
+                return matrix
+
+        matrix[x][y] = number_fill
 
         if (x > 0):
-            matrix = flood_fill_recursive(matrix, x-1, y, data, walls, aStar)
+            tile_order_queue.append((x-1, y, number_fill))
         if (x < len(matrix[y]) - 1):
-            matrix = flood_fill_recursive(matrix, x+1, y, data, walls, aStar)
+            tile_order_queue.append((x+1, y, number_fill))
         if (y > 0):
-            matrix = flood_fill_recursive(matrix, x, y-1, data, walls, aStar)
+            tile_order_queue.append((x, y-1, number_fill))
         if (y < len(matrix) - 1):
-            matrix = flood_fill_recursive(matrix, x, y+1, data, walls, aStar)
+            tile_order_queue.append((x, y+1, number_fill))
 
         return matrix
     return matrix

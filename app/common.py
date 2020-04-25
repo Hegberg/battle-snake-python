@@ -13,7 +13,6 @@ def directions1_in_directions2(directions1, directions2):
     return None
 
 def get_directions(x,y,x2,y2):
- 
     directions = []
 
     #to the left
@@ -218,7 +217,7 @@ def path_from_closest_snake_head_to_location(data, aStar, location):
 
     return shortest_path, snake_head
 
-def get_distance_between_points(self, point_1, point_2):
+def get_distance_between_points(point_1, point_2):
     return abs(point_1[0] - point_2[0]) + abs(point_1[1] - point_2[1])
 
 def determine_if__snake_growing(data, snake_index):

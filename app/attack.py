@@ -4,6 +4,7 @@ from app.common import check_if_path_in_between_walls
 from app.common import get_straight_path_directions_to_border
 from app.common import determine_if__snake_growing
 from app.common import get_shortest_direction_to_border
+from app.common import get_distance_between_points
 from app.common import DEBUG_LOGS
 
 from app.a_star import AStar
@@ -288,6 +289,11 @@ def attack_cutoff(data, aStar, walls, survival_directions):
             continue #skip self
 
         snake_cutoff_index = j
+
+        #if opposing snake head farther to my head than len of my body, don't attempt to cutoff
+        if (len(data['you']['body']) < get_distance_between_points((data['you']['body'][0]['x'], data['you']['body'][0]['y']), (data['board']['snakes'][j]['body'][0]['x'], data['board']['snakes'][j]['body'][0]['y']))):
+            continue
+
         if (DEBUG_LOGS and CUTOFF_LOGS):
             print("Attempting to cutoff snake: " + str(data['board']['snakes'][j]['name']))
 
@@ -479,8 +485,16 @@ def rectangle_check(data, walls, border_direction, border_paths, snake_cutoff_in
             if (DEBUG_LOGS and CUTOFF_LOGS):
                 print("Free space calculated: " + str(free_space) + " in direction: " + str(direction) + " border_direction: " + border_direction)
                 print("Border path used: " + str(border_paths[i]))
-            #if too much free space, don't cutoff
-            if (free_space >= len(data['board']['snakes'][snake_cutoff_index]['body'])):
+            #check if cutoff area is single lane
+            cutoff_single_lane = True
+            if (len(blocked_off_cells) > 1):
+                path_x = blocked_off_cells[0][0]
+            for j in range(1, len(blocked_off_cells)):
+                if (path_x != blocked_off_cells[j][0]):
+                    cutoff_single_lane = False
+                    break
+            #if too much free space, don't cutoff, unless path is single lane, than cutoff
+            if (free_space >= len(data['board']['snakes'][snake_cutoff_index]['body']) and not cutoff_single_lane):
                 return True
 
             #else, if path for other snake to first border cutoff cell, passes through blocked off cells, cutoff, otherwise don't
@@ -695,6 +709,7 @@ def flood_fill_snake(data, walls, aStar, snake_index, cutoff_path):
     flood_walls = walls[:]
 
     matrix = []
+    tile_order_queue = []
     for j in range(data['board']['width']):
         row = []
         for k in range(data['board']['height']):
@@ -713,7 +728,8 @@ def flood_fill_snake(data, walls, aStar, snake_index, cutoff_path):
 
     #-1 not 0 to accomidate for removing head from walls 
     flood_size =  -1
-    flood_matrix = flood_fill_recursive(matrix, x, y, data, walls, aStar)
+    tile_order_queue.append((x, y))
+    flood_matrix = flood_fill_recursive(matrix, data, walls, aStar, tile_order_queue)
     for j in range(len(matrix)):
         for k in range(len(matrix[j])):
             if (matrix[j][k] == 2):
