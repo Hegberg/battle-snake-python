@@ -78,8 +78,9 @@ def locate_food(x,y,data, aStar, walls):
                         opponent_path = aStar.solve()
                         aStar.add_wall((p1_x, p1_y))
 
-                        print("Eat own path: " + str(path))
-                        print("Eat opponent path: " + str(opponent_path))
+                        if (DEBUG_LOGS):
+                            print("Eat own path: " + str(path))
+                            print("Eat opponent path: " + str(opponent_path))
 
                         if (opponent_path != None and (len(path) >= len(opponent_path))):
                             if (DEBUG_LOGS):

@@ -2,6 +2,8 @@
 
 A Custom battle snake built with python using a starter python snake as the base snake.
 
+1st place seed - Rookie Division - BattleSnakes Stay Home and Code April 202 Tournament
+
 ## Base Snake Readme Below
 
 A simple [Battlesnake](http://play.battlesnake.com) written in Python.
