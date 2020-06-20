@@ -300,6 +300,11 @@ class ProtectArea(object):
 						smallest_distances.append(distance)
 						closest_tiles.append(possible_tiles[j])
 						closest_directions.append(possible_directions[j])
+						
+					elif(direct_distance_new == direct_distance_old):
+						smallest_distances.append(distance)
+						closest_tiles.append(possible_tiles[j])
+						closest_directions.append(possible_directions[j])
 
 
 				j += 1
