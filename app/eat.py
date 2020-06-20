@@ -2,12 +2,26 @@
 from app.a_star import AStar
 from app.common import get_directions
 from app.common import check_if_path_in_between_walls
-from app.common import add_opponent_move_walls
-from app.common import remove_opponent_move_walls
+from app.common import add_large_opponent_move_walls
+from app.common import remove_large_opponent_move_walls
 
 from app.common import DEBUG_LOGS
 
 def consumption_choices(data, aStar, walls):
+
+    snake_size_larger = True
+    for i in range(len(data['board']['snakes'])):
+        if (data['board']['snakes'][i]['id'] == data['you']['id']):
+            continue #skip self
+
+        #if 4 larger than all snakes, don't bother to eat
+        if (len(data['you']['body']) < len(data['board']['snakes'][i]['body']) + 4):
+            snake_size_larger = False
+
+    if (snake_size_larger):
+        if(DEBUG_LOGS):
+            print("Snake 4 larger than opponents, don't try to eat")
+        return None, None
     
     nearest_food_directions, nearest_food = locate_food(data['you']['body'][0]['x'], data['you']['body'][0]['y'], data, aStar, walls)
 
@@ -36,12 +50,12 @@ def locate_food(x,y,data, aStar, walls):
     #for each food, get path, use shortest path
     for i in range(len(food)):
 
-        add_opponent_move_walls(data, aStar, walls)
+        add_large_opponent_move_walls(data, aStar, walls)
         
         #set goal to food
         aStar.reset_grid_and_start((x,y), (food[i][0], food[i][1]))
 
-        remove_opponent_move_walls(data, aStar, walls)
+        remove_large_opponent_move_walls(data, aStar, walls)
         
         #find path, returns list of x,y tuple, starting at head, returns None if no path
         path = aStar.solve()

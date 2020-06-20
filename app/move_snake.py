@@ -22,6 +22,8 @@ from app.common import DEBUG_LOGS
 
 from app.collision_avoidance import avoid_death_collisions
 
+from app.protect_area import get_direction_to_protect_area
+
 def get_move(data):
  
     aStar, walls = init_astar(data)
@@ -32,7 +34,7 @@ def get_move(data):
     growing = determine_if_growing(data)
 
     #check spacing
-    spacing_directions, tail_directions, other_snake_tail_directions, can_follow_tail, can_follow_other_snake_tail  = get_spacing_directions(data, aStar, walls, survival_directions, growing)
+    spacing_directions, tail_directions, other_snake_tail_directions, can_follow_tail, can_follow_other_snake_tail, protectable_area  = get_spacing_directions(data, aStar, walls, survival_directions, growing)
 
     if (DEBUG_LOGS):
         print("Final spacing directions: " + str(spacing_directions))
@@ -105,6 +107,28 @@ def get_move(data):
 
     #multiple good options
     if (len(final_directions) > 1):
+
+        #go around protectable area if possible
+        print("Protected area len: " + str(len(protectable_area)))
+        if (len(protectable_area) >= 1):
+            protect_directions = get_direction_to_protect_area(protectable_area, data, final_directions)
+        else:
+            protect_directions = []
+
+        #if multiple options continue with narrowing
+        if (len(protect_directions) == 1):
+            final_directions = protect_directions
+            if (DEBUG_LOGS):
+                print("Final Direction after protected area: " + str(final_directions))
+            direction = random.choice(final_directions)
+            return direction
+
+        #if some directions chosen, use them as next fliter, otherwise ignore
+        if (len(protect_directions) > 1):
+            final_directions = protect_directions
+
+        print("Final diretions before tail check: " + str(final_directions))
+        print("Tail diretions before tail check: " + str(tail_directions))
 
         #follow tail if possible
         pos_tail_directions = directions1_in_directions2(tail_directions, final_directions)
@@ -252,15 +276,15 @@ def determine_if_growing(data):
     return False
 
 def get_spacing_directions(data, aStar, walls, survival_directions, growing):
-    flood_directions_and_lane, can_follow_flood, tail_flood_directions = flood_fill(data, walls, survival_directions, aStar)
+    flood_directions_and_lane, can_follow_flood, tail_flood_directions, largest_flood_area = flood_fill(data, walls, survival_directions, aStar)
     lane_filter_flood_directions, single_lane_flood = single_lane_filter(flood_directions_and_lane)
     flood_directions = lane_filter_flood_directions
 
-    tail_directions_and_lane = find_own_tail_path(aStar, walls, data, growing)
+    tail_directions_and_lane = find_own_tail_path(aStar, walls, data, growing, largest_flood_area)
     lane_filter_tail_directions, single_lane_tail = single_lane_filter(tail_directions_and_lane)
     tail_directions = lane_filter_tail_directions
 
-    other_snake_tail_directions_and_lane = find_other_snake_tail_path(data, aStar, walls)
+    other_snake_tail_directions_and_lane = find_other_snake_tail_path(data, aStar, walls, largest_flood_area)
     lane_filter_other_snake_tail_directions, single_lane_other_tail = single_lane_filter(other_snake_tail_directions_and_lane)
     other_snake_tail_directions = lane_filter_other_snake_tail_directions
 
@@ -268,6 +292,7 @@ def get_spacing_directions(data, aStar, walls, survival_directions, growing):
         print("Flood: " + str(flood_directions))
         print("My Tail: " + str(tail_directions))
         print("Other snake tail: " + str(other_snake_tail_directions))
+        print("Tail flood: " + str(tail_flood_directions))
 
     can_follow_tail = False
     can_follow_other_snake_tail = False
@@ -341,11 +366,12 @@ def get_spacing_directions(data, aStar, walls, survival_directions, growing):
 
     #add all tail paths together
     if (len(tail_flood_directions) > 0):
-        for direction in tail_flood_directions:
-            if (not direction in tail_directions):
+        for direction_and_lane in tail_flood_directions:
+            if (not direction_and_lane[0] in tail_directions):
+                #print("Adding tail direction: " + str(direction))
                 tail_directions.append(direction)
 
-    return spacing_directions, tail_directions, other_snake_tail_directions, can_follow_tail, can_follow_other_snake_tail
+    return spacing_directions, tail_directions, other_snake_tail_directions, can_follow_tail, can_follow_other_snake_tail, largest_flood_area
 
 def single_lane_filter(directions_and_single_lane):
     single_lane_directions = []

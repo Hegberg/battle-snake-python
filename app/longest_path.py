@@ -23,8 +23,23 @@ class LongestPath(object):
 		closest_tail = None
 		closest_distance = None
 		for i in range(len(self.data['board']['snakes'])):
-			tail = self.data['board']['snakes'][i]['body'][len(self.data['board']['snakes'][i]['body']) - 1]
+			#grab tail from where it will be once area is traversed
+
+			#no valid space to search
+			if (len(self.traversable_area) == 0):
+				tail = self.data['board']['snakes'][i]['body'][len(self.data['board']['snakes'][i]['body']) - 1]
+			elif (len(self.data['board']['snakes'][i]['body']) > len(self.traversable_area)):
+				print("len body: " + str(len(self.data['board']['snakes'][i]['body'])))
+				print("len area: " + str(len(self.traversable_area)))
+				tail = self.data['board']['snakes'][i]['body'][len(self.data['board']['snakes'][i]['body']) - len(self.traversable_area)]
+			else:
+				#path is longer than snake, so use it's head as future tail position
+				tail = self.data['board']['snakes'][i]['body'][0]
+			#print("Snake name: " + str(self.data['board']['snakes'][i]['name']))
+			#print("Snake tail: " + str(tail))
+			#tail = self.data['board']['snakes'][i]['body'][len(self.data['board']['snakes'][i]['body']) - 1]
 			distance = self.get_distance_between_points((tail['x'], tail['y']), self.first_space)
+			#distance = self.get_distance_between_points((tail['x'], tail['y']), self.first_space)
 			if (closest_tail == None):
 				closest_tail = (tail['x'], tail['y'])
 				closest_distance = distance
@@ -38,6 +53,8 @@ class LongestPath(object):
 				if (tail == self.data['you']['body'][len(self.data['you']['body']) - 1]):
 					closest_distance = distance
 					closest_tail = (tail['x'], tail['y'])
+
+		print(closest_tail)
 
 		return closest_tail
 
@@ -75,7 +92,7 @@ class LongestPath(object):
 
 		#attach current location onto front of path, return
 		longest_path_addition.insert(0, location)
-		#print("Longest path addition: " + str(longest_path_addition))
+		#print("Longest path addition: " + str(longest_path_addition) + " for location: " + str(location))
 		return longest_path_addition
 
 
@@ -92,6 +109,7 @@ class LongestPath(object):
 				self.get_distance_between_points(longest_path_addition[len(longest_path_addition) - 1], self.closest_tail)):
 				longest_path_addition = path_addition
 
+		#print("new longest path: " + str(longest_path_addition))
 		return longest_path_addition
 		
 
