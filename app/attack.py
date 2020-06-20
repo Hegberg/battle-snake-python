@@ -2,7 +2,7 @@ from app.common import get_location_from_direction
 from app.common import get_directions
 from app.common import check_if_path_in_between_walls
 from app.common import get_straight_path_directions_to_border
-from app.common import determine_if__snake_growing
+from app.common import determine_if_snake_growing
 from app.common import get_shortest_direction_to_border
 from app.common import get_distance_between_points
 from app.common import DEBUG_LOGS
@@ -658,13 +658,13 @@ def get_snake_path_to_tail(data, walls, border_paths, snake_cutoff_index, border
     snake_len = len(data['board']['snakes'][snake_cutoff_index]['body'])
 
     #remove extra tail spaces of snake and me if growing
-    if (determine_if__snake_growing(data, snake_cutoff_index)):
+    if (determine_if_snake_growing(data, snake_cutoff_index)):
         cutoff_walls.remove((data['board']['snakes'][snake_cutoff_index]['body'][snake_len - 2]['x'],
                             data['board']['snakes'][snake_cutoff_index]['body'][snake_len - 2]['y']))
 
     for i in range(len(data['board']['snakes'])):
         if (data['board']['snakes'][i]['id'] == data['you']['id']):
-            if (determine_if__snake_growing(data, i)):
+            if (determine_if_snake_growing(data, i)):
                 cutoff_walls.remove((data['you']['body'][len(data['you']['body']) - 2]['x'], 
                                     data['you']['body'][len(data['you']['body']) - 2]['y']))
             break

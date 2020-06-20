@@ -29,8 +29,8 @@ class LongestPath(object):
 			if (len(self.traversable_area) == 0):
 				tail = self.data['board']['snakes'][i]['body'][len(self.data['board']['snakes'][i]['body']) - 1]
 			elif (len(self.data['board']['snakes'][i]['body']) > len(self.traversable_area)):
-				print("len body: " + str(len(self.data['board']['snakes'][i]['body'])))
-				print("len area: " + str(len(self.traversable_area)))
+				#print("len body: " + str(len(self.data['board']['snakes'][i]['body'])))
+				#print("len area: " + str(len(self.traversable_area)))
 				tail = self.data['board']['snakes'][i]['body'][len(self.data['board']['snakes'][i]['body']) - len(self.traversable_area)]
 			else:
 				#path is longer than snake, so use it's head as future tail position

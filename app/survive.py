@@ -1,5 +1,5 @@
 from app.common import get_directions
-from app.common import determine_if__snake_growing
+from app.common import determine_if_snake_growing
 from app.common import get_location_from_direction
 from app.common import check_if_location_in_between_walls
 from app.common import path_from_closest_snake_head_to_location
@@ -434,7 +434,7 @@ def find_other_snake_tail_path(data, aStar, walls, valid_move_tiles):
                 print("Tail and head of snake " + str(data['board']['snakes'][i]['name']) + " are on the same tile: " + str(tail_x) + " " + str(tail_y))
             return directions
 
-        growing = determine_if__snake_growing(data, i)
+        growing = determine_if_snake_growing(data, i)
 
         #if growing, need to find path to space before tail and solid tail
         if (growing):

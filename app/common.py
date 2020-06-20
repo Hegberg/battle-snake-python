@@ -1,4 +1,4 @@
-DEBUG_LOGS = False
+DEBUG_LOGS = True
 
 def directions1_in_directions2(directions1, directions2):
     directions = []
@@ -220,7 +220,7 @@ def path_from_closest_snake_head_to_location(data, aStar, location):
 def get_distance_between_points(point_1, point_2):
     return abs(point_1[0] - point_2[0]) + abs(point_1[1] - point_2[1])
 
-def determine_if__snake_growing(data, snake_index):
+def determine_if_snake_growing(data, snake_index):
     if (len(data['board']['snakes'][snake_index]) > 2):
         t1_x = data['board']['snakes'][snake_index]['body'][len(data['board']['snakes'][snake_index]['body']) - 1]['x']
         t1_y = data['board']['snakes'][snake_index]['body'][len(data['board']['snakes'][snake_index]['body']) - 1]['y']

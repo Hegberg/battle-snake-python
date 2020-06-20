@@ -3,10 +3,13 @@ import math
 
 from app.common import DEBUG_LOGS
 from app.common import get_distance_between_points
+from app.common import determine_if_snake_growing
+
+from app.a_star import init_astar
 
 class ProtectArea(object):
 	"""docstring for ProtectArea"""
-	def __init__(self, area_matrix, data, possible_directions):
+	def __init__(self, area_matrix, data, possible_directions, growing):
 		#add current position to area, to see if it is located on the border or not
 		area_matrix[(data['you']['body'][0]['x'], data['you']['body'][0]['y'])] = 0
 		self.area_matrix = area_matrix
@@ -14,6 +17,7 @@ class ProtectArea(object):
 		self.border_matrix = copy.deepcopy(area_matrix)
 		self.possible_directions = possible_directions
 		self.in_border = False
+		self.growing = growing
 
 	def get_border_matrix(self):
 		for index in self.area_matrix:
@@ -128,6 +132,14 @@ class ProtectArea(object):
 		if (len(new_directions) <= 1):
 			return new_directions
 
+		best_tile_choices, best_direction_choices = self.find_closest_tile_to_enemy(possible_tiles, new_directions)
+		
+		if (DEBUG_LOGS):
+			print("Best to the border direction: " + str(best_direction_choices))
+
+		return best_direction_choices
+
+		"""
 		smallest_distances = []
 		smallest_tiles = []
 		smallest_directions = []
@@ -148,7 +160,7 @@ class ProtectArea(object):
 			#favour tiles close to enemy heads
 			elif (distance == smallest_distances[0]):
 
-				best_tile_choices, best_direction_choices = self.find_closest_tile_to_enemy(possible_tiles, new_directions)
+				
 
 				smallest_distance_to_enemy = get_distance_between_points(possible_tiles[i], (self.data['you']['body'][0]['x'], self.data['you']['body'][0]['y']))
 
@@ -167,6 +179,7 @@ class ProtectArea(object):
 			print("smallest_direction: " + str(smallest_directions))
 
 		return smallest_directions
+		"""
 
 	def continue_on_border(self):
 		possible_border_directions = []
@@ -236,13 +249,31 @@ class ProtectArea(object):
 			if (self.data['board']['snakes'][i]['id'] == self.data['you']['id']):
 				continue #skip self
 
-			print("Snake: " + str(self.data['board']['snakes'][i]['name']))
+			temp_data = copy.deepcopy(self.data)
 
+			lost_head = temp_data['board']['snakes'][i]['body'].pop(0)
+
+			temp_data['board']['snakes'][i]['head'] = temp_data['board']['snakes'][i]['body'][0]
+
+			aStar, walls = init_astar(temp_data, False, self.growing)
+
+			print("Snake: " + str(self.data['board']['snakes'][i]['name']))
 			j = 0
 			while (j < len(possible_tiles)):
-				distance = math.sqrt(((possible_tiles[j][0] - self.data['board']['snakes'][i]['body'][0]['x']) ** 2) + ((possible_tiles[j][1] - self.data['board']['snakes'][i]['body'][0]['y']) ** 2))
 
-				print("Tile: " + str(possible_tiles[j]) + " distance: " + str(distance))
+				path = None
+
+				aStar.reset_grid_and_start((possible_tiles[j]), (self.data['board']['snakes'][i]['body'][0]['x'], self.data['board']['snakes'][i]['body'][0]['y']))
+				path = aStar.solve()
+
+				if (path == None):
+					j += 1
+					continue
+
+				distance =  len(path)
+
+				if (DEBUG_LOGS):
+					print("Tile: " + str(possible_tiles[j]) + " distance: " + str(distance))
 
 				if (len(smallest_distances) == 0 or distance < smallest_distances[0]):
 					closest_tiles = []
@@ -254,9 +285,21 @@ class ProtectArea(object):
 					closest_directions.append(possible_directions[j])
 
 				elif(distance == smallest_distances[0]):
-					smallest_distances.append(distance)
-					closest_tiles.append(possible_tiles[j])
-					closest_directions.append(possible_directions[j])
+
+					direct_distance_old = math.sqrt(((closest_tiles[0][0] - self.data['board']['snakes'][i]['body'][0]['x']) ** 2) + ((closest_tiles[0][1] - self.data['board']['snakes'][i]['body'][0]['y']) ** 2))
+					direct_distance_new = math.sqrt(((possible_tiles[j][0] - self.data['board']['snakes'][i]['body'][0]['x']) ** 2) + ((possible_tiles[j][1] - self.data['board']['snakes'][i]['body'][0]['y']) ** 2))
+				
+					if (DEBUG_LOGS):
+						print("Tile: " + str(possible_tiles[j]) + " distance old: " + str(direct_distance_old) + " distance new: " + str(direct_distance_new))
+
+					if (direct_distance_new < direct_distance_old):
+						closest_tiles = []
+						smallest_distances = []
+						closest_directions = []
+
+						smallest_distances.append(distance)
+						closest_tiles.append(possible_tiles[j])
+						closest_directions.append(possible_directions[j])
 
 
 				j += 1
@@ -282,9 +325,9 @@ class ProtectArea(object):
 		return border_directions
 
 
-def get_direction_to_protect_area(area_matrix, data, possible_directions):
+def get_direction_to_protect_area(area_matrix, data, possible_directions, growing):
 
-	protected = ProtectArea(area_matrix, data, possible_directions)
+	protected = ProtectArea(area_matrix, data, possible_directions, growing)
 
 	area_protect_direction = protected.get_final_direction()
 
