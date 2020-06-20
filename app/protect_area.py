@@ -38,9 +38,6 @@ class ProtectArea(object):
 				(index[0], index[1] + 1) in self.area_matrix and
 				(index[0], index[1] - 1) in self.area_matrix):
 
-				if (index[0] == 4 and index[1] == 3):
-					print("Removing head of snake from border list")
-
 				#remove
 				self.border_matrix.pop(index)
 
@@ -257,7 +254,7 @@ class ProtectArea(object):
 
 			aStar, walls = init_astar(temp_data, False, self.growing)
 
-			print("Snake: " + str(self.data['board']['snakes'][i]['name']))
+			#print("Snake: " + str(self.data['board']['snakes'][i]['name']))
 			j = 0
 			while (j < len(possible_tiles)):
 
@@ -300,7 +297,7 @@ class ProtectArea(object):
 						smallest_distances.append(distance)
 						closest_tiles.append(possible_tiles[j])
 						closest_directions.append(possible_directions[j])
-						
+
 					elif(direct_distance_new == direct_distance_old):
 						smallest_distances.append(distance)
 						closest_tiles.append(possible_tiles[j])

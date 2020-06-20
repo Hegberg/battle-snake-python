@@ -109,7 +109,8 @@ def get_move(data):
     if (len(final_directions) > 1):
 
         #go around protectable area if possible
-        print("Protected area len: " + str(len(protectable_area)))
+        if (DEBUG_LOGS):
+            print("Protected area len: " + str(len(protectable_area)))
         if (len(protectable_area) >= 1):
             protect_directions = get_direction_to_protect_area(protectable_area, data, final_directions, growing)
         else:

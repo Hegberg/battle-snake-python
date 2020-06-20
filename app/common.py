@@ -1,4 +1,4 @@
-DEBUG_LOGS = True
+DEBUG_LOGS = False
 
 def directions1_in_directions2(directions1, directions2):
     directions = []
