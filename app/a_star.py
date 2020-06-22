@@ -231,7 +231,8 @@ def init_astar(data, with_own_head_blocking = False, growing = False, snake_grow
                 continue
 
             #ignore snake grown tail
-            if ((snake_growing_index == i) and j == len(data['you']['body']) - 2):
+            if ((snake_growing_index == i) and j == len(data['board']['snakes'][i]['body']) - 2):
+                #print("ignoring extra snake tial: " + str((data['board']['snakes'][i]['body'][j]['x'], data['board']['snakes'][i]['body'][j]['y'])))
                 continue
 
             walls.append((data['board']['snakes'][i]['body'][j]['x'], data['board']['snakes'][i]['body'][j]['y']))
@@ -257,6 +258,7 @@ def init_astar_with_custom_snake(data, self_new_body, snake_body_id, goal, extra
     for i in range(len(extra_walls)):
         walls.append((extra_walls[i][0], extra_walls[i][1]))
 
+    #skip adding own head with start point
     for i in range(start_point, len(self_new_body)):
         #ignore own tail
         if (i == len(self_new_body) - 1):
@@ -278,10 +280,11 @@ def init_astar_with_custom_snake(data, self_new_body, snake_body_id, goal, extra
                 continue
 
             #ignore snake grown tail
-            if ((snake_growing_index == i) and j == len(data['you']['body']) - 2):
+            if ((snake_growing_index == i) and j == len(data['board']['snakes'][i]['body']) - 2):
                 continue
 
             walls.append((data['board']['snakes'][i]['body'][j]['x'], data['board']['snakes'][i]['body'][j]['y']))
+
 
     #print("Obstacles in board: " + str(walls))
 

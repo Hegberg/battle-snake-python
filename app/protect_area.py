@@ -66,7 +66,8 @@ class ProtectArea(object):
 			while (True):
 				#hit edge of map
 				if (self.data['you']['body'][0]['y'] - i == 0):
-					print("up hit edge of map")
+					if (DEBUG_LOGS):
+						print("up hit edge of map")
 					break
 				#if hit border, add it to possible tiles to move to
 				elif ((self.data['you']['body'][0]['x'], self.data['you']['body'][0]['y'] - i) in self.border_matrix):
@@ -81,7 +82,8 @@ class ProtectArea(object):
 			while (True):
 				#hit edge of map
 				if (self.data['you']['body'][0]['y'] + i >= self.data['board']['height'] -1):
-					print("down hit edge of map")
+					if (DEBUG_LOGS):
+						print("down hit edge of map")
 					break
 				#if hit border, add it to possible tiles to move to
 				elif ((self.data['you']['body'][0]['x'], self.data['you']['body'][0]['y'] + i) in self.border_matrix):
@@ -96,7 +98,8 @@ class ProtectArea(object):
 			while (True):
 				#hit edge of map
 				if ((self.data['you']['body'][0]['x'] - i) == 0):
-					print("left hit edge of map")
+					if (DEBUG_LOGS):
+						print("left hit edge of map")
 					break
 				#if hit border, add it to possible tiles to move to
 				elif ((self.data['you']['body'][0]['x'] - i, self.data['you']['body'][0]['y']) in self.border_matrix):
@@ -111,7 +114,8 @@ class ProtectArea(object):
 			while (True):
 				#hit edge of map
 				if ((self.data['you']['body'][0]['x'] + i) >= self.data['board']['width'] - 1):
-					print("right hit edge of map")
+					if (DEBUG_LOGS):
+						print("right hit edge of map")
 					break
 				#if hit border, add it to possible tiles to move to
 				elif ((self.data['you']['body'][0]['x'] + i, self.data['you']['body'][0]['y']) in self.border_matrix):
@@ -129,7 +133,7 @@ class ProtectArea(object):
 		if (len(new_directions) <= 1):
 			return new_directions
 
-		best_tile_choices, best_direction_choices = self.find_closest_tile_to_enemy(possible_tiles, new_directions)
+		best_direction_choices = self.find_closest_tile_to_enemy(possible_tiles, new_directions)
 		
 		if (DEBUG_LOGS):
 			print("Best to the border direction: " + str(best_direction_choices))
@@ -210,7 +214,7 @@ class ProtectArea(object):
 
 		#favour tiles closer to other snakes heads, using direct distance not tile based distance
 
-		best_tile_choices, best_direction_choices = self.find_closest_tile_to_enemy(possible_border_tiles, possible_border_directions)
+		best_direction_choices = self.find_closest_tile_to_enemy(possible_border_tiles, possible_border_directions)
 		if (DEBUG_LOGS):
 			print("Best border direction: " + str(best_direction_choices))
 
@@ -237,9 +241,12 @@ class ProtectArea(object):
 
 
 	def find_closest_tile_to_enemy(self, possible_tiles, possible_directions):
-		closest_tiles = []
-		smallest_distances = []
-		closest_directions = []
+
+		#grab closest tile and distance for each snake, choose tile closest to the most snakes, not just closest tile to a snake
+
+		closest_tiles = {}
+		smallest_distances = {}
+		closest_directions = {}
 		
 		#determine closest opposing snake
 		for i in range(len(self.data['board']['snakes'])):
@@ -248,11 +255,20 @@ class ProtectArea(object):
 
 			temp_data = copy.deepcopy(self.data)
 
+			#if turn 0, body len 3 and all on same tile
 			lost_head = temp_data['board']['snakes'][i]['body'].pop(0)
+
+			if (self.data['turn'] == 0):
+				for j in range(2):
+					temp_data['board']['snakes'][j]['body'].pop(0)
 
 			temp_data['board']['snakes'][i]['head'] = temp_data['board']['snakes'][i]['body'][0]
 
 			aStar, walls = init_astar(temp_data, False, self.growing)
+
+			closest_tiles[self.data['board']['snakes'][i]['id']] = []
+			smallest_distances[self.data['board']['snakes'][i]['id']] = []
+			closest_directions[self.data['board']['snakes'][i]['id']] = []
 
 			#print("Snake: " + str(self.data['board']['snakes'][i]['name']))
 			j = 0
@@ -269,44 +285,71 @@ class ProtectArea(object):
 
 				distance =  len(path)
 
-				if (DEBUG_LOGS):
-					print("Tile: " + str(possible_tiles[j]) + " distance: " + str(distance))
+				#if (DEBUG_LOGS):
+					#print("Tile: " + str(possible_tiles[j]) + " distance: " + str(distance))
 
-				if (len(smallest_distances) == 0 or distance < smallest_distances[0]):
-					closest_tiles = []
-					smallest_distances = []
-					closest_directions = []
+				if (len(smallest_distances[self.data['board']['snakes'][i]['id']]) == 0 or distance < smallest_distances[self.data['board']['snakes'][i]['id']][0]):
+					closest_tiles[self.data['board']['snakes'][i]['id']] = []
+					smallest_distances[self.data['board']['snakes'][i]['id']] = []
+					closest_directions[self.data['board']['snakes'][i]['id']] = []
 
-					smallest_distances.append(distance)
-					closest_tiles.append(possible_tiles[j])
-					closest_directions.append(possible_directions[j])
+					smallest_distances[self.data['board']['snakes'][i]['id']].append(distance)
+					closest_tiles[self.data['board']['snakes'][i]['id']].append(possible_tiles[j])
+					closest_directions[self.data['board']['snakes'][i]['id']].append(possible_directions[j])
 
-				elif(distance == smallest_distances[0]):
+				elif(distance == smallest_distances[self.data['board']['snakes'][i]['id']][0]):
 
-					direct_distance_old = math.sqrt(((closest_tiles[0][0] - self.data['board']['snakes'][i]['body'][0]['x']) ** 2) + ((closest_tiles[0][1] - self.data['board']['snakes'][i]['body'][0]['y']) ** 2))
+					direct_distance_old = math.sqrt(((closest_tiles[self.data['board']['snakes'][i]['id']][0][0] - self.data['board']['snakes'][i]['body'][0]['x']) ** 2) + ((closest_tiles[self.data['board']['snakes'][i]['id']][0][1] - self.data['board']['snakes'][i]['body'][0]['y']) ** 2))
 					direct_distance_new = math.sqrt(((possible_tiles[j][0] - self.data['board']['snakes'][i]['body'][0]['x']) ** 2) + ((possible_tiles[j][1] - self.data['board']['snakes'][i]['body'][0]['y']) ** 2))
 				
 					if (DEBUG_LOGS):
 						print("Tile: " + str(possible_tiles[j]) + " distance old: " + str(direct_distance_old) + " distance new: " + str(direct_distance_new))
 
 					if (direct_distance_new < direct_distance_old):
-						closest_tiles = []
-						smallest_distances = []
-						closest_directions = []
+						closest_tiles[self.data['board']['snakes'][i]['id']] = []
+						smallest_distances[self.data['board']['snakes'][i]['id']] = []
+						closest_directions[self.data['board']['snakes'][i]['id']] = []
 
-						smallest_distances.append(distance)
-						closest_tiles.append(possible_tiles[j])
-						closest_directions.append(possible_directions[j])
+						smallest_distances[self.data['board']['snakes'][i]['id']].append(distance)
+						closest_tiles[self.data['board']['snakes'][i]['id']].append(possible_tiles[j])
+						closest_directions[self.data['board']['snakes'][i]['id']].append(possible_directions[j])
 
 					elif(direct_distance_new == direct_distance_old):
-						smallest_distances.append(distance)
-						closest_tiles.append(possible_tiles[j])
-						closest_directions.append(possible_directions[j])
+						smallest_distances[self.data['board']['snakes'][i]['id']].append(distance)
+						closest_tiles[self.data['board']['snakes'][i]['id']].append(possible_tiles[j])
+						closest_directions[self.data['board']['snakes'][i]['id']].append(possible_directions[j])
 
 
 				j += 1
 
-		return closest_tiles, closest_directions
+		if (DEBUG_LOGS):
+			print("Closest Directions: " + str(closest_directions))
+
+		average_directions = {}
+
+		#go through possible directions for each snake, and take most commmon direction
+		for i in range(len(self.data['board']['snakes'])):
+			if (self.data['board']['snakes'][i]['id'] == self.data['you']['id']):
+				continue #skip self 
+
+			for direction in closest_directions[self.data['board']['snakes'][i]['id']]:
+				if direction in average_directions:
+					average_directions[direction] += 1
+				else:
+					average_directions[direction] = 1
+
+		most_used_direction_count = 0
+		best_directions = []
+
+		for direction in average_directions:
+			if (average_directions[direction] > most_used_direction_count):
+				best_directions = []
+				best_directions.append(direction)
+				most_used_direction_count = average_directions[direction]
+			elif (average_directions[direction] == most_used_direction_count):
+				best_directions.append(direction)
+
+		return best_directions
 
 	def return_as_list_item(self, direction):
 		return_direction = []
@@ -317,14 +360,9 @@ class ProtectArea(object):
 	def get_final_direction(self):
 		self.get_border_matrix()
 
-		#if not in border, find best path to border
-		if (not self.in_border):
-			to_border_directions = self.get_direction_to_area_border()
-			return to_border_directions
+		directions = self.get_direction_to_area_border()
 
-		border_directions = self.continue_on_border()
-
-		return border_directions
+		return directions
 
 
 def get_direction_to_protect_area(area_matrix, data, possible_directions, growing):

@@ -7,7 +7,7 @@ from app.common import remove_large_opponent_move_walls
 
 from app.common import DEBUG_LOGS
 
-def consumption_choices(data, aStar, walls):
+def consumption_choices(data, aStar, walls, protectable_area):
 
     snake_size_larger = True
     for i in range(len(data['board']['snakes'])):
@@ -15,7 +15,7 @@ def consumption_choices(data, aStar, walls):
             continue #skip self
 
         #if 4 larger than all snakes, don't bother to eat
-        if (len(data['you']['body']) < len(data['board']['snakes'][i]['body']) + 4):
+        if (len(data['you']['body']) <= len(data['board']['snakes'][i]['body']) + 4):
             snake_size_larger = False
 
     if (snake_size_larger):
@@ -23,7 +23,7 @@ def consumption_choices(data, aStar, walls):
             print("Snake 4 larger than opponents, don't try to eat")
         return None, None
     
-    nearest_food_directions, nearest_food = locate_food(data['you']['body'][0]['x'], data['you']['body'][0]['y'], data, aStar, walls)
+    nearest_food_directions, nearest_food = locate_food(data['you']['body'][0]['x'], data['you']['body'][0]['y'], data, aStar, walls, protectable_area)
 
     if (nearest_food_directions != None):
         #return directions of nearest food
@@ -33,15 +33,16 @@ def consumption_choices(data, aStar, walls):
 
     return None, None
 
-def locate_food(x,y,data, aStar, walls):
+def locate_food(x,y,data, aStar, walls, protectable_area):
 
     food = []
     
     for i in range(len(data['board']['food'])):
-        food.append((data['board']['food'][i]['x'], data['board']['food'][i]['y']))
+        if ((data['board']['food'][i]['x'], data['board']['food'][i]['y']) in protectable_area):
+            food.append((data['board']['food'][i]['x'], data['board']['food'][i]['y']))
 
     if (len(food) == 0):
-        return None
+        return None, None
 
     shortest_path = None
     directions = []
@@ -92,9 +93,9 @@ def locate_food(x,y,data, aStar, walls):
                         opponent_path = aStar.solve()
                         aStar.add_wall((p1_x, p1_y))
 
-                        if (DEBUG_LOGS):
-                            print("Eat own path: " + str(path))
-                            print("Eat opponent path: " + str(opponent_path))
+                        #if (DEBUG_LOGS):
+                            #print("Eat own path: " + str(path))
+                            #print("Eat opponent path: " + str(opponent_path))
 
                         if (opponent_path != None and (len(path) >= len(opponent_path))):
                             if (DEBUG_LOGS):

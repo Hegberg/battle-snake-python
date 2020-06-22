@@ -126,6 +126,7 @@ def flood_fill(data, walls, available_directions, aStar):
     flood_areas = []
     single_lane_flood_areas = []
     flood_matrixs = []
+    flood_not_single_lane = []
 
     for i in range(len(available_directions)):
         matrix = []
@@ -147,45 +148,49 @@ def flood_fill(data, walls, available_directions, aStar):
             tile_order_queue.append((x, y-1))
             for j in range(len(small_move_walls)):
                 tile_order_queue.append((small_move_walls[j][0],small_move_walls[j][1],3))
-            flood_matrix = flood_fill_recursive(matrix, data, walls, aStar, tile_order_queue)
+            flood_matrix, not_single_lane = flood_fill_recursive(matrix, data, walls, aStar, tile_order_queue)
             flood_size, flood_area = get_flood_size(matrix)
 
             flood_directions.append(('up', flood_size, False))
             flood_areas.append(flood_area)
             flood_matrixs.append(flood_matrix)
+            flood_not_single_lane.append(not_single_lane)
 
         elif (available_directions[i] == 'down'):
             tile_order_queue.append((x, y+1))
             for j in range(len(small_move_walls)):
                 tile_order_queue.append((small_move_walls[j][0],small_move_walls[j][1],3))
-            flood_matrix = flood_fill_recursive(matrix, data, walls, aStar, tile_order_queue)
+            flood_matrix, not_single_lane = flood_fill_recursive(matrix, data, walls, aStar, tile_order_queue)
             flood_size, flood_area = get_flood_size(matrix)
 
             flood_directions.append(('down', flood_size, False))
             flood_areas.append(flood_area)
             flood_matrixs.append(flood_matrix)
+            flood_not_single_lane.append(not_single_lane)
         
         elif (available_directions[i] == 'left'):
             tile_order_queue.append((x-1, y))
             for j in range(len(small_move_walls)):
                 tile_order_queue.append((small_move_walls[j][0],small_move_walls[j][1],3))
-            flood_matrix = flood_fill_recursive(matrix, data, walls, aStar, tile_order_queue)
+            flood_matrix, not_single_lane = flood_fill_recursive(matrix, data, walls, aStar, tile_order_queue)
             flood_size, flood_area = get_flood_size(matrix)
 
             flood_directions.append(('left', flood_size, False))
             flood_areas.append(flood_area)
             flood_matrixs.append(flood_matrix)
+            flood_not_single_lane.append(not_single_lane)
 
         elif (available_directions[i] == 'right'):
             tile_order_queue.append((x+1, y))
             for j in range(len(small_move_walls)):
                 tile_order_queue.append((small_move_walls[j][0],small_move_walls[j][1],3))
-            flood_matrix = flood_fill_recursive(matrix, data, walls, aStar, tile_order_queue)
+            flood_matrix, not_single_lane = flood_fill_recursive(matrix, data, walls, aStar, tile_order_queue)
             flood_size, flood_area = get_flood_size(matrix)
 
             flood_directions.append(('right', flood_size, False))
             flood_areas.append(flood_area)
             flood_matrixs.append(flood_matrix)
+            flood_not_single_lane.append(not_single_lane)
 
         if (DEBUG_LOGS and True):
             print("Flood Area: " + str(available_directions[i]) + " size: " + str(len(flood_areas[i])))
@@ -203,7 +208,6 @@ def flood_fill(data, walls, available_directions, aStar):
                     break
 
             #print(flood_area)
-
 
     walls.remove((x,y))
 
@@ -224,15 +228,17 @@ def flood_fill(data, walls, available_directions, aStar):
         if (DEBUG_LOGS):
             print("Flood Direction: " + str(flood_directions[i]))
 
-        if (flood_directions[i][1] > len(data['you']['body'])):
+        #flood area may be single lane, only allow if way out
+        if (flood_directions[i][1] > len(data['you']['body']) #and flood_not_single_lane[i]) or
+            ):
             #append direction, and single lane
             final_directions.append((flood_directions[i][0], flood_directions[i][2]))
         
         #If snake goes to area smaller than itself, start moving through and occuping space and see if space opens up, or path to tail open
         else:
-            longest_path, closest_tail = find_longest_path(data, get_location_from_direction(flood_directions[i][0],x,y), flood_areas[i])
-            if (DEBUG_LOGS):
-                print("longest chosen path: " + str(longest_path))
+            longest_path, closest_tail, tail_owner_index = find_longest_path(data, get_location_from_direction(flood_directions[i][0],x,y), flood_areas[i])
+            #if (DEBUG_LOGS):
+                #print("longest chosen path: " + str(longest_path))
 
             #traverse longest path, and see if path to tail opens up during path traversal, if so, area is viable to go through
             if (len(longest_path) > 0):
@@ -243,7 +249,7 @@ def flood_fill(data, walls, available_directions, aStar):
                         if (flood_matrixs[i][j][k] == 3):
                             extra_walls.append((j,k))
                 #print("extra walls: " + str(extra_walls))
-                path_availabe, single_lane = traverse_longest_path(data, longest_path, closest_tail, extra_walls)
+                path_availabe, single_lane = traverse_longest_path(data, longest_path, closest_tail, extra_walls, tail_owner_index)
                 if (path_availabe):
                     final_directions.append((flood_directions[i][0], single_lane))
                     tail_directions.append((flood_directions[i][0], single_lane))
@@ -259,8 +265,8 @@ def flood_fill(data, walls, available_directions, aStar):
             largest_flood_single_lane = flood_directions[i][2]
         #same size, choose flood with longer path
         elif (flood_directions[i][1] == largest_flood[1] and flood_directions[i][1] > 0 and flood_directions[i][1] < len(data['you']['body'])):
-            longest_path, closest_tail = find_longest_path(data, get_location_from_direction(flood_directions[i][0],x,y), flood_areas[i])
-            large_longest_path, large_closest_tail = find_longest_path(data, get_location_from_direction(largest_flood[0],x,y), large_flood_area)
+            longest_path, closest_tail, tail_owner_index = find_longest_path(data, get_location_from_direction(flood_directions[i][0],x,y), flood_areas[i])
+            large_longest_path, large_closest_tail, largest_tail_owner_index = find_longest_path(data, get_location_from_direction(largest_flood[0],x,y), large_flood_area)
 
             if (DEBUG_LOGS):
                 print("Finding longest path")
@@ -283,6 +289,7 @@ def flood_fill(data, walls, available_directions, aStar):
 
     if (DEBUG_LOGS):
         print("Large flood area: " + str(len(large_flood_area)) + ' data:' + str(large_flood_area))
+        print("flood directions: " + str(final_directions))
 
     if (len(final_directions) == 0):
         #if largest flood was actually replaced with a direction
@@ -301,12 +308,13 @@ def flood_fill(data, walls, available_directions, aStar):
 #tile_order_queue((x,y,number_fill),(x,y,number_fill),(x,y,number_fill)...)
 #1 for wall, 2 for current snake, 3 for opposing
 def flood_fill_recursive(matrix, data, walls, aStar, tile_order_queue):
+    not_single_lane = True
     while (len(tile_order_queue) > 0):
-        matrix = flood_fill_tile_check(matrix, data, walls, aStar, tile_order_queue)
+        matrix, not_single_lane = flood_fill_tile_check(matrix, data, walls, aStar, tile_order_queue, not_single_lane)
 
-    return matrix
+    return matrix, not_single_lane
 
-def flood_fill_tile_check(matrix, data, walls, aStar, tile_order_queue):
+def flood_fill_tile_check(matrix, data, walls, aStar, tile_order_queue, not_single_lane):
     x = tile_order_queue[0][0]
     y = tile_order_queue[0][1]
 
@@ -319,14 +327,15 @@ def flood_fill_tile_check(matrix, data, walls, aStar, tile_order_queue):
     tile_order_queue.pop(0)
 
     if (matrix[x][y] == 0):
-        """
-        #don't check if location is between walls, since this is literally who can get their fastest
+        
+        #TODO
+        #need to check if area is single lane for going into and let know, but if just large area with small tile or 2 that is single lane, should not be true
         if (number_fill == 2):
             between_walls = check_if_location_in_between_walls(data, aStar, walls, (x,y))
             #if between walls, check if opposing snake is close enough to cut off from that point, if so, remove option from floodfill
             if(between_walls):
-                return matrix
-        """
+                not_single_lane = False
+        
 
         matrix[x][y] = number_fill
 
@@ -339,8 +348,8 @@ def flood_fill_tile_check(matrix, data, walls, aStar, tile_order_queue):
         if (y < len(matrix) - 1):
             tile_order_queue.append((x, y+1, number_fill))
 
-        return matrix
-    return matrix
+        return matrix, not_single_lane
+    return matrix, not_single_lane
 
 
 def get_flood_size(matrix):
@@ -430,8 +439,8 @@ def find_other_snake_tail_path(data, aStar, walls, valid_move_tiles):
         #if head and tail are the same space, ie starting turn
         if ((tail_x == data['board']['snakes'][i]['body'][0]['x']) and (tail_y == data['board']['snakes'][i]['body'][0]['y'])):
             directions = []
-            if (DEBUG_LOGS):
-                print("Tail and head of snake " + str(data['board']['snakes'][i]['name']) + " are on the same tile: " + str(tail_x) + " " + str(tail_y))
+            #if (DEBUG_LOGS):
+                #print("Tail and head of snake " + str(data['board']['snakes'][i]['name']) + " are on the same tile: " + str(tail_x) + " " + str(tail_y))
             return directions
 
         growing = determine_if_snake_growing(data, i)
@@ -441,9 +450,17 @@ def find_other_snake_tail_path(data, aStar, walls, valid_move_tiles):
             new_aStar, new_walls = init_astar(data, False, False, i)
             new_aStar.set_ending_for_init_grid((tail_x, tail_y))
             path = new_aStar.solve()
+            #if path is just 2, it is current head and tail spot, and since growing that path will not be valid
+            #and if not enough valid tiles to rework path, path is none
+            if (path != None and len(path) <= 2 and len(valid_move_tiles) < 2):
+                path = None
+
         else:
             aStar.reset_grid((tail_x, tail_y))
             path = aStar.solve()
+
+        #if (DEBUG_LOGS):
+            #print("Path to opposing tail = " + str(path))
 
         if (path != None and (shortest_path == None or len(path) < len(shortest_path))
             and check_if_path_goes_through_valid_survival_tiles(path, valid_move_tiles)):
@@ -489,7 +506,7 @@ def check_if_path_goes_through_valid_survival_tiles(path, valid_move_tiles):
     return True
 
 
-def traverse_longest_path(data, longest_path, closest_tail, extra_walls):
+def traverse_longest_path(data, longest_path, closest_tail, extra_walls, tail_owner_index):
 
     update_own_tail_as_target = False
     tail_x = closest_tail[0]
@@ -523,8 +540,6 @@ def traverse_longest_path(data, longest_path, closest_tail, extra_walls):
             snake_body[0]['y'] = longest_path[i][1]
 
         else:
-            if (DEBUG_LOGS):
-                print(snake_body[0])
             snake_body.insert(0, {'x': longest_path[i][0], 'y': longest_path[i][1]})
 
         head_x = snake_body[0]['x']
@@ -532,7 +547,8 @@ def traverse_longest_path(data, longest_path, closest_tail, extra_walls):
 
         #if tail closest, or if new tail posistion is cloasest, make target
         if (update_own_tail_as_target or 
-            get_distance_between_points((snake_body[len(snake_body) - 1]['x'], snake_body[len(snake_body) - 1]['y']), (head_x, head_y))):
+            get_distance_between_points((snake_body[len(snake_body) - 1]['x'], snake_body[len(snake_body) - 1]['y']), (head_x, head_y)) 
+            < get_distance_between_points((tail_x, tail_y), (head_x, head_y))):
             tail_x = snake_body[len(snake_body) - 1]['x']
             tail_y = snake_body[len(snake_body) - 1]['y']
 
@@ -541,8 +557,24 @@ def traverse_longest_path(data, longest_path, closest_tail, extra_walls):
                 print("Path to tail (0 distance) in blocked in area available: " + str((tail_x, tail_y)))
             return True
 
-        custom_aStar, walls = init_astar_with_custom_snake(data, snake_body, data['you']['id'], (tail_x, tail_y), extra_walls)
+        #print("Find path: " + str((head_x, head_y)) + " " + str((tail_x, tail_y)))
+
+        tail_owner_growing = False
+
+        #if tail is not owned by me, and owner growing,
+        if (data['board']['snakes'][tail_owner_index]['id'] != data['you']['id'] and 
+            (data['board']['snakes'][tail_owner_index]['body'][len(data['board']['snakes'][tail_owner_index]['body']) - 1] ==
+            data['board']['snakes'][tail_owner_index]['body'][len(data['board']['snakes'][tail_owner_index]['body']) - 2]) ):
+            tail_owner_growing = True
+
+        if (tail_owner_growing):
+            print("finding tail for growing owner: " + str(snake_body))
+            custom_aStar, walls = init_astar_with_custom_snake(data, snake_body, data['you']['id'], (tail_x, tail_y), extra_walls, growing, tail_owner_index)
+        else:
+            custom_aStar, walls = init_astar_with_custom_snake(data, snake_body, data['you']['id'], (tail_x, tail_y), extra_walls, growing)
         path = custom_aStar.solve()
+
+        #print(path)
 
         if (path != None):
             if (DEBUG_LOGS):
@@ -555,7 +587,3 @@ def traverse_longest_path(data, longest_path, closest_tail, extra_walls):
         
     #return if path is available, and if it is between walls
     return False, False
-
-
-def get_distance_between_points(point_1, point_2):
-    return abs(point_1[0] - point_2[0]) + abs(point_1[1] - point_2[1])

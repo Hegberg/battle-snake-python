@@ -39,7 +39,7 @@ def get_move(data):
     if (DEBUG_LOGS):
         print("Final spacing directions: " + str(spacing_directions))
 
-    food_directions, nearest_food = consumption_choices(data, aStar, walls)
+    food_directions, nearest_food = consumption_choices(data, aStar, walls, protectable_area)
 
     consumption_directions = directions1_in_directions2(food_directions, survival_directions) 
     if (DEBUG_LOGS):
@@ -128,8 +128,9 @@ def get_move(data):
         if (len(protect_directions) > 1):
             final_directions = protect_directions
 
-        print("Final diretions before tail check: " + str(final_directions))
-        print("Tail diretions before tail check: " + str(tail_directions))
+        if (DEBUG_LOGS):
+            print("Final diretions before tail check: " + str(final_directions))
+            print("Tail diretions before tail check: " + str(tail_directions))
 
         #follow tail if possible
         pos_tail_directions = directions1_in_directions2(tail_directions, final_directions)
@@ -174,6 +175,9 @@ def get_move(data):
                     print("Final Directions after straight: " + str(final_directions))
                 direction = random.choice(final_directions)
                 return direction
+
+    if (DEBUG_LOGS):
+        print("Just choosing random choice: " + str(final_directions))
 
     direction = random.choice(final_directions)
     return direction

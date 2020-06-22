@@ -2,7 +2,10 @@
 
 A Custom battle snake built with python using a starter python snake as the base snake.
 
+Consistently top 5 in the Global Areana
+
 1st place seed - Rookie Division - BattleSnakes Stay Home and Code April 2020 Tournament
+3rd place seed, Semifinals Finisher - Rookie Division - BattleSnakes Battlesnake at Communitech June 2020 Tournament
 
 ## Base Snake Readme Below
 
