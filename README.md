@@ -2,8 +2,7 @@
 
 A Custom battle snake built with python using a starter python snake as the base snake.
 
-Consistently top 5 in the Global Areana (Named shielded-woodland)
-https://play.battlesnake.com/arena/global/
+Consistently top 5 in the Global Areana
 
 1st place seed - Rookie Division - BattleSnakes Stay Home and Code April 2020 Tournament
 
