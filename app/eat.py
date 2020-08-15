@@ -38,7 +38,8 @@ def locate_food(x,y,data, aStar, walls, protectable_area):
     food = []
     
     for i in range(len(data['board']['food'])):
-        if ((data['board']['food'][i]['x'], data['board']['food'][i]['y']) in protectable_area):
+        if (((data['board']['food'][i]['x'], data['board']['food'][i]['y']) in protectable_area) and 
+            (data['board']['food'][i] not in data['board']['hazards'])):
             food.append((data['board']['food'][i]['x'], data['board']['food'][i]['y']))
 
     if (len(food) == 0):

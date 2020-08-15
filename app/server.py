@@ -28,7 +28,7 @@ def start():
     Your response will control how your snake is displayed on the board.
     """
     data = bottle.request.json
-    print("START:", json.dumps(data))
+    #print("START:", json.dumps(data))
 
     response = {"color": "#800000", "headType": "bwc-ski", "tailType": "bolt"}
     return HTTPResponse(
@@ -47,7 +47,7 @@ def move():
     Your response must include your move of up, down, left, or right.
     """
     data = bottle.request.json
-    print("MOVE:", json.dumps(data))
+    #print("MOVE:", json.dumps(data))
 
     # Choose a random direction to move in
     #directions = ["up", "down", "left", "right"]
@@ -60,7 +60,7 @@ def move():
     shout = "I like em big... I like em Chunky! I like em round... I like em Bumpy!"
 
     response = {"move": move, "shout": shout}
-    print("MOVE RESPONSE:", response)
+    #print("MOVE RESPONSE:", response)
     return HTTPResponse(
         status=200,
         headers={"Content-Type": "application/json"},
@@ -75,7 +75,7 @@ def end():
     Called every time a game with your snake in it ends.
     """
     data = bottle.request.json
-    print("END:", json.dumps(data))
+    #print("END:", json.dumps(data))
     return HTTPResponse(status=200)
 
 
