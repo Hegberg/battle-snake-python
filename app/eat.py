@@ -14,8 +14,9 @@ def consumption_choices(data, aStar, walls, protectable_area):
         if (data['board']['snakes'][i]['id'] == data['you']['id']):
             continue #skip self
 
-        #if 4 larger than all snakes, don't bother to eat
-        if (len(data['you']['body']) <= len(data['board']['snakes'][i]['body']) + 4):
+        #if 4 larger than all snakes, don't bother to eat, unless hungry
+        if ((len(data['you']['body']) <= len(data['board']['snakes'][i]['body']) + 4)
+            and data['you']['health'] >= 30):
             snake_size_larger = False
 
     if (snake_size_larger):
